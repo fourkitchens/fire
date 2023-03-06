@@ -4,11 +4,16 @@ if (file_exists(__DIR__ . '/vendor/autoload.php')) {
   $autoloaderPath = __DIR__ . '/vendor/autoload.php';
 } elseif (file_exists(__DIR__ . '/../../autoload.php')) {
   $autoloaderPath = __DIR__ . '/../../autoload.php';
-} else {
+}
+elseif (file_exists(__DIR__ . '/../../../autoload.php')) {
+  $autoloaderPath = __DIR__ . '/../../../autoload.php';
+}
+else {
   die("Could not find autoloader. Run 'composer install'.");
 }
-
 $classLoader = require $autoloaderPath;
+
+
 
 // Customization variables
 $appName = "fire";
