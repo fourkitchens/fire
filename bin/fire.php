@@ -15,7 +15,7 @@ $appName = "fire";
 $appVersion = trim(file_get_contents(__DIR__ . '/VERSION'));
 $discovery = new \Consolidation\AnnotatedCommand\CommandFileDiscovery();
 $discovery->setSearchPattern('*Command.php');
-$commandClasses = $discovery->discover('/../src/Robi/Plugin/Commands/', '\Fire\Robo\Plugin\Commands');
+$commandClasses = $discovery->discover(__DIR__ . '/../src/Robo/Plugin/Commands/', '\Fire\Robo\Plugin\Commands');
 $selfUpdateRepository = 'fourkitchens/fire';
 $configurationFilename = 'fire.yml';
 
@@ -28,5 +28,5 @@ $runner
 
 // Execute the command and return the result.
 $output = new \Symfony\Component\Console\Output\ConsoleOutput();
-$statusCode = $runner->execute($argv, $appName, '0.1', $output);
+$statusCode = $runner->execute($argv, $appName, $appVersion, $output);
 exit($statusCode);

@@ -12,18 +12,12 @@ use Symfony\Component\Console\Input\InputOption;
 use Symfony\Component\Console\Input\InputInterface;
 use Robo\Symfony\ConsoleIO;
 
-class helloCommand extends \Robo\Tasks {
+class VersionCommand extends \Robo\Tasks {
 
   /**
    * Demostrate varible args.
-   *
-   * @command hello:world
-   * @param array $args Arguments to print
-   * @aliases hello
-   * @usage test
-   *   Prints hello
    */
-  public function helloWorld (array $args) {
-    return 'Hello' . implode(' ', $args);
+  public function helloWorld (ConsoleIO $io) {
+    $io->say('HELLO');
   }
 }
