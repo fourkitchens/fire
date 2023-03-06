@@ -4,7 +4,7 @@
         "consolidation/robo": "^3.0"
     },
     "bin": [
-        "bin/chirripo"
+        "bin/fire"
     ],
     "autoload": {
         "psr-4": {
