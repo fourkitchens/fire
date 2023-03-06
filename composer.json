@@ -3,9 +3,13 @@
     "require": {
         "consolidation/robo": "^3.0"
     },
+    "bin": [
+        "bin/chirripo"
+    ],
     "autoload": {
         "psr-4": {
             "Fire\\": "src"
-        }
+        },
+        "classmap": ["src"]
     }
 }
