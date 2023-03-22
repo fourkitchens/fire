@@ -2,4 +2,3 @@
 <?php
 
 require 'fire.php';
-fire_main();
