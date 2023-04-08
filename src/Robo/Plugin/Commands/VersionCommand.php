@@ -11,13 +11,17 @@ use Consolidation\OutputFormatters\StructuredData\PropertyList;
 use Symfony\Component\Console\Input\InputOption;
 use Symfony\Component\Console\Input\InputInterface;
 use Robo\Symfony\ConsoleIO;
+use Robo\Robo;
 
 class VersionCommand extends \Robo\Tasks {
 
   /**
-   * Demostrate varible args.
+   * Shows the currently installed fire version.
    */
-  public function helloWorld (ConsoleIO $io) {
-    $io->say('HELLO');
+  public function version (ConsoleIO $io) {
+    $env = Robo::config()->get('enviroment');
+    echo($env);
+    $appVersion = trim(file_get_contents(__DIR__ . '/VERSION'));
+    $io->say('Fire version: ' . $appVersion . ' ' . __DIR__ . '/VERSION');
   }
 }

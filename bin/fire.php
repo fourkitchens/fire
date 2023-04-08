@@ -22,7 +22,8 @@ $discovery = new \Consolidation\AnnotatedCommand\CommandFileDiscovery();
 $discovery->setSearchPattern('*Command.php');
 $commandClasses = $discovery->discover(__DIR__ . '/../src/Robo/Plugin/Commands/', '\Fire\Robo\Plugin\Commands');
 $selfUpdateRepository = 'fourkitchens/fire';
-$configurationFilename = 'fire.yml';
+
+$configurationFilename = __DIR__ . '/../../../fire.yml';
 
 // Define our Runner, and pass it the command classes we provide.
 $runner = new \Robo\Runner($commandClasses);
