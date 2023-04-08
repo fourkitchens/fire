@@ -1,7 +1,7 @@
 {
     "name": "fourkitchens/fire",
     "require": {
-        "consolidation/robo": "^3.0"
+        "consolidation/robo": "^4.0.0"
     },
     "bin": [
         "bin/fire"
