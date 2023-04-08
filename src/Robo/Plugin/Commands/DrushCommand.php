@@ -23,7 +23,7 @@ class DrushCommand extends Tasks {
    * @param $args drush you would like to execute.
    */
   public function drush(ConsoleIO $io, array $args) {
-    $env = Robo::config()->get('enviroment');
+    $env = Robo::config()->get('environment');
     $tasks = $this->collectionBuilder($io);
     $tasks->addTask($this->taskExec($env . ' drush')->args($args));
     return $tasks;

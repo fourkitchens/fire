@@ -26,6 +26,6 @@ Example: `fire drush -- uli`
 Into your project root create a file called: `fire.yml` and iside of it speficify your configuration.
 
 ```
-enviroment: lando
+environment: lando
 ```
 
