@@ -17,27 +17,12 @@ class ImportDBCommand extends Tasks {
    * Usage Example: fire import-db -- <database-file>.sql.gz
    *
    * @command local:import-db
-   * @aliases import-db
+   * @aliases import-db, db-import, importdb, dbimport, import_db, db_import
    * @usage -- <database-file>.sql.gz
    *
    * @param $args drush you would like to execute.
    */
   public function import_db(ConsoleIO $io, array $args) {
-    return $this->run($io, $args);
-  }
-
-  /**
-   * Import database for local envs.
-   *
-   * Usage Example: fire db-import -- <database-file>.sql.gz
-   *
-   * @command local:db-import
-   * @aliases db-import
-   * @usage -- <database-file>.sql.gz
-   *
-   * @param $args drush you would like to execute.
-   */
-  public function db_import(ConsoleIO $io, array $args) {
     return $this->run($io, $args);
   }
 
@@ -48,18 +33,26 @@ class ImportDBCommand extends Tasks {
     $cmd = ''; 
     $env = Robo::config()->get('environment');
 
+    if (count($args) < 1) {
+      return "You need to write the name of the database. Example: 'fire db-import -- site-db.sql.gz'";
+    }
+
     switch ($env) {
       case 'lando':
       default:
-        $cmd = 'db-import'; 
+        $cmd = "db-import ";
         break;
       case 'ddev':
-        $cmd = 'import-db --src='; 
+        $db_name = $args[0];
+        unset($args[0]);
+        $cmd = "import-db --src=$db_name ";
         break;
     }
 
     $tasks = $this->collectionBuilder($io);
-    $tasks->addTask($this->taskExec("$env  $cmd")->args($args));
+    $tasks->addTask($this->taskExec("$env $cmd")->args($args));
+
     return $tasks;
   }
+
 }
