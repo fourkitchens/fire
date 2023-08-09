@@ -26,6 +26,7 @@ Example: `fire drush -- uli`
 Into your project root create a file called: `fire.yml` and iside of it speficify your configuration.
 
 ```
-environment: lando
+# You local env, currently available: acquia, lando
+local_environment: lando
 ```
 

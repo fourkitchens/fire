@@ -21,7 +21,7 @@ class BuildPhpCommand extends Tasks {
    *
    */
   public function buildPhp(ConsoleIO $io) {
-    $env = Robo::config()->get('environment');
+    $env = Robo::config()->get('local_environment');
     $tasks = $this->collectionBuilder($io);
     $tasks->addTask($this->taskExec($env . ' composer install'));
     return $tasks;
