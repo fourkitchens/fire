@@ -30,27 +30,31 @@ class ImportDBCommand extends Tasks {
    * Run both commands.
    */
   public function run(ConsoleIO $io, array $args) {
-    $cmd = ''; 
-    $env = Robo::config()->get('environment');
+    $cmd = '';
+    $env = Robo::config()->get('local_environment');
 
-    if (count($args) < 1) {
-      return "You need to write the name of the database. Example: 'fire db-import -- site-db.sql.gz'";
+    if (!count($args)) {
+      $args[0] = 'site-db.sql.gz';
+    }
+
+    if (!file_exists($args[0])) {
+      return "The specified file doesn't exist, please provide a file, example: 'fire db-import -- site-db.sql.gz'";
     }
 
     switch ($env) {
       case 'lando':
       default:
-        $cmd = "db-import ";
+        $cmd = "lando db-import";
         break;
       case 'ddev':
         $db_name = $args[0];
         unset($args[0]);
-        $cmd = "import-db --src=$db_name ";
+        $cmd = "ddev import-db --src=$db_name ";
         break;
     }
 
     $tasks = $this->collectionBuilder($io);
-    $tasks->addTask($this->taskExec("$env $cmd")->args($args));
+    $tasks->addTask($this->taskExec($cmd)->args($args));
 
     return $tasks;
   }
