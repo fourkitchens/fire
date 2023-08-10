@@ -28,5 +28,7 @@ Into your project root create a file called: `fire.yml` and iside of it speficif
 ```
 # You local env, currently available: acquia, lando
 local_environment: lando
+remote_platform: pantheon
+remote_sitename: project-name
+remote_canonical_env: dev
 ```
-
