@@ -65,10 +65,10 @@ class GetDBCommand extends Tasks {
       return "Not available backups to donwload";
     }
     $backupId = $backupsList[0]->id;
-    $result = $this->taskExec('acli api:environments:database-backup-download')->args([$remoteSiteName . '.' . $remoteEnv, $remoteSiteName, $backupId])->printOutput(false)->run();
-    $result = $result->getOutputData();
-    $result = json_decode($result);
-    return $result->url;
+    $backupInfo = $this->taskExec('acli api:environments:database-backup-download')->args([$remoteSiteName . '.' . $remoteEnv, $remoteSiteName, $backupId])->printOutput(false)->run();
+    $backupInfo = $backupInfo->getOutputData();
+    $backupInfo = json_decode($backupInfo);
+    return $backupInfo->url;
   }
 
 }
