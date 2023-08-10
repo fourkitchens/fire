@@ -16,7 +16,7 @@ class GetDBCommand extends Tasks {
    *
    * Usage Example: fire local:db:get
    *
-   * @command local:import-db
+   * @command local:get-db
    * @aliases get-db, db-get, getdb, dbget, get_db, db_get, local:db:get, local:get:db
    * @usage fire local:db:get
    *
@@ -31,20 +31,18 @@ class GetDBCommand extends Tasks {
    */
   public function run(ConsoleIO $io, array $args) {
     $cmd = '';
-    $platform = Robo::config()->get('platform');
-    $sitename = Robo::config()->get('sitename');
-    $site_env = Robo::config()->get('siteenv');
+    $remotePlatform = Robo::config()->get('remote_platform');
+    $remoteSiteName = Robo::config()->get('remote_sitename');
+    $remoteEnv = Robo::config()->get('remote_canonical_env');
 
-    switch ($platform) {
+    switch ($remotePlatform) {
       case 'acquia':
-        $today = date('Y-m-d');
-        $server = Robo::config()->get('server');
-        $backupname = Robo::config()->get('backupname');
-        $cmd = "scp -r  $sitename.$site_env@$server.prod.hosting.acquia.com:/mnt/files/$sitename/backups/$site_env-$sitename-$backupname-$today.sql.gz `pwd`/site-db.sql.gz";
+        $cmd = 'wget "' . $this->getAcquiaBackupLink($remoteSiteName, $remoteEnv) . '" -O site-db.sql.gz';
+
         break;
       case 'pantheon':
       default:
-        $cmd = "wget `terminus backup:get $sitename.$site_env --element=db` -O site-db.sql.gz";
+        $cmd = "wget `terminus backup:get $remoteSiteName.$remoteEnv --element=db` -O site-db.sql.gz";
         break;
     }
 
@@ -52,6 +50,25 @@ class GetDBCommand extends Tasks {
     $tasks->addTask($this->taskExec("$cmd")->args($args));
 
     return $tasks;
+  }
+
+  /**
+   * Helper function to get the acquias last Backup.
+   *
+   */
+  private function getAcquiaBackupLink($remoteSiteName, $remoteEnv) {
+
+    $backupsList = $this->taskExec('acli api:environments:database-backup-list')->args([$remoteSiteName . '.'. $remoteEnv , $remoteSiteName])->printOutput(false)->run();
+    $backupsList = $backupsList->getOutputData();
+    $backupsList = json_decode($backupsList);
+    if (!isset($backupsList[0])) {
+      return "Not available backups to donwload";
+    }
+    $backupId = $backupsList[0]->id;
+    $result = $this->taskExec('acli api:environments:database-backup-download')->args([$remoteSiteName . '.' . $remoteEnv, $remoteSiteName, $backupId])->printOutput(false)->run();
+    $result = $result->getOutputData();
+    $result = json_decode($result);
+    return $result->url;
   }
 
 }
