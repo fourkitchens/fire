@@ -26,10 +26,9 @@ Example: `fire drush -- uli`
 Into your project root create a file called: `fire.yml` and iside of it speficify your configuration.
 
 ```
-{
-  environment: lando,
-  platform: pantheon,
-  sitename: project-name,
-  siteenv: dev,
-}
+# You local env, currently available: acquia, lando
+local_environment: lando
+remote_platform: pantheon
+remote_sitename: project-name
+remote_canonical_env: dev
 ```
