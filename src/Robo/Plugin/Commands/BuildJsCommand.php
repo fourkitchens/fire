@@ -28,7 +28,7 @@ class BuildJsCommand extends Tasks {
     $tasks = $this->collectionBuilder($io);
     if(file_exists($root . '/.nvmrc')) {
       if (getenv('NVM_DIR')) {
-        $command = 'export NVM_DIR=$HOME/.nvm && source $NVM_DIR/nvm.sh && cd ' . $root . ' && nvm install && npm install && cd -';
+        $command = 'export NVM_DIR=$HOME/.nvm && source $NVM_DIR/nvm.sh && cd ' . $root . ' && nvm install && cd -';
         $tasks->addTask($this->taskExec($command)->printOutput(TRUE));
       }
       else {
