@@ -1,7 +1,8 @@
 {
     "name": "fourkitchens/fire",
     "require": {
-        "consolidation/robo": "^4.0.0"
+        "consolidation/robo": "^4.0.0",
+        "webflo/drupal-finder": "^1.2"
     },
     "bin": [
         "bin/fire"
