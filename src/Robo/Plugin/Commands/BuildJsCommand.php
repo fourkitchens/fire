@@ -3,13 +3,12 @@
 namespace Fire\Robo\Plugin\Commands;
 
 use Robo\Symfony\ConsoleIO;
-use Robo\Tasks;
 use DrupalFinder\DrupalFinder;
 
 /**
  * Provides a command to build all js dependencies.
  */
-class BuildJsCommand extends Tasks {
+class BuildJsCommand extends FireCommandBase {
 
   /**
    * Builds Project JS Dependencies (Projects Root).
@@ -21,6 +20,7 @@ class BuildJsCommand extends Tasks {
    *
    */
   public function buildJs(ConsoleIO $io) {
+    $this->getThemePath();
     $drupalFinder = new DrupalFinder();
     $drupalFinder->locateRoot(getcwd());
     $root = $drupalFinder->getDrupalRoot();
