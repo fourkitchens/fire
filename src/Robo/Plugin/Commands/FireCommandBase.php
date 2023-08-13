@@ -4,6 +4,7 @@ namespace Fire\Robo\Plugin\Commands;
 
 use DrupalFinder\DrupalFinder;
 use Robo\Tasks;
+use Robo\Robo;
 
 /**
  * Base class for Other Fire commands.
@@ -42,8 +43,7 @@ class FireCommandBase extends Tasks {
   }
 
   public function getThemePath() {
-    $pathInfo = $this->taskExec('find /Users/rodrigoespinoza/development/scr/web/themes/custom -maxdepth 1')->printOutput(true)->run();
-    echo(serialize($pathInfo));
+    return $this->getDrupalRoot() . '/themes/custom/' . Robo::config()->get('local_fe_theme_name');
   }
 
 }
