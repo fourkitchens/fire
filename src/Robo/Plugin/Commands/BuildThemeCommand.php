@@ -7,12 +7,12 @@ use Fire\Robo\Plugin\Commands\FireCommandBase;
 use Robo\Robo;
 
 /**
- * Provides a command to build all js dependencies.
+ * Provides a command to build the custom theme.
  */
 class BuildThemeCommand extends FireCommandBase {
 
   /**
-   * Builds Project THEME Dependencies (Projects Root).
+   * Builds Projects theme.
    *
    * Usage Example: fire build-theme
    *
