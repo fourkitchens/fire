@@ -29,7 +29,7 @@ class BuildThemeCommand extends FireCommandBase {
         $command = 'export NVM_DIR=$HOME/.nvm && source $NVM_DIR/nvm.sh && cd ' . $root . ' && nvm install && npm install && npm run ' . $npmCommand;
     }
     if ($options['watch']) {
-      $this->taskWatch()->monitor($root, function ($command) {
+      $this->taskWatch()->monitor($root, function ($event, $command) {
         $this->taskExec($command)->run();
       })->run();
     }
