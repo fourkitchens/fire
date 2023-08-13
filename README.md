@@ -25,7 +25,7 @@ We are using [Robo](https://robo.li/) as Framework to develop this tool.
 - local:drush             [drush] Drush proxy for local envs.
 - local:get-db            [get-db|db-get|getdb|dbget|get_db|db_get|local:db:get|local:get:db] Import database for local envs.
 - local:import-db         [import-db|db-import|importdb|dbimport|import_db|db_import] Import database for - local envs.
-
+- local:build:theme       [build-theme] Builds Projects theme.
 Example: `fire drush -- uli`
 
 
@@ -35,9 +35,9 @@ Into your project root create a file called: `fire.yml` and iside of it speficif
 ```
 # You local env, currently available: acquia, lando
 local_environment: lando
-local_fe_theme_name: bscr
+local_fe_theme_name: my_theme
 local_theme_build_script: build
 remote_platform: pantheon
 remote_sitename: project-name
-remote_canonical_env: dev
+remote_canonical_env: live
 ```

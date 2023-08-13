@@ -3,7 +3,6 @@
 namespace Fire\Robo\Plugin\Commands;
 
 use Robo\Symfony\ConsoleIO;
-use DrupalFinder\DrupalFinder;
 use Fire\Robo\Plugin\Commands\FireCommandBase;
 
 /**
@@ -24,19 +23,13 @@ class BuildJsCommand extends FireCommandBase {
     $root = $this->getDrupalRoot();
     $root = preg_replace('(\/web|\/docroot)', '', $root);
     $tasks = $this->collectionBuilder($io);
-    if(file_exists($root . '/.nvmrc')) {
-      if (getenv('NVM_DIR')) {
+    if(file_exists($root . '/.nvmrc') && getenv('NVM_DIR')) {
         $command = 'export NVM_DIR=$HOME/.nvm && source $NVM_DIR/nvm.sh && cd ' . $root . ' && nvm install && npm install && cd -';
         $tasks->addTask($this->taskExec($command)->printOutput(TRUE));
-      }
-      else {
-        $tasks->addTask($this->taskNpmInstall()->dir($root));
-      }
     }
     else {
       $tasks->addTask($this->taskNpmInstall()->dir($root));
     }
-
     return $tasks;
   }
 }
