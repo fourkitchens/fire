@@ -4,6 +4,7 @@ namespace Fire\Robo\Plugin\Commands;
 
 use Robo\Symfony\ConsoleIO;
 use DrupalFinder\DrupalFinder;
+use Fire\Robo\Plugin\Commands\FireCommandBase;
 
 /**
  * Provides a command to build all js dependencies.

@@ -5,7 +5,6 @@ namespace Fire\Robo\Plugin\Commands;
 use DrupalFinder\DrupalFinder;
 use Robo\Tasks;
 
-
 /**
  * Base class for Other Fire commands.
  */
