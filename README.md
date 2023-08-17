@@ -41,3 +41,10 @@ remote_platform: pantheon
 remote_sitename: project-name
 remote_canonical_env: live
 ```
+
+### Development 
+
+- Install the fire package from the source.
+```
+composer require fourkitchens/fire --dev --prefer-install=source
+```
