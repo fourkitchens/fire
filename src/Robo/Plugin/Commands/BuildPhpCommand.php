@@ -4,12 +4,11 @@ namespace Fire\Robo\Plugin\Commands;
 
 use Robo\Symfony\ConsoleIO;
 use Robo\Robo;
-use Robo\Tasks;
 
 /**
  * Provides a command to build all php dependencies.
  */
-class BuildPhpCommand extends Tasks {
+class BuildPhpCommand extends FireCommandBase {
 
   /**
    * Builds Project PHP Dependencies.
@@ -23,7 +22,11 @@ class BuildPhpCommand extends Tasks {
   public function buildPhp(ConsoleIO $io) {
     $env = Robo::config()->get('local_environment');
     $tasks = $this->collectionBuilder($io);
-    $tasks->addTask($this->taskExec($env . ' composer install'));
+    $composerPath = $this->getlocalEnvRoot();
+    if ($env == 'lando') {
+      $composerPath = '/app';
+    }
+    $tasks->addTask($this->taskExec($env . ' composer install -d ' . $composerPath));
     return $tasks;
   }
 }

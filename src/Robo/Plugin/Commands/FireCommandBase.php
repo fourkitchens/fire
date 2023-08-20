@@ -46,4 +46,26 @@ class FireCommandBase extends Tasks {
     return $this->getDrupalRoot() . '/themes/custom/' . Robo::config()->get('local_fe_theme_name');
   }
 
+  /**
+   * Returns the Local envs Root.
+   */
+  public function getlocalEnvRoot() {
+    $localRoot = explode('/', $this->getDrupalRoot());
+    array_pop($localRoot);
+    $localRoot = implode('/', $localRoot);
+    return $localRoot;
+  }
+
+  /**
+   * Checks if a CLI tool exist.
+   *
+   * @param string $toolRootCommand
+   * @return bool
+   */
+  public function cliToolExist(string $toolRootCommand) {
+    $result = $this->taskExec('which')->arg($toolRootCommand)->printOutput(FALSE)->run();
+    return $result->wasSuccessful();
+  }
+
+
 }

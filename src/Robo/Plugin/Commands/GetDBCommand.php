@@ -4,12 +4,11 @@ namespace Fire\Robo\Plugin\Commands;
 
 use Robo\Symfony\ConsoleIO;
 use Robo\Robo;
-use Robo\Tasks;
 
 /**
  * Provides a command to get the database into local.
  */
-class GetDBCommand extends Tasks {
+class GetDBCommand extends FireCommandBase {
 
   /**
    * Import database for local envs.
@@ -34,19 +33,30 @@ class GetDBCommand extends Tasks {
     $remotePlatform = Robo::config()->get('remote_platform');
     $remoteSiteName = Robo::config()->get('remote_sitename');
     $remoteEnv = Robo::config()->get('remote_canonical_env');
-
+    $dbFolder = $this->getlocalEnvRoot() . '/reference';
+    $tasks = $this->collectionBuilder($io);
+    if (!file_exists($dbFolder)) {
+      $tasks->addTask($this->_mkdir($dbFolder));
+    }
     switch ($remotePlatform) {
       case 'acquia':
-        $cmd = 'wget "' . $this->getAcquiaBackupLink($remoteSiteName, $remoteEnv) . '" -O site-db.sql.gz';
-
+        if ($this->cliToolExist('acli')) {
+          $cmd = 'wget "' . $this->getAcquiaBackupLink($remoteSiteName, $remoteEnv) . '" -O '. $dbFolder .'/site-db.sql.gz';
+        }
+        else {
+          return 'acquia CLI is not install, please install it and configure it: https://docs.acquia.com/acquia-cli/install/';
+        }
         break;
       case 'pantheon':
       default:
-        $cmd = "wget `terminus backup:get $remoteSiteName.$remoteEnv --element=db` -O site-db.sql.gz";
+        if ($this->cliToolExist('terminus')) {
+          $cmd = "wget `terminus backup:get $remoteSiteName.$remoteEnv --element=db` -O ". $dbFolder ."/site-db.sql.gz";
+        }
+        else {
+          return 'Terminus is not install, please install it and configure it: https://docs.pantheon.io/terminus/install';
+        }
         break;
     }
-
-    $tasks = $this->collectionBuilder($io);
     $tasks->addTask($this->taskExec("$cmd")->args($args));
 
     return $tasks;
