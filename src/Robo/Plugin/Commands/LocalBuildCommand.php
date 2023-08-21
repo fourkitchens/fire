@@ -7,7 +7,7 @@ use Robo\Robo;
 use Robo\Tasks;
 
 /**
- * Provides a Drush command proxy.
+ * Provides a commmand to build your site from scratch.
  */
 class LocalBuildCommand extends Tasks {
 
@@ -18,7 +18,9 @@ class LocalBuildCommand extends Tasks {
    *
    * @command local:build
    * @aliases local-build build
-   * @usage -- build
+   * @option $no-db-import Ignores the database import process (Download & Import).
+   * @option $no-db-download Ignores ONLY the DB download, data will be imported from your existing db backup file.
+   * @option $get-files Gets the Files from the remote server.
    */
   public function localBuild(ConsoleIO $io, $opts = ['no-db-import' => FALSE, 'no-db-download' => FALSE, 'get-files|f' => FALSE]) {
     $tasks = $this->collectionBuilder($io);
