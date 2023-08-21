@@ -4,12 +4,11 @@ namespace Fire\Robo\Plugin\Commands;
 
 use Robo\Symfony\ConsoleIO;
 use Robo\Robo;
-use Robo\Tasks;
 
 /**
  * Provides a Import database command.
  */
-class ImportDBCommand extends Tasks {
+class ImportDBCommand extends FireCommandBase {
 
   /**
    * Import database for local envs.
@@ -32,24 +31,34 @@ class ImportDBCommand extends Tasks {
   public function run(ConsoleIO $io, array $args) {
     $cmd = '';
     $env = Robo::config()->get('local_environment');
-
-    if (!count($args)) {
-      $args[0] = 'site-db.sql.gz';
+    if (count($args)) {
+      if (!file_exists($args[0])) {
+        return "The specified file doesn't exist, please provide a file, example: 'fire db-import -- site-db.sql.gz'";
+      }
     }
-
-    if (!file_exists($args[0])) {
-      return "The specified file doesn't exist, please provide a file, example: 'fire db-import -- site-db.sql.gz'";
+    else {
+      if (file_exists($this->getlocalEnvRoot() . '/reference/site-db.sql.gz')) {
+        if ($env == 'lando') {
+          // Landos absolute path is based in their Conteiners folders.
+          $args[0] = '/app/reference/site-db.sql.gz';
+        }
+        else {
+          $args[0] = $this->getlocalEnvRoot() . '/reference/site-db.sql.gz';
+        }
+      }
+      else {
+        return 'Database file not found into the /reference folder in your projects root';
+      }
     }
 
     switch ($env) {
       case 'lando':
       default:
-        $cmd = "lando db-import";
+        $cmd = 'lando db-import';
         break;
       case 'ddev':
-        $db_name = $args[0];
+        $cmd = 'ddev import-db --src=' . $args[0];
         unset($args[0]);
-        $cmd = "ddev import-db --src=$db_name ";
         break;
     }
 

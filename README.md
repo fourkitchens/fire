@@ -26,7 +26,8 @@ We are using [Robo](https://robo.li/) as Framework to develop this tool.
 - local:get-db            [get-db|db-get|getdb|dbget|get_db|db_get|local:db:get|local:get:db] Import database for local envs.
 - local:import-db         [import-db|db-import|importdb|dbimport|import_db|db_import] Import database for - local envs.
 - local:build:theme       [build-theme] Builds Projects theme.
-Example: `fire drush -- uli`
+- local:build             [local-build|build] Builds your Drupal Site from the scratch.
+- local:build:drush-commands  [build-drush] Drush Build commands - updb , cr, cim , cr, deploy:hook
 
 
 ### Configuration:
@@ -42,7 +43,7 @@ remote_sitename: project-name
 remote_canonical_env: live
 ```
 
-### Development 
+### Development
 
 - Install the fire package from the source.
 ```

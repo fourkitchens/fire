@@ -36,14 +36,36 @@ class FireCommandBase extends Tasks {
   }
 
   /**
-   *  Returns the Drupals Root path.
+   * Returns the Drupals Root path.
    */
   public function getDrupalRoot() {
     return $this->drupalRootPath;
   }
 
+  /**
+   * Returns the current's site Themes root folder.
+   */
   public function getThemePath() {
     return $this->getDrupalRoot() . '/themes/custom/' . Robo::config()->get('local_fe_theme_name');
   }
+
+  /**
+   * Returns the Local envs Root.
+   */
+  public function getlocalEnvRoot() {
+    $localRoot = explode('/', $this->getDrupalRoot());
+    array_pop($localRoot);
+    $localRoot = implode('/', $localRoot);
+    return $localRoot;
+  }
+
+  /**
+   * Checks if a CLI tool exist.
+   */
+  public function cliToolExist(string $toolRootCommand) {
+    $result = $this->taskExec('which')->arg($toolRootCommand)->printOutput(FALSE)->run();
+    return $result->wasSuccessful();
+  }
+
 
 }
