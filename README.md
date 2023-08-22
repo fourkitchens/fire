@@ -1,4 +1,11 @@
 FIRE
+
+```
+   )
+  ) \
+ / ) (
+ \(_)/
+```
 =================
 
 Fast Initialization and Rebuilding of Environments.
