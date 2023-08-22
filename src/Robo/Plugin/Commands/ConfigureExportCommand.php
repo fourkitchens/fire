@@ -12,20 +12,17 @@ use Robo\Tasks;
 class ConfigureExportCommand extends Tasks {
 
   /**
-   * Export config.
+   * Exports sites configuration - none interaction required.
    *
    * Usage Example: fire configure:export
    *
    * @command local:configure:export
    * @aliases configure-export, configure_export, cex
-   * @usage -- -y
-   *
-   * @param $args drush you would like to execute.
    */
-  public function configure_import(ConsoleIO $io, array $args) {
+  public function configure_import(ConsoleIO $io) {
     $env = Robo::config()->get('local_environment');
     $tasks = $this->collectionBuilder($io);
-    $tasks->addTask($this->taskExec($env . ' drush cex')->args($args));
+    $tasks->addTask($this->taskExec($env . ' drush cex -y'));
     return $tasks;
   }
 }

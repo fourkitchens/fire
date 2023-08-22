@@ -12,20 +12,17 @@ use Robo\Tasks;
 class ConfigureImportCommand extends Tasks {
 
   /**
-   * Import config.
+   * Imports sites configuration - none interaction required.
    *
    * Usage Example: fire configure:import
    *
    * @command local:configure:import
    * @aliases configure-import, configure_import, cim
-   * @usage -- -y
-   *
-   * @param $args drush you would like to execute.
    */
-  public function configure_import(ConsoleIO $io, array $args) {
+  public function configure_import(ConsoleIO $io) {
     $env = Robo::config()->get('local_environment');
     $tasks = $this->collectionBuilder($io);
-    $tasks->addTask($this->taskExec($env . ' drush cim')->args($args));
+    $tasks->addTask($this->taskExec($env . ' drush cim -y'));
     return $tasks;
   }
 }
