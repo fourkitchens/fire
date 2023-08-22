@@ -1,11 +1,60 @@
 FIRE
 =================
 
-Fast Initialization and Rebuilding of Enviornments.
+Fast Initialization and Rebuilding of Environments.
 
 ### Install:
-`composer require fourkitchens/fire`
 
+**Install the fire launcher in your computer (Recommened but optional)**:
+
+Follow this link for more instructions: https://github.com/fourkitchens/fire-launcher
+
+**Install the commands package into your project:**
+
+`composer require fourkitchens/fire --dev`
+
+**Create your `file.yml` config file for the project**
+
+example:
+```
+# You local env, currently available: acquia, lando
+local_environment: lando
+# Your Frontend theme folder name.
+local_fe_theme_name: my_theme
+# NPM script you are using to build your theme.
+local_theme_build_script: build
+# Your Sites Remote platform. Currently available: pantheon, acquia
+remote_platform: pantheon
+# Remote plaform Sites machine name.
+remote_sitename: project-name
+# Remote platform canonical env (The env to pull files and database from).
+remote_canonical_env: live
+```
+
+**Check if fire is working**
+
+run the following command (If you have installed the fire launcher):
+
+```
+fire
+```
+It should show you all the available fire commands.
+### Usage:
+
+**With Fire laucher installed:**
+
+Example:
+
+```
+fire build
+```
+
+**Without the fire launcher installed:**
+
+Example:
+```
+./vendor/bin/fire build
+```
 
 ### Dev backgroud
 
@@ -36,10 +85,15 @@ Into your project root create a file called: `fire.yml` and iside of it speficif
 ```
 # You local env, currently available: acquia, lando
 local_environment: lando
+# Your Frontend theme folder name.
 local_fe_theme_name: my_theme
+# NPM script you are using to build your theme.
 local_theme_build_script: build
+# Your Sites Remote platform. Currently available: pantheon, acquia
 remote_platform: pantheon
+# Remote plaform Sites machine name.
 remote_sitename: project-name
+# Remote platform canonical env (The env to pull files and database from).
 remote_canonical_env: live
 ```
 
