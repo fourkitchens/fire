@@ -12,7 +12,7 @@ Fast Initialization and Rebuilding of Environments.
 
 ### Install:
 
-**Install the fire launcher in your computer (Recommened but optional)**:
+**Install the fire launcher in your computer (Recommended but optional)**:
 
 Follow this link for more instructions: https://github.com/fourkitchens/fire-launcher
 
