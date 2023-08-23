@@ -24,10 +24,6 @@ Follow this link for more instructions: https://github.com/fourkitchens/fire-lau
 
 example:
 ```
-# You local env, currently available: acquia, lando
-local_environment: lando
-# Your Frontend theme folder name.
-local_fe_theme_name: my_theme
 # NPM script you are using to build your theme.
 local_theme_build_script: build
 # Your Sites Remote platform. Currently available: pantheon, acquia
@@ -63,15 +59,6 @@ Example:
 ./vendor/bin/fire build
 ```
 
-### Dev backgroud
-
-We are using [Robo](https://robo.li/) as Framework to develop this tool.
-
-- Commmands examples: https://github.com/consolidation/robo/blob/4.x/examples/src/Robo/Plugin/Commands/ExampleCommands.php
-
-- Robo as Framework Documentation: https://robo.li/docs/framework.html
-
-
 ### Available commands:
 
 - local:build:js          [build-js] Builds Project JS Dependencies (Projects Root).
@@ -87,22 +74,24 @@ We are using [Robo](https://robo.li/) as Framework to develop this tool.
 
 
 ### Configuration:
-Into your project root create a file called: `fire.yml` and iside of it speficify your configuration.
+Into your project root create a file called: `fire.yml` and iside of it speficify your global project settings.
 
-```
-# You local env, currently available: acquia, lando
-local_environment: lando
-# Your Frontend theme folder name.
-local_fe_theme_name: my_theme
-# NPM script you are using to build your theme.
-local_theme_build_script: build
-# Your Sites Remote platform. Currently available: pantheon, acquia
-remote_platform: pantheon
-# Remote plaform Sites machine name.
-remote_sitename: project-name
-# Remote platform canonical env (The env to pull files and database from).
-remote_canonical_env: live
-```
+If you need to override some of the global settings latter for a specific env you can create `fire.local.yml` and there override as many variables as you want.
+
+#### Configuration variables:
+
+- `local_environment` : This setting is optional, the system will automatically detected your local env, currently available: acquia, lando.
+
+- `local_fe_theme_name`: Optional setting, the system will try to automatically get your theme, but you can always specify the theme you require to use.
+
+- `local_theme_build_script`: NPM script you are using to build your theme.
+
+- `remote_platform`: Your Sites Remote platform. Currently available: pantheon, acquia
+
+- `remote_sitename`: Remote plaform Sites machine name.
+
+- `remote_canonical_env`: Remote platform canonical env (The env to pull files and database from).
+
 
 ### Development
 
@@ -110,3 +99,10 @@ remote_canonical_env: live
 ```
 composer require fourkitchens/fire --dev --prefer-install=source
 ```
+#### Dev backgroud
+
+We are using [Robo](https://robo.li/) as Framework to develop this tool.
+
+- Commmands examples: https://github.com/consolidation/robo/blob/4.x/examples/src/Robo/Plugin/Commands/ExampleCommands.php
+
+- Robo as Framework Documentation: https://robo.li/docs/framework.html
