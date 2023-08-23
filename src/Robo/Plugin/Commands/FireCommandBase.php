@@ -46,7 +46,18 @@ class FireCommandBase extends Tasks {
    * Returns the current's site Themes root folder.
    */
   public function getThemePath() {
-    return $this->getDrupalRoot() . '/themes/custom/' . Robo::config()->get('local_fe_theme_name');
+    $themePath = $this->getDrupalRoot() . '/themes/custom/';
+    $themeNameFromConfig = Robo::config()->get('local_fe_theme_name');
+    if (!$themeNameFromConfig) {
+      $folders = scandir($themePath);
+      foreach ($folders as $folder) {
+        if (preg_match('/^(?!\.).*/', $folder)) {
+          // Assumming that there only will be one theme.
+          return $themePath . $folder;
+        }
+      }
+    }
+    return $themePath . $themeNameFromConfig;
   }
 
   /**
