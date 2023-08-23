@@ -1,4 +1,9 @@
 <?php
+use Consolidation\AnnotatedCommand\CommandFileDiscovery;
+use Symfony\Component\Console\Output\ConsoleOutput;
+use Robo\Runner;
+use League\Container\Container;
+use Robo\Robo;
 
 if (file_exists(__DIR__ . '/vendor/autoload.php')) {
   $autoloaderPath = __DIR__ . '/vendor/autoload.php';
@@ -14,25 +19,10 @@ else {
 $classLoader = require $autoloaderPath;
 
 
-
-// Customization variables
-$appName = "fire";
-$appVersion = trim(file_get_contents(__DIR__ . '/VERSION'));
-$discovery = new \Consolidation\AnnotatedCommand\CommandFileDiscovery();
-$discovery->setSearchPattern('*Command.php');
-$commandClasses = $discovery->discover(__DIR__ . '/../src/Robo/Plugin/Commands/', '\Fire\Robo\Plugin\Commands');
-$selfUpdateRepository = 'fourkitchens/fire';
-
-$configurationFilename = __DIR__ . '/../../../fire.yml';
-
-// Define our Runner, and pass it the command classes we provide.
-$runner = new \Robo\Runner($commandClasses);
-$runner
-  ->setSelfUpdateRepository($selfUpdateRepository)
-  ->setConfigurationFilename($configurationFilename)
-  ->setClassLoader($classLoader);
-
-// Execute the command and return the result.
+$input = new \Symfony\Component\Console\Input\ArgvInput($argv);
 $output = new \Symfony\Component\Console\Output\ConsoleOutput();
-$statusCode = $runner->execute($argv, $appName, $appVersion, $output);
-exit($statusCode);
+$configFile = dirname(__DIR__, 4) . '/fire.yml';
+$config = Robo::createConfiguration([$configFile]);
+$app = new \Fire\FireApp($config, $classLoader, $input, $output);
+$status_code = $app->run($input, $output);
+exit($status_code);
