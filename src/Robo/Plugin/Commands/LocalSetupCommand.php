@@ -12,9 +12,9 @@ use Robo\Robo;
 class LocalSetupCommand extends FireCommandBase {
 
   /**
-   * Setups your project from scratch (lando, ddev);
+   * Setups your project from scratch (lando, ddev), all your data will be destroy and rebuild.
    *
-   * Usage Example: fire build-php
+   * Usage Example: fire build -y
    *
    * @command local:setup
    * @aliases setup
@@ -22,21 +22,53 @@ class LocalSetupCommand extends FireCommandBase {
    * @option $no-db-download Ignores ONLY the DB download, data will be imported from your existing db backup file.
    * @option $get-files Gets the Files from the remote server.
    */
-  public function envStop(ConsoleIO $io, $opts = ['no-db-import' => FALSE, 'no-db-download' => FALSE, 'get-files|f' => FALSE]) {
+  public function envStop(ConsoleIO $io, $opts = ['no-db-import' => FALSE, 'no-db-download' => FALSE, 'get-files|f' => FALSE, 'y|y' => FALSE]) {
     $env = Robo::config()->get('local_environment');
-    $tasks = $this->collectionBuilder($io);
-    switch ($env) {
-      case 'lando':
-        $tasks->addTask($this->taskExec($env . ' destroy -y'));
-        $tasks->addTask($this->taskExec($env . ' rebuild -y'));
-        break;
-      case 'ddev':
-        $tasks->addTask($this->taskExec($env . ' poweroff -y'));
-        $tasks->addTask($this->taskExec($env . ' delete -y'));
-        $tasks->addTask($this->taskExec($env . ' start'));
+
+    $shouldRebuild = FALSE;
+    if (!$opts['y']) {
+      $confirmation = $this->ask('This command will destroy all your Enviroment data and rebuild it from scratch. Do you want to execute it? (Y|N)');
+      if (preg_match('/^[NnYy]{1}$/', $confirmation, $matches)) {
+        if (strtolower($matches[0]) == 'y') {
+          $shouldRebuild = TRUE;
+        }
+      }
     }
-    $tasks->addTask($this->taskExec('fire local:build')->args($opts));
-    $tasks->addTask($this->taskExec('fire drush uli'));
-    return $tasks;
+    else {
+      $shouldRebuild = TRUE;
+      unset($opts['y']);
+    }
+
+    if ($shouldRebuild) {
+      $this->io()->title('Starting enviroment rebuild...');
+      $tasks = $this->collectionBuilder($io);
+      switch ($env) {
+        case 'lando':
+          $tasks->addTask($this->taskExec($env . ' destroy -y'));
+          $tasks->addTask($this->taskExec($env . ' rebuild -y'));
+          break;
+        case 'ddev':
+          $tasks->addTask($this->taskExec($env . ' poweroff -y'));
+          $tasks->addTask($this->taskExec($env . ' delete -y'));
+          $tasks->addTask($this->taskExec($env . ' start'));
+      }
+
+      // Creating opts for the build command.
+      $buildOptions = [];
+      if ($opts['no-db-import']) {
+        $buildOptions[] = '--no-db-import';
+      }
+      if ($opts['no-db-download']) {
+        $buildOptions[] = '--no-db-download';
+      }
+      if ($opts['get-files']) {
+        $buildOptions[] = '--get-files';
+      }
+
+      $tasks->addTask($this->taskExec('fire local:build')->args($buildOptions));
+      $tasks->addTask($this->taskExec('fire drush uli'));
+      return $tasks;
+    }
+    $this->io()->title('Your site not will be rebuild...');
   }
 }
