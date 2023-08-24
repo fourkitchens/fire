@@ -21,6 +21,7 @@ class LocalSetupCommand extends FireCommandBase {
    * @option $no-db-import Ignores the database import process (No Download & Import).
    * @option $no-db-download Ignores ONLY the DB download, data will be imported from your existing db backup file.
    * @option $get-files Gets the Files from the remote server.
+   * @option $y Run the command with no interection required.
    */
   public function envStop(ConsoleIO $io, $opts = ['no-db-import' => FALSE, 'no-db-download' => FALSE, 'get-files|f' => FALSE, 'y|y' => FALSE]) {
     $env = Robo::config()->get('local_environment');
