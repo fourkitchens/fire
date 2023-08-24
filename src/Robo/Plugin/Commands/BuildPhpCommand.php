@@ -22,7 +22,7 @@ class BuildPhpCommand extends FireCommandBase {
   public function buildPhp(ConsoleIO $io) {
     $env = Robo::config()->get('local_environment');
     $tasks = $this->collectionBuilder($io);
-    $composerPath = $this->getlocalEnvRoot();
+    $composerPath = $this->getLocalEnvRoot();
     if ($env == 'lando') {
       $composerPath = '/app';
     }

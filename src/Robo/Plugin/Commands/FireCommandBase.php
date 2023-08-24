@@ -63,7 +63,7 @@ class FireCommandBase extends Tasks {
   /**
    * Returns the Local envs Root.
    */
-  public function getlocalEnvRoot() {
+  public function getLocalEnvRoot() {
     $localRoot = explode('/', $this->getDrupalRoot());
     array_pop($localRoot);
     $localRoot = implode('/', $localRoot);
@@ -72,8 +72,14 @@ class FireCommandBase extends Tasks {
 
   /**
    * Checks if a CLI tool exist.
+   *
+   * Name in this way because I needed Robo to ignore this function as a command
+   * Set and get modules are automatically ignore as posible commands functions.
+   *
+   * @param string $toolRootCommand
+   *   The command you want to check if exist. E.g.: terminus
    */
-  public function cliToolExist(string $toolRootCommand) {
+  public function getCliToolStatus(string $toolRootCommand) {
     $result = $this->taskExec('which')->arg($toolRootCommand)->printOutput(FALSE)->run();
     return $result->wasSuccessful();
   }

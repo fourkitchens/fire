@@ -33,14 +33,14 @@ class GetDBCommand extends FireCommandBase {
     $remotePlatform = Robo::config()->get('remote_platform');
     $remoteSiteName = Robo::config()->get('remote_sitename');
     $remoteEnv = Robo::config()->get('remote_canonical_env');
-    $dbFolder = $this->getlocalEnvRoot() . '/reference';
+    $dbFolder = $this->getLocalEnvRoot() . '/reference';
     $tasks = $this->collectionBuilder($io);
     if (!file_exists($dbFolder)) {
       $tasks->addTask($this->_mkdir($dbFolder));
     }
     switch ($remotePlatform) {
       case 'acquia':
-        if ($this->cliToolExist('acli')) {
+        if ($this->getCliToolStatus('acli')) {
           $cmd = 'wget "' . $this->getAcquiaBackupLink($remoteSiteName, $remoteEnv) . '" -O '. $dbFolder .'/site-db.sql.gz';
         }
         else {
@@ -49,7 +49,7 @@ class GetDBCommand extends FireCommandBase {
         break;
       case 'pantheon':
       default:
-        if ($this->cliToolExist('terminus')) {
+        if ($this->getCliToolStatus('terminus')) {
           $cmd = "wget `terminus backup:get $remoteSiteName.$remoteEnv --element=db` -O ". $dbFolder ."/site-db.sql.gz";
         }
         else {

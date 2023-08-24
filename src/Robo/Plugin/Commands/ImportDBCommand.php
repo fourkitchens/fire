@@ -37,13 +37,13 @@ class ImportDBCommand extends FireCommandBase {
       }
     }
     else {
-      if (file_exists($this->getlocalEnvRoot() . '/reference/site-db.sql.gz')) {
+      if (file_exists($this->getLocalEnvRoot() . '/reference/site-db.sql.gz')) {
         if ($env == 'lando') {
           // Landos absolute path is based in their Conteiners folders.
           $args[0] = '/app/reference/site-db.sql.gz';
         }
         else {
-          $args[0] = $this->getlocalEnvRoot() . '/reference/site-db.sql.gz';
+          $args[0] = $this->getLocalEnvRoot() . '/reference/site-db.sql.gz';
         }
       }
       else {
