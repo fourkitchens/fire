@@ -60,7 +60,8 @@ Example:
 ```
 
 ### Available commands:
-
+- env:start               [start] Starts the local Docker based env (lando, ddev).
+- env:stop                [stop] Stops the local Docker based env (lando, ddev).
 - local:build:js          [build-js] Builds Project JS Dependencies (Projects Root).
 - local:build:php         [build-php] Builds Project PHP Dependencies.
 - local:configure:export  [configure-export|configure_export|cex] Export config.
@@ -71,6 +72,8 @@ Example:
 - local:build:theme       [build-theme] Builds Projects theme.
 - local:build             [local-build|build] Builds your Drupal Site from the scratch.
 - local:build:drush-commands  [build-drush] Drush Build commands - updb , cr, cim , cr, deploy:hook
+- local:setup             [setup] Setups your project from scratch (lando, ddev), all your data will be destroy and rebuild.
+- xdebug:enable           [xd-en] Configures your local envs Xdebug to work with your prefered Code editor.
 
 
 ### Configuration:
@@ -80,9 +83,9 @@ If you need to override some of the global settings latter for a specific env yo
 
 #### Configuration variables:
 
-- `local_environment` : This setting is optional, the system will automatically detected your local env, currently available: acquia, lando.
+- `local_environment` : **Optional setting**, the system will automatically detected your local env, currently available: acquia, lando.
 
-- `local_fe_theme_name`: Optional setting, the system will try to automatically get your theme, but you can always specify the theme you require to use.
+- `local_fe_theme_name`: **Optional setting**, the system will try to automatically get your theme, but you can always specify the theme you require to use.
 
 - `local_theme_build_script`: NPM script you are using to build your theme.
 
