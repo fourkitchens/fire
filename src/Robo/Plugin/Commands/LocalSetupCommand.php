@@ -18,9 +18,11 @@ class LocalSetupCommand extends FireCommandBase {
    *
    * @command local:setup
    * @aliases setup
-   *
+   * @option $no-db-import Ignores the database import process (No Download & Import).
+   * @option $no-db-download Ignores ONLY the DB download, data will be imported from your existing db backup file.
+   * @option $get-files Gets the Files from the remote server.
    */
-  public function envStop(ConsoleIO $io) {
+  public function envStop(ConsoleIO $io, $opts = ['no-db-import' => FALSE, 'no-db-download' => FALSE, 'get-files|f' => FALSE]) {
     $env = Robo::config()->get('local_environment');
     $tasks = $this->collectionBuilder($io);
     switch ($env) {
@@ -33,7 +35,8 @@ class LocalSetupCommand extends FireCommandBase {
         $tasks->addTask($this->taskExec($env . ' delete -y'));
         $tasks->addTask($this->taskExec($env . ' start'));
     }
-    $tasks->addTask($this->taskExec('fire local:build'));
+    $tasks->addTask($this->taskExec('fire local:build')->args($opts));
+    $tasks->addTask($this->taskExec('fire drush uli'));
     return $tasks;
   }
 }

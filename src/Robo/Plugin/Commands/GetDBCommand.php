@@ -40,7 +40,7 @@ class GetDBCommand extends FireCommandBase {
     }
     switch ($remotePlatform) {
       case 'acquia':
-        if ($this->cliToolExist('acli')) {
+        if ($this->getCliToolStatus('acli')) {
           $cmd = 'wget "' . $this->getAcquiaBackupLink($remoteSiteName, $remoteEnv) . '" -O '. $dbFolder .'/site-db.sql.gz';
         }
         else {
@@ -49,7 +49,7 @@ class GetDBCommand extends FireCommandBase {
         break;
       case 'pantheon':
       default:
-        if ($this->cliToolExist('terminus')) {
+        if ($this->getCliToolStatus('terminus')) {
           $cmd = "wget `terminus backup:get $remoteSiteName.$remoteEnv --element=db` -O ". $dbFolder ."/site-db.sql.gz";
         }
         else {
