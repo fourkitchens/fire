@@ -12,7 +12,7 @@ use Robo\Robo;
 class XdebugEnableCommand extends FireCommandBase {
 
   /**
-   * Configures Xdebug for your local env (lando, ddev);
+   * Configures your local envs Xdebug to work with your prefered Code editor.
    *
    * Usage Example: fire xdebug-en
    *
