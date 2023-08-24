@@ -33,7 +33,7 @@ class GetDBCommand extends FireCommandBase {
     $remotePlatform = Robo::config()->get('remote_platform');
     $remoteSiteName = Robo::config()->get('remote_sitename');
     $remoteEnv = Robo::config()->get('remote_canonical_env');
-    $dbFolder = $this->getlocalEnvRoot() . '/reference';
+    $dbFolder = $this->getLocalEnvRoot() . '/reference';
     $tasks = $this->collectionBuilder($io);
     if (!file_exists($dbFolder)) {
       $tasks->addTask($this->_mkdir($dbFolder));
