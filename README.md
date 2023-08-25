@@ -67,7 +67,8 @@ Example:
 - local:configure:export  [configure-export|configure_export|cex] Export config.
 - local:configure:import  [configure-import|configure_import|cim] Import config.
 - local:drush             [drush] Drush proxy for local envs.
-- local:get-db            [get-db|db-get|getdb|dbget|get_db|db_get|local:db:get|local:get:db] Import database for local envs.
+- local:get-db            [get-db|db-get|getdb|dbget|get_db|db_get|local:db:get|local:get:db] Get the database from remote site.
+- local:get-files         [get-files|files-get|getfiles|filesget|get_files|files_get|pull-files|pull_files|local:files:get|local:get:files] Get files from remote site and put in the local env.
 - local:import-db         [import-db|db-import|importdb|dbimport|import_db|db_import] Import database for - local envs.
 - local:build:theme       [build-theme] Builds Projects theme.
 - local:build             [local-build|build] Builds your Drupal Site from the scratch.
