@@ -11,7 +11,7 @@ use Robo\Robo;
 class GetFilesCommand extends FireCommandBase {
 
   /**
-   * Import database for local envs.
+   * Get files from remote site and put in the local env.
    *
    * Usage Example: fire local:files:get
    *
@@ -22,13 +22,6 @@ class GetFilesCommand extends FireCommandBase {
    * @param $args drush you would like to execute.
    */
   public function getFiles(ConsoleIO $io, array $args) {
-    return $this->run($io, $args);
-  }
-
-  /**
-   * Run both commands.
-   */
-  public function run(ConsoleIO $io, array $args) {
     $cmd = '';
     $remotePlatform = Robo::config()->get('remote_platform');
     $remoteSiteName = Robo::config()->get('remote_sitename');
@@ -51,7 +44,7 @@ class GetFilesCommand extends FireCommandBase {
           $cmd .= " && cd ../";
         }
         else {
-          return 'Terminus is not installed, please install and configure it: https://docs.acquia.com/acquia-cli/install/';
+          return 'Acquia CLI is not installed, please install and configure it: https://docs.acquia.com/acquia-cli/install/';
         }
         break;
       case 'pantheon':
