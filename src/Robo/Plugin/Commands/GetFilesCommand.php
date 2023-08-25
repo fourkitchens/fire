@@ -16,7 +16,7 @@ class GetFilesCommand extends FireCommandBase {
    * Usage Example: fire local:files:get
    *
    * @command local:get-files
-   * @aliases get-files, files-get, getfiles, filesget, get_files, files_get, pull-files, pull_files, local:file:get, local:get:files
+   * @aliases get-files, files-get, getfiles, filesget, get_files, files_get, pull-files, pull_files, local:files:get, local:get:files
    * @usage fire local:files:get
    *
    * @param $args drush you would like to execute.
