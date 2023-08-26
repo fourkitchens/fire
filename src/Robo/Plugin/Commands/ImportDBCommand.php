@@ -21,16 +21,10 @@ class ImportDBCommand extends FireCommandBase {
    *
    * @param $args drush you would like to execute.
    */
-  public function import_db(ConsoleIO $io, array $args) {
-    return $this->run($io, $args);
-  }
-
-  /**
-   * Run both commands.
-   */
-  public function run(ConsoleIO $io, array $args) {
+  public function importDB(ConsoleIO $io, array $args) {
     $cmd = '';
     $env = Robo::config()->get('local_environment');
+
     if (count($args)) {
       if (!file_exists($args[0])) {
         return "The specified file doesn't exist, please provide a file, example: 'fire db-import -- site-db.sql.gz'";
@@ -39,7 +33,7 @@ class ImportDBCommand extends FireCommandBase {
     else {
       if (file_exists($this->getLocalEnvRoot() . '/reference/site-db.sql.gz')) {
         if ($env == 'lando') {
-          // Landos absolute path is based in their Conteiners folders.
+          // Lando's absolute path is based in their Conteiners folders.
           $args[0] = '/app/reference/site-db.sql.gz';
         }
         else {

@@ -84,7 +84,7 @@ If you need to override some of the global settings latter for a specific env yo
 
 #### Configuration variables:
 
-- `local_environment` : **Optional setting**, the system will automatically detected your local env, currently available: acquia, lando.
+- `local_environment` : **Optional setting**, the system will automatically detected your local env, currently available: ddev, lando.
 
 - `local_fe_theme_name`: **Optional setting**, the system will try to automatically get your theme, but you can always specify the theme you require to use.
 

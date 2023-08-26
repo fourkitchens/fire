@@ -53,7 +53,7 @@ class FireApp {
    */
   public function __construct(Config $config, $classLoader, InputInterface $input = NULL, OutputInterface $output = NULL) {
 
-    // Automatically setting the local env config (lando or acquia) or getting it from the config file.
+    // Automatically setting the local env config (lando or ddev) or getting it from the config file.
     if (!$config->get('local_environment') && $localEnv = $this->getLocalEnv()) {
       $config->set('local_environment', $localEnv);
     }
@@ -91,7 +91,7 @@ class FireApp {
   }
 
   /**
-   * Returns the local env (acquia, lando).
+   * Returns the local env (ddev, lando).
    */
   private function getLocalEnv() {
     $projectRoot = dirname(__DIR__, 4);
@@ -99,7 +99,7 @@ class FireApp {
       return 'lando';
     }
     elseif (file_exists($projectRoot . '/.ddev/config.yaml')) {
-      return 'acquia';
+      return 'ddev';
     }
     else {
       return FALSE;

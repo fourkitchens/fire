@@ -25,18 +25,28 @@ class XdebugEnableCommand extends FireCommandBase {
     $confirmation = $io->ask("Select your Editor:\n- [0] vscode");
     if (preg_match('/^\d{1}$/', $confirmation, $matches)) {
       $tasks = $this->collectionBuilder($io);
+      $assets = dirname(__DIR__, 4) . '/assets/xdebug/';
+
+      // VScode.
       if ($matches[0] == '0') {
-        $assets = dirname(__DIR__, 4) . '/assets/xdebug/';
+        if (!file_exists($this->getLocalEnvRoot() . '/.vscode')) {
+          $tasks->addTask($this->taskFilesystemStack()->mkdir($this->getLocalEnvRoot() . '/.vscode'));
+        }
+
         if ($env == 'lando') {
            $override = $io->ask("This action Will create/override the following files:\n.vscode/launch.json\n.vscode/php.ini\n.lando.local.yml\n Do you want to continue? (Y|N)");
            if (preg_match('/^[Yy]{1}$/', $override, $matches)) {
-            if (!file_exists($this->getLocalEnvRoot() . '/.vscode')) {
-              $tasks->addTask($this->taskFilesystemStack()->mkdir($this->getLocalEnvRoot() . '/.vscode'));
-            }
             $tasks->addTask($this->taskFilesystemStack()->copy($assets . 'vscode/' . $env . '/launch.json', $this->getLocalEnvRoot() . '/.vscode/launch.json'));
             $tasks->addTask($this->taskFilesystemStack()->copy($assets . 'vscode/' . $env . '/php.ini', $this->getLocalEnvRoot() . '/.vscode/php.ini'));
             $tasks->addTask($this->taskFilesystemStack()->copy($assets . 'vscode/' . $env . '/.lando.local.yml', $this->getLocalEnvRoot() . '/.lando.local.yml'));
             $tasks->addTask($this->taskExec('lando rebuild -y'));
+          }
+        }
+        elseif ($env == 'ddev') {
+          $override = $io->ask("This action Will create/override the following files:\n.vscode/launch.json\n Do you want to continue? (Y|N)");
+          if (preg_match('/^[Yy]{1}$/', $override, $matches)) {
+            $tasks->addTask($this->taskFilesystemStack()->copy($assets . 'vscode/' . $env . '/launch.json', $this->getLocalEnvRoot() . '/.vscode/launch.json'));
+            $tasks->addTask($this->taskExec('ddev xdebug enable'));
           }
         }
       }
