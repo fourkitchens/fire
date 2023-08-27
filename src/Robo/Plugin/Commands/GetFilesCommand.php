@@ -11,7 +11,7 @@ use Robo\Robo;
 class GetFilesCommand extends FireCommandBase {
 
   /**
-   * Import database for local envs.
+   * Downloads the sites files from the remote source (Pantheon, acquia).
    *
    * Usage Example: fire local:files:get
    *
