@@ -34,8 +34,7 @@ class LocalBuildCommand extends Tasks {
       $tasks->addTask($this->taskExec('fire local:import-db'));
     }
     if ($opts['get-files']) {
-      // Download Files from remote server.
-      echo('Command needs to define.');
+      $tasks->addTask($this->taskExec('fire local:get-files'));
     }
     // Deploy Drush Commands.
     $tasks->addTask($this->taskExec('fire local:build:drush-commands'));
