@@ -60,21 +60,89 @@ Example:
 ```
 
 ### Available commands:
-- env:start               [start] Starts the local Docker based env (lando, ddev).
-- env:stop                [stop] Stops the local Docker based env (lando, ddev).
-- local:build:js          [build-js] Builds Project JS Dependencies (Projects Root).
-- local:build:php         [build-php] Builds Project PHP Dependencies.
-- local:configure:export  [configure-export|configure_export|cex] Export config.
-- local:configure:import  [configure-import|configure_import|cim] Import config.
-- local:drush             [drush] Drush proxy for local envs.
-- local:get-db            [get-db|db-get|getdb|dbget|get_db|db_get|local:db:get|local:get:db] Get the database from remote site.
-- local:get-files         [get-files|files-get|getfiles|filesget|get_files|files_get|pull-files|pull_files|local:files:get|local:get:files] Downloads the sites files from the remote source (Pantheon, acquia).
-- local:import-db         [import-db|db-import|importdb|dbimport|import_db|db_import] Import database for - local envs.
-- local:build:theme       [build-theme] Builds Projects theme.
-- local:build             [local-build|build] Builds your Drupal Site from the scratch.
-- local:build:drush-commands  [build-drush] Drush Build commands - updb , cr, cim , cr, deploy:hook
-- local:setup             [setup] Setups your project from scratch (lando, ddev), all your data will be destroy and rebuild.
-- xdebug:enable           [xd-en] Configures your local envs Xdebug to work with your prefered Code editor.
+  - `env:start`: Starts the local Docker based env (lando, ddev).
+
+    alias: `start`
+
+  - `env:stop`: Stops the local Docker based env (lando, ddev).
+
+    alias: `stop`
+
+  - `local:build`: Builds your Drupal Site from the scratch.
+
+    Alias: `local-build, build`
+
+    Options:
+
+      `--no-db-import`: Ignores the database import process (Download & Import).
+
+      `--no-db-download`: Ignores ONLY the DB download, data will be imported from your existing db backup file.
+
+      `-f, --get-files`: Gets the Files from the remote server.
+
+  - `local:build:drush-commands`: Drush Build commands - updb , cr, cim , cr, deploy:hook
+
+      Alias `build-drush`
+
+  - `local:build:js`: Builds Project JS Dependencies (Projects Root).
+
+      Alias: `build-js`
+
+  - `local:build:php`: Builds Project PHP Dependencies.
+
+      Alias: `build-php`
+
+  - `local:build:theme`: Builds Projects theme.
+
+     Alias `build-theme`
+
+  - `local:configure:export`: Exports sites configuration - none interaction required.
+
+      Alias: `configure-export|configure_export|cex`
+
+  - `local:configure:import`: Imports sites configuration - none interaction required.
+
+      Alias: `configure-import|configure_import|cim`
+
+  - `local:drush`: Drush proxy for local envs.
+
+      Alias: `drush`
+
+      Arguments:
+
+      `args`: drush you would like to execute.
+
+ - `local:get-db`: Get the database for local env.
+
+    Alias: `get-db|db-get|getdb|dbget|get_db|db_get|local:db:get|local:get:db`
+
+  - `local:get-files`: Downloads the sites files from the remote source (Pantheon, acquia).
+
+    Alias: `get-files|files-get|getfiles|filesget|get_files|files_get|pull-files|pull_files|local:file:get|local:get:files`
+
+    Options:
+
+     `--no-download`: Reuse your existing files copy in the reference folder and placing them in the files folder (Pantheon only).
+
+  - `local:import-db`: Import database for local envs.
+
+      Alias: `import-db|db-import|importdb|dbimport|import_db|db_import`
+
+  - `local:setup`: Setups your project from scratch (lando, ddev), all your data will be destroy and rebuild.
+
+    Alias: `setup`
+
+    Options:
+
+      `--no-db-import`: Ignores the database import process (Download & Import).
+
+      `--no-db-download`: Ignores ONLY the DB download, data will be imported from your existing db backup file.
+
+      `-f, --get-files`: Gets the Files from the remote server.
+
+  - `xdebug:enable`: Configures your local envs Xdebug to work with your prefered Code editor.
+
+    Alias: `xd-en`
 
 
 ### Configuration:
