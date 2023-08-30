@@ -62,14 +62,14 @@ class GetFilesCommand extends FireCommandBase {
    */
   private function getFilesAcquia(ConsoleIO $io, $tasks, $remoteSiteName, $remoteEnv) {
     /**
-     * Acquia CLI will automatically placed all files under docroot/sites/default/files.`
+     * Acquia CLI will automatically placed all files under docroot/sites/default/files.
      */
     if (file_exists($this->getLocalEnvRoot() . '/docroot/sites/default/files')) {
       if ($this->getCliToolStatus('acli')) {
-          $io->say('Syncing files from the ' . $remoteEnv . ' environment...');
-          $cmd = 'cd ' . $this->getLocalEnvRoot();
-          $cmd .= ' && acli pull:files ' . $remoteSiteName . '.' . $remoteEnv . ' default';
-          $tasks->addTask($this->taskExec($cmd));
+        $io->say('Syncing files from the ' . $remoteEnv . ' environment...');
+        $cmd = 'cd ' . $this->getLocalEnvRoot();
+        $cmd .= ' && acli pull:files ' . $remoteSiteName . '.' . $remoteEnv . ' default';
+        $tasks->addTask($this->taskExec($cmd));
       }
       else {
         return 'Acquia CLI is not installed, please install and configure it: https://docs.acquia.com/acquia-cli/install/';
@@ -93,8 +93,8 @@ class GetFilesCommand extends FireCommandBase {
         $tasks->addTask($this->taskExec($cmd));
       }
       $tasks->addTask($this->taskFilesystemStack()->mkdir($origFilesFolder . '/files_' . $remoteEnv));
-      $tasks->addTask($this->taskExec('tar xzvf ' . $origFilesFolder . '/' . $filesName . ' -C ' . $origFilesFolder . '/files_' . $remoteEnv));
-      $tasks->addTask($this->taskCopyDir([$origFilesFolder . '/files_' . $remoteEnv => $destFilesFolder]));
+      $tasks->addTask($this->taskExec('tar xzvf ' . $origFilesFolder . '/' . $filesName . ' -C ' . $origFilesFolder));
+      $tasks->addTask($this->taskMirrorDir([$origFilesFolder . '/files_' . $remoteEnv . '/' => $destFilesFolder . '/']));
       $tasks->addTask($this->taskDeleteDir($origFilesFolder . '/files_' . $remoteEnv));
     }
     else {
@@ -103,5 +103,4 @@ class GetFilesCommand extends FireCommandBase {
 
     return $tasks;
   }
-
 }
