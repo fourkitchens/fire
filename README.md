@@ -20,7 +20,7 @@ Follow this link for more instructions: https://github.com/fourkitchens/fire-lau
 
 `composer require fourkitchens/fire --dev`
 
-**Create your `file.yml` config file for the project**
+**Create your `fire.yml` config file for the project**
 
 example:
 ```
