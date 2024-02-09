@@ -11,7 +11,6 @@ use Robo\Robo;
  */
 class FireCommandBase extends Tasks {
 
-
   /**
    * The current drupal Root path.
    *
@@ -83,6 +82,5 @@ class FireCommandBase extends Tasks {
     $result = $this->taskExec('which')->arg($toolRootCommand)->printOutput(FALSE)->run();
     return $result->wasSuccessful();
   }
-
 
 }
