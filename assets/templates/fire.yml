@@ -1,0 +1,16 @@
+# Indicate the NPM command to run the Theme build.
+local_theme_build_script: build
+# Set the name of platform where your site is currently running, available options: pantheon, acquia
+remote_platform: pantheon
+
+# Remote plaform Sites machine name.
+remote_sitename: my-site
+
+# Remote platform canonical env (The env to pull files and database from).
+remote_canonical_env: live
+
+# (Optional setting), the system will try to automatically get your theme, but you can always specify the theme you require to use.
+#local_fe_theme_name: theme-name
+
+# (Optional setting), the system will automatically detected your local env, currently available: ddev, lando.
+#local_environment : lando
