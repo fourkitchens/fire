@@ -89,7 +89,7 @@ class GetFilesCommand extends FireCommandBase {
     if ($this->getCliToolStatus('terminus')) {
       $filesName = 'site-files.tar.gz';
       if (!$opts['no-download']) {
-        $cmd = "wget `terminus backup:get $remoteSiteName.$remoteEnv --element=files` -O $origFilesFolder/$filesName";
+        $cmd = "terminus backup:get $remoteSiteName.$remoteEnv --element=files --to=$origFilesFolder/$filesName";
         $tasks->addTask($this->taskExec($cmd));
       }
       $tasks->addTask($this->taskFilesystemStack()->mkdir($origFilesFolder . '/files_' . $remoteEnv));
