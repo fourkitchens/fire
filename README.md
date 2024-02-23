@@ -35,7 +35,8 @@ fire
 ```
   It should show you all the available FIRE commands.
 
-6. Edit your project's README.md file and point to our [Project Documentation](./ProjectREADME.md)
+6. Edit your project's README.md file and point to our [Project Documentation](./ProjectREADME.md)\
+If your project has other requirements to run FIRE commands (e.g. does your project also require Node and NVM?), then be sure to also list those in your project's README.md.
 
 # Usage
 
