@@ -8,38 +8,38 @@ FIRE
 ```
 =================
 
-**F**ast  
-**I**nitialization and   
-**R**ebuilding of  
+**F**ast
+**I**nitialization and
+**R**ebuilding of
 **E**nvironments.
 
-FIRE is a standardized set of commands to run local [Drupal](https://www.drupal.org/) environments, regardless of which Docker wrapper you use ([Lando](https://lando.dev/) or [DDEV](https://ddev.com/)), and regardless of where the live site is hosted ([Pantheon](https://pantheon.io/) or [Acquia](https://www.acquia.com/solutions/drupal-hosting)).  This means that every site that you work on will use the _same_ commands for things like getting a fresh database (`fire get-db`).  This makes it quicker and easier to get new people working on any of your sites. 
+FIRE is a standardized set of commands to run local [Drupal](https://www.drupal.org/) environments, regardless of which Docker wrapper you use ([Lando](https://lando.dev/) or [DDEV](https://ddev.com/)), and regardless of where the live site is hosted ([Pantheon](https://pantheon.io/) or [Acquia](https://www.acquia.com/solutions/drupal-hosting)).  This means that every site that you work on will use the _same_ commands for things like getting a fresh database (`fire get-db`).  This makes it quicker and easier to get new people working on any of your sites.
 
 # Install
 
-1. Install the fire launcher in your computer (Recommended but optional)  
+1. Install the FIRE Launcher on your computer (Recommended but optional)\
 https://github.com/fourkitchens/fire-launcher
-2. Install the commands package into your project  
+2. Install the commands package into your project\
 `composer require fourkitchens/fire --dev`
-3. Create your `fire.yml` config file for the project  
+3. Create your `fire.yml` config file for the project\
 `fire init`
 4. Edit `fire.yml` and adjust the configuration.
-5. Check if fire is working  
-If you have installed the fire launcher:  
+5. Check if fire is working\
+If you have installed the FIRE Launcher:
 ```
 fire
 ```
-otherwise:  
+  otherwise:
 ```
 ./vendor/bin/fire
 ```
-It should show you all the available fire commands.
+  It should show you all the available FIRE commands.
 
 6. Edit your project's README.md file and point to our [Project Documentation](./ProjectREADME.md)
 
 # Usage
 
-**With Fire laucher installed:**
+**With FIRE laucher installed:**
 
 Example:
 
@@ -47,7 +47,7 @@ Example:
 fire build
 ```
 
-**Without the fire launcher installed:**
+**Without the FIRE launcher installed:**
 
 Example:
 ```
@@ -162,7 +162,7 @@ If you need to override some of the global settings latter for a specific env yo
 
 # Development
 
-- Install the fire package from the source.
+- Install the FIRE package from the source.
 ```
 composer require fourkitchens/fire --dev --prefer-install=source
 ```
