@@ -36,7 +36,7 @@ class GetDBCommand extends FireCommandBase {
     switch ($remotePlatform) {
       case 'acquia':
         if ($this->getCliToolStatus('acli')) {
-          $cmd = 'wget "' . $this->getAcquiaBackupLink($remoteSiteName, $remoteEnv) . '" -O '. $dbFolder .'/site-db.sql.gz';
+          $cmd = 'curl --location "' . $this->getAcquiaBackupLink($remoteSiteName, $remoteEnv) . '" --output '. $dbFolder .'/site-db.sql.gz';
         }
         else {
           return 'Acquia CLI is not installed, please install and configure it: https://docs.acquia.com/acquia-cli/install/';
