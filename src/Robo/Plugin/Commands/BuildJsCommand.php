@@ -23,11 +23,11 @@ class BuildJsCommand extends FireCommandBase {
     $root = $this->getDrupalRoot();
     $root = preg_replace('(\/web|\/docroot)', '', $root);
     $tasks = $this->collectionBuilder($io);
-    if(file_exists($root . '/.nvmrc') && getenv('NVM_DIR')) {
-        $command = 'export NVM_DIR=$HOME/.nvm && source $NVM_DIR/nvm.sh && cd ' . $root . ' && nvm install && npm install && cd -';
-        $tasks->addTask($this->taskExec($command)->printOutput(TRUE));
+    if (file_exists($root . '/.nvmrc') && getenv('NVM_DIR')) {
+      $command = 'export NVM_DIR=$HOME/.nvm && source $NVM_DIR/nvm.sh && cd ' . $root . ' && nvm install && npm install && cd -';
+      $tasks->addTask($this->taskExec($command)->printOutput(TRUE));
     }
-    else {
+    elseif (file_exists($root . '/package.json')) {
       $tasks->addTask($this->taskNpmInstall()->dir($root));
     }
     return $tasks;
