@@ -8,43 +8,39 @@ FIRE
 ```
 =================
 
-Fast Initialization and Rebuilding of Environments.
+**F**ast
+**I**nitialization and
+**R**ebuilding of
+**E**nvironments.
 
-### Install:
+FIRE is a standardized set of commands to run local [Drupal](https://www.drupal.org/) environments, regardless of which Docker wrapper you use ([Lando](https://lando.dev/) or [DDEV](https://ddev.com/)), and regardless of where the live site is hosted ([Pantheon](https://pantheon.io/) or [Acquia](https://www.acquia.com/solutions/drupal-hosting)).  This means that every site that you work on will use the _same_ commands for things like getting a fresh database (`fire get-db`).  This makes it quicker and easier to get new people working on any of your sites.
 
-**Install the fire launcher in your computer (Recommended but optional)**:
+# Install
 
-Follow this link for more instructions: https://github.com/fourkitchens/fire-launcher
-
-**Install the commands package into your project:**
-
+1. Install the FIRE Launcher on your computer (Recommended but optional)\
+https://github.com/fourkitchens/fire-launcher
+2. Install the commands package into your project\
 `composer require fourkitchens/fire --dev`
-
-**Create your `fire.yml` config file for the project**
-
-example:
-```
-# NPM script you are using to build your theme.
-local_theme_build_script: build
-# Your Sites Remote platform. Currently available: pantheon, acquia
-remote_platform: pantheon
-# Remote plaform Sites machine name.
-remote_sitename: project-name
-# Remote platform canonical env (The env to pull files and database from).
-remote_canonical_env: live
-```
-
-**Check if fire is working**
-
-run the following command (If you have installed the fire launcher):
-
+3. Create your `fire.yml` config file for the project\
+`fire init`
+4. Edit `fire.yml` and adjust the configuration.
+5. Check if fire is working\
+If you have installed the FIRE Launcher:
 ```
 fire
 ```
-It should show you all the available fire commands.
-### Usage:
+  otherwise:
+```
+./vendor/bin/fire
+```
+  It should show you all the available FIRE commands.
 
-**With Fire laucher installed:**
+6. Edit your project's README.md file and point to our [Project Documentation](./ProjectREADME.md)\
+If your project has other requirements to run FIRE commands (e.g. does your project also require Node and NVM?), then be sure to also list those in your project's README.md.
+
+# Usage
+
+**With FIRE laucher installed:**
 
 Example:
 
@@ -52,14 +48,14 @@ Example:
 fire build
 ```
 
-**Without the fire launcher installed:**
+**Without the FIRE launcher installed:**
 
 Example:
 ```
 ./vendor/bin/fire build
 ```
 
-### Available commands:
+## Available commands:
   - `env:start`: Starts the local Docker based env (lando, ddev).
 
     alias: `start`
@@ -145,7 +141,7 @@ Example:
     Alias: `xd-en`
 
 
-### Configuration:
+## Configuration
 Into your project root create a file called: `fire.yml` and iside of it speficify your global project settings.
 
 If you need to override some of the global settings latter for a specific env you can create `fire.local.yml` and there override as many variables as you want.
@@ -165,13 +161,13 @@ If you need to override some of the global settings latter for a specific env yo
 - `remote_canonical_env`: Remote platform canonical env (The env to pull files and database from).
 
 
-### Development
+# Development
 
-- Install the fire package from the source.
+- Install the FIRE package from the source.
 ```
 composer require fourkitchens/fire --dev --prefer-install=source
 ```
-#### Dev backgroud
+## Dev backgroud
 
 We are using [Robo](https://robo.li/) as Framework to develop this tool.
 
