@@ -36,7 +36,7 @@ class GetDBCommand extends FireCommandBase {
     switch ($remotePlatform) {
       case 'acquia':
         if ($this->getCliToolStatus('acli')) {
-          $cmd = 'wget "' . $this->getAcquiaBackupLink($remoteSiteName, $remoteEnv) . '" -O '. $dbFolder .'/site-db.sql.gz';
+          $cmd = 'curl --location "' . $this->getAcquiaBackupLink($remoteSiteName, $remoteEnv) . '" --output '. $dbFolder .'/site-db.sql.gz';
         }
         else {
           return 'Acquia CLI is not installed, please install and configure it: https://docs.acquia.com/acquia-cli/install/';
@@ -45,7 +45,7 @@ class GetDBCommand extends FireCommandBase {
       case 'pantheon':
       default:
         if ($this->getCliToolStatus('terminus')) {
-          $cmd = "wget `terminus backup:get $remoteSiteName.$remoteEnv --element=db` -O ". $dbFolder ."/site-db.sql.gz";
+          $cmd = "terminus backup:get $remoteSiteName.$remoteEnv --element=db --to=$dbFolder/site-db.sql.gz";
         }
         else {
           return 'Terminus is not installed, please install and configure it: https://docs.pantheon.io/terminus/install';
