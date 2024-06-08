@@ -52,7 +52,6 @@ class FireApp {
    *   The Command out.
    */
   public function __construct(Config $config, $classLoader, InputInterface $input = NULL, OutputInterface $output = NULL) {
-
     // Automatically setting the local env config (lando or ddev) or getting it from the config file.
     if (!$config->get('local_environment') && $localEnv = $this->getLocalEnv()) {
       $config->set('local_environment', $localEnv);
@@ -70,13 +69,17 @@ class FireApp {
     // Looking for existing commands.
     $discovery = new CommandFileDiscovery();
     $discovery->setSearchPattern('*Command.php');
-    $this->commandClasses = $discovery->discover(__DIR__ . '/Robo/Plugin/Commands/', '\Fire\Robo\Plugin\Commands');
+
+    $mainCommandClasses = $discovery->discover(__DIR__ . '/Robo/Plugin/Commands/', '\Fire\Robo\Plugin\Commands');
+    $projectCommandClasses = $discovery->discover(str_replace('vendor/fourkitchens/fire/src', 'fire/src/Robo/Plugin/Commands/', __DIR__), '\Fire\Robo\Plugin\Commands');
+    $this->commandClasses = array_merge($mainCommandClasses, $projectCommandClasses);
+    //$this->commandClasses = array_merge($projectCommandClasses, $mainCommandClasses);
 
     // Instantiate Robo Runner.
     $this->runner = new Runner();
-     $this->runner->setContainer($container);
-     $this->runner->setSelfUpdateRepository(self::REPOSITORY);
-     $this->runner->setClassLoader($classLoader);
+    $this->runner->setContainer($container);
+    $this->runner->setSelfUpdateRepository(self::REPOSITORY);
+    $this->runner->setClassLoader($classLoader);
   }
 
   /**
