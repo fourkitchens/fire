@@ -40,11 +40,9 @@ class OverwriteCommand extends FireCommandBase {
 
     // Step 3.
     $newCommand = $this->createCustomCommand($tasks, $requiredPath);
-    if ($newCommand) {
-      $this->say("The command was successfully overwritten, now you can edit it with the following command: '$ code $newCommand'.");
-    }
-    else {
+    if (is_null($newCommand)) {
       $this->say("There was an error and the command could not be overwritten.");
+      return;
     }
 
     return $tasks;
@@ -162,8 +160,11 @@ class OverwriteCommand extends FireCommandBase {
       $this->say("The '$selectedCommand' command has already been overwritten previously.");
     }
     else {
-      $tasks->addTask($this->taskExec("cp -a $origin {$root}/$dest"));
+      $this->say("The '$selectedCommand' command was successfully overwritten.");
+      $tasks->addTask($this->taskExec("cp -a $origin {$root}/{$dest}"));
     }
+
+    $this->say("Now you can edit it with the following command: ' $ code $dest '.");
 
     return $dest;
   }
