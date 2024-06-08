@@ -9,6 +9,7 @@ use Robo\Runner;
 use Symfony\Component\Console\Application;
 use Symfony\Component\Console\Input\InputInterface;
 use Symfony\Component\Console\Output\OutputInterface;
+use Symfony\Component\Filesystem\Filesystem;
 use Consolidation\AnnotatedCommand\CommandFileDiscovery;
 
 class FireApp {
@@ -70,10 +71,15 @@ class FireApp {
     $discovery = new CommandFileDiscovery();
     $discovery->setSearchPattern('*Command.php');
 
+    // Discover the class commands.
+    $filesystem = new Filesystem();
+    $projectCommandClasses = [];
+    $customDir = str_replace('vendor/fourkitchens/', '', __DIR__) . '/Commands/';
+    if ($filesystem->exists($customDir)) {
+      $projectCommandClasses = $discovery->discover($customDir, '\FourKitchens\FireCustom\Commands');
+    }
     $mainCommandClasses = $discovery->discover(__DIR__ . '/Robo/Plugin/Commands/', '\Fire\Robo\Plugin\Commands');
-    $projectCommandClasses = $discovery->discover(str_replace('vendor/fourkitchens/fire/src', 'fire/src/Robo/Plugin/Commands/', __DIR__), '\Fire\Robo\Plugin\Commands');
     $this->commandClasses = array_merge($mainCommandClasses, $projectCommandClasses);
-    //$this->commandClasses = array_merge($projectCommandClasses, $mainCommandClasses);
 
     // Instantiate Robo Runner.
     $this->runner = new Runner();

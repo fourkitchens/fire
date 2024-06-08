@@ -10,6 +10,7 @@ use Robo\Symfony\ConsoleIO;
 use Symfony\Component\Console\Helper\QuestionHelper;
 use Symfony\Component\Console\Question\ChoiceQuestion;
 use Symfony\Component\Filesystem\Filesystem;
+use Symfony\Component\Filesystem\Exception\IOException;
 
 /**
  * Provides a command to overwrite others command.
@@ -28,22 +29,27 @@ class OverwriteCommand extends FireCommandBase {
   public function overwrite(ConsoleIO $io) {
     $env = Robo::config()->get('local_environment');
     $tasks = $this->collectionBuilder($io);
-    $requiredPath = 'fire/src/Robo/Plugin/Commands/';
+    $namespace = 'FourKitchens\\FireCustom\\';
+    $src = 'fire/src/';
+    $commandPath = $src . 'Commands/';
 
-    // Step 1.
-    if (!$this->composerAutoload($tasks, $env, $requiredPath)) {
+    // Step 1: Autoload my new commands.
+    if (!$this->composerAutoload($tasks, $env, $namespace, $src)) {
       return;
     }
 
-    // Step 2.
-    $this->createCustomPath($requiredPath);
+    // Step 2: Create the directory for the new commands.
+    $this->createCustomPath($commandPath);
 
-    // Step 3.
-    $newCommand = $this->createCustomCommand($tasks, $requiredPath);
-    if (is_null($newCommand)) {
+    // Step 3: Copy the current command to the new path.
+    $newCommandFile = $this->createCustomCommand($commandPath);
+    if (is_null($newCommandFile)) {
       $this->say("There was an error and the command could not be overwritten.");
       return;
     }
+
+    // Step 4: Overwrite the namaspace and the class name.
+    $this->updateCustomCommand($namespace, $newCommandFile);
 
     return $tasks;
   }
@@ -53,38 +59,37 @@ class OverwriteCommand extends FireCommandBase {
    *
    * @param CollectionBuilder $tasks
    * @param string $env
-   * @param string $requiredPath
+   * @param string $commandPath
    * @return void
    */
-  private function composerAutoload(CollectionBuilder &$tasks, string $env, string $requiredPath) {
-    $filePath = 'composer.json';
-    $requiredNamespace = 'fourkitchens\\fire\\';
+  private function composerAutoload(CollectionBuilder &$tasks, string $env, string $namespace, string $src) {
+    $composerPath = 'composer.json';
 
-    if (!file_exists($filePath)) {
+    if (!file_exists($composerPath)) {
       $this->say('The "composer.json" file does not exist.');
       return FALSE;
     }
 
     $needsUpdate = FALSE;
-    $composerJson = json_decode(file_get_contents($filePath), true);
+    $composerJson = json_decode(file_get_contents($composerPath), true);
     if (isset($composerJson['autoload']['psr-4'])) {
-      if (isset($composerJson['autoload']['psr-4'][$requiredNamespace])) {
+      if (isset($composerJson['autoload']['psr-4'][$namespace])) {
         $this->say('The namespace already exists in the "composer.json" file.');
       } else {
         $needsUpdate = TRUE;
-        $composerJson['autoload']['psr-4'][$requiredNamespace] = $requiredPath;
+        $composerJson['autoload']['psr-4'][$namespace] = $src;
         $this->say('The namespace has been added to the "composer.json" file.');
       }
     } else {
       $needsUpdate = TRUE;
       $composerJson['autoload']['psr-4'] = [
-        $requiredNamespace => $requiredPath,
+        $namespace => $src,
       ];
       $this->say('The namespace has been added to the "composer.json" file.');
     }
 
     if ($needsUpdate) {
-      file_put_contents($filePath, json_encode($composerJson, JSON_PRETTY_PRINT | JSON_UNESCAPED_SLASHES));
+      file_put_contents($composerPath, json_encode($composerJson, JSON_PRETTY_PRINT | JSON_UNESCAPED_SLASHES));
       $tasks->addTask($this->taskExec("$env composer dump-autoload"));
     }
   
@@ -94,14 +99,14 @@ class OverwriteCommand extends FireCommandBase {
   /**
    * Create custom path.
    *
-   * @param string $requiredPath
+   * @param string $commandPath
    * @return void
    */
-  private function createCustomPath(string $requiredPath) {
+  private function createCustomPath(string $commandPath) {
     $filesystem = new Filesystem();
 
-    if (!$filesystem->exists($requiredPath)) {
-      $filesystem->mkdir($requiredPath, 0755);
+    if (!$filesystem->exists($commandPath)) {
+      $filesystem->mkdir($commandPath, 0755);
       $this->say('The path has been created.');
     } else {
       $this->say('The path already exists.');
@@ -112,11 +117,10 @@ class OverwriteCommand extends FireCommandBase {
    * Create the custom command.
    *
    * @param CollectionBuilder $tasks
-   * @param string $requiredPath
+   * @param string $commandPath
    * @return void
    */
-  private function createCustomCommand(CollectionBuilder &$tasks, string $requiredPath) {
-    $root = $this->getLocalEnvRoot();
+  private function createCustomCommand(string $commandPath) {
     $currentPath = __DIR__;
     $discovery = new CommandFileDiscovery();
     $discovery->setSearchPattern('*Command.php');
@@ -151,7 +155,8 @@ class OverwriteCommand extends FireCommandBase {
     $filesystem = new Filesystem();
     $cmdFile = $commands[$selectedCommand] . '.php';
     $origin = "{$currentPath}/{$cmdFile}";
-    $dest = "{$requiredPath}{$cmdFile}";
+    $dest = "{$commandPath}Custom{$cmdFile}";
+
     if (!$filesystem->exists($origin)) {
       $this->say("Could not locate file '$origin'.");
       return NULL;
@@ -161,12 +166,51 @@ class OverwriteCommand extends FireCommandBase {
     }
     else {
       $this->say("The '$selectedCommand' command was successfully overwritten.");
-      $tasks->addTask($this->taskExec("cp -a $origin {$root}/{$dest}"));
+      $this->taskExec("cp -a $origin $dest")->run();
     }
 
-    $this->say("Now you can edit it with the following command: ' $ code $dest '.");
+    $this->say("");
+    $this->say("Now you can edit it with the following command:");
+    $this->say("");
+    $this->say("  $ code $dest");
+    $this->say("");
 
     return $dest;
+  }
+
+  /**
+   * This function update namespace and the class name
+   *
+   * @param string $namespace
+   * @param string $filePath
+   * @return void
+   */
+  private function updateCustomCommand(string $namespace, string $filePath) {
+    $newNamespace = "namespace {$namespace}Commands;";
+
+    if (!file_exists($filePath)) {
+      $this->say("The '$filePath' doesn't exist.");
+      return;
+    }
+
+    // Read the file.
+    $fileContent = file_get_contents($filePath);
+
+    // Update the namaspace.
+    $fileContent = preg_replace('/namespace\s+.*;/', $newNamespace, $fileContent);
+
+    // Update the class name.
+    $fileContent = preg_replace_callback('/class\s+(\w+)/', function ($matches) {
+      return 'class Custom' . $matches[1];
+    }, $fileContent);
+
+    // Save the file.
+    $filesystem = new Filesystem();
+    try {
+      $filesystem->dumpFile($filePath, $fileContent);
+    } catch (IOException $e) {
+      $this->say("{$e->getMessage()}");
+    }
   }
 
 }
