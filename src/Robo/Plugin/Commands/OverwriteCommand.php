@@ -238,7 +238,6 @@ class OverwriteCommand extends FireCommandBase {
     $oldNamespace = isset($namespaceMatches[1]) ? $namespaceMatches[1] : '';
     $oldClassName = isset($classNameMatches[1]) ? $classNameMatches[1] : '';
     $fullClass = isset($classMatches[0]) ? $classMatches[0] : '';
-    //$firstFunctionName = isset($functionNameMatches[1]) ? $functionNameMatches[1] : '';
     $firstFunctionContent = isset($functionContentMatches[0]) ? $functionContentMatches[0] : '';
     $firstFunctionContent = str_replace($fullClass, '', $firstFunctionContent);
 
