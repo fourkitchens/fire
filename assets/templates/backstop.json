@@ -1,0 +1,79 @@
+{
+  "###NOTE###": "Don't edit backstop.json directly (unless making changes that everyone should use).  Instead copy as backstop-local.json.  See README.md for more info.",
+  "id": "site",
+  "viewports": [
+    {
+      "label": "phone",
+      "width": 320,
+      "height": 480
+    },
+    {
+      "label": "tablet",
+      "width": 768,
+      "height": 960
+    },
+    {
+      "label": "desktop",
+      "width": 1280,
+      "height": 768
+    }
+  ],
+  "onBeforeScript": "puppet/onBefore.js",
+  "onReadyScript": "puppet/onReady.js",
+  "scenarios": [
+    {
+      "label": "Batch1: Homepage — initial viewport",
+      "url": "/",
+      "referenceUrl": "/",
+     "_NOTE_": "Delay for the homepage hero to slide up. AND to get popup to finish rendering.",
+      "delay": 1500,
+      "postInteractionWait": 2000,
+      "selectors": ["viewport"]
+    },
+    {
+      "label": "Batch1: Homepage — full",
+      "url": "/?quotable_random=0",
+      "referenceUrl": "/?quotable_random=0",
+      "delay": 1500
+    },
+    {
+      "@todo": "This one is sometimes broken: The screenshot is taken of the viewport before the menu is open.",
+      "label": "Batch1: Homepage — open navigation (mobile) (not yet working)",
+      "url": "/",
+      "referenceUrl": "/",
+      "delay": 3600,
+      "onReadyScript": "initializePageMobile.js",
+      "@todo2": "This isn't working quite yet.  Also, due to limitations with selectors, we would need a class/ID on the +/- buttons in order to see the tree expanded.",
+      "clickSelectors": [
+        ".header__offcanvas-trigger"
+      ],
+      "postInteractionWait": 2000,
+      "selectors": ["viewport"],
+      "viewports": [
+        {
+          "label": "phone",
+          "width": 320,
+          "height": 640
+        }
+      ]
+    }
+  ],
+
+  "paths": {
+    "bitmaps_reference": "../../web/backstop/bitmaps_reference",
+    "bitmaps_test": "../../web/backstop/bitmaps_test",
+    "engine_scripts": "../../web/backstop/engine_scripts",
+    "html_report": "../../web/backstop/html_report",
+    "ci_report": "../../web/backstop/ci_report"
+  },
+  "report": ["CI", "browser"],
+  "engine": "puppeteer",
+  "engineOptions": {
+    "args": ["--no-sandbox"]
+  },
+  "mergeImgHack": true,
+  "asyncCaptureLimit": 3,
+  "asyncCompareLimit": 5,
+  "debug": false,
+  "debugWindow": false
+}
