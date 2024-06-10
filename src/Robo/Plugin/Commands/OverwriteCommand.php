@@ -434,12 +434,12 @@ class OverwriteCommand extends FireCommandBase {
   }
 
   /**
-   * General quetion.
+   * General question.
    *
    * @param string $question
    * @return void
    */
-  public function generalQuestion(string $question) {
+  private function generalQuestion(string $question) {
     $helper = new QuestionHelper();
     $input = $this->input();
     $output = $this->output();
@@ -459,7 +459,7 @@ class OverwriteCommand extends FireCommandBase {
    * @param string $input
    * @return void
    */
-  function convertToCamelCase(string $input) {
+  private function convertToCamelCase(string $input) {
     $input = ucwords(strtolower($input));
     $input = str_replace(' ', '', $input);
     return $input;
