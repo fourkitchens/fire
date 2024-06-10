@@ -9,6 +9,7 @@ use Robo\Collection\CollectionBuilder;
 use Robo\Symfony\ConsoleIO;
 use Symfony\Component\Console\Helper\QuestionHelper;
 use Symfony\Component\Console\Question\ChoiceQuestion;
+use Symfony\Component\Console\Question\Question;
 use Symfony\Component\Filesystem\Filesystem;
 use Symfony\Component\Filesystem\Exception\IOException;
 
@@ -41,19 +42,18 @@ class OverwriteCommand extends FireCommandBase {
     // Step 2: Create the directory for the new commands.
     $this->createCustomDirectory($commandPath);
 
-    // Step 3: Copy the current command to the new path.
-    $newCommandFile = $this->createCustomCommand($commandPath);
-    if (is_null($newCommandFile)) {
-      $this->say("There was an error and the command could not be overwritten.");
-      return;
+    // Step 3: ask the user for the command they want to override.
+    $selectedCommand = $this->askOverwriteCommand();
+
+    // Step 4: Create or overwrithe a command.
+    if ($selectedCommand === 'Custom') {
+      // Create command from scratch.
+      $this->createCustomCommand($namespace, $commandPath);
     }
-
-    // Step 4: Ask for type of overwrite.
-    $selectedType = $this->askOverwriteType();
-    $this->say('');
-
-    // Step 5: Overwrite the namaspace and the class name.
-    $this->updateCustomCommand($namespace, $newCommandFile, $selectedType);
+    else {
+      // Copy the current command to the new path.
+      $this->overwriteExistingCommand($namespace, $commandPath, $selectedCommand);
+    }
 
     return $tasks;
   }
@@ -119,12 +119,8 @@ class OverwriteCommand extends FireCommandBase {
 
   /**
    * Create the custom command.
-   *
-   * @param CollectionBuilder $tasks
-   * @param string $commandPath
-   * @return void
    */
-  private function createCustomCommand(string $commandPath) {
+  private function askOverwriteCommand() {
     $currentPath = __DIR__;
     $discovery = new CommandFileDiscovery();
     $discovery->setSearchPattern('*Command.php');
@@ -141,26 +137,29 @@ class OverwriteCommand extends FireCommandBase {
       $commands[$key] = $cmdName;
     }
     asort($commands);
+    $commands['Custom'] = 'Custom';
 
-    // Get input and output.
-    $input = $this->input();
-    $output = $this->output();
+    $question = 'Select a command to overwrite:';
+    $selectedCommand = $this->choiceQuestion($question, array_keys($commands));
 
-    $output->writeln('');
-    // Ask to the user what command they want to overwrite.
-    $helper = new QuestionHelper();
-    $question = new ChoiceQuestion(
-      'Select a command to overwrite:' . PHP_EOL,
-      array_keys($commands),
-    );
+    return $commands[$selectedCommand];
+  }
 
-    $question->setErrorMessage('Invalid %s command.');
-    $selectedCommand = $helper->ask($input, $output, $question);
-
+  /**
+   * This function override an existing command.
+   *
+   * @param string $namespace
+   * @param string $commandPath
+   * @param string $selectedCommand
+   * @return void
+   */
+  private function overwriteExistingCommand(string $namespace, string $commandPath, string $selectedCommand) {
     $filesystem = new Filesystem();
-    $cmdFile = $commands[$selectedCommand] . '.php';
+    $currentPath = __DIR__;
+    $cmdFile = "{$selectedCommand}.php";
     $origin = "{$currentPath}/{$cmdFile}";
     $dest = "{$commandPath}Custom{$cmdFile}";
+    $writeFile = TRUE;
 
     if (!$filesystem->exists($origin)) {
       $this->say("Could not locate file '$origin'.");
@@ -168,49 +167,116 @@ class OverwriteCommand extends FireCommandBase {
     }
     elseif ($filesystem->exists($dest))  {
       $this->say("The '$selectedCommand' command has already been overwritten previously.");
+      $question = 'Would you like to replace it?';
+      $options = ['No', 'Yes'];
+      $response = $this->choiceQuestion($question, $options);
+
+      if ($response === 'Yes') {
+        $this->taskExec("rm $dest")->run();
+      }
+      else {
+        $writeFile = FALSE;
+      }
     }
-    else {
-      $this->say("The '$selectedCommand' command was successfully overwritten.");
+
+    if ($writeFile) {
+      $question = 'Select the type of overwrite you want to use:';
+      $options = ['Full', 'Partial'];
+      $selectedType = $this->choiceQuestion($question, $options);
+
+      $this->say('');
       $this->taskExec("cp -a $origin $dest")->run();
+      $this->say("The '$selectedCommand' command was successfully overwritten.");
+      $this->updateCustomCommand($namespace, $dest, $selectedType);
     }
 
-    $this->say("");
-    $this->say("Now you can edit it with the following command:");
-    $this->say("");
+    $this->say('');
+    $this->say('You can edit it with the following command:');
+    $this->say('');
     $this->say("  $ code $dest");
-    $this->say("");
-
-    return $dest;
+    $this->say('');
   }
 
   /**
-   * Create a function to ask for the type of overwrite.
+   * Undocumented function
+   *
+   * @return void
    */
-  private function askOverwriteType() {
-    $typeOptions = ['Full', 'Partial'];
-    // Get input and output.
-    $input = $this->input();
-    $output = $this->output();
+  private function createCustomCommand($namespace, $commandPath) {
+    $filesystem = new Filesystem();
+    $currentPath = __DIR__;
+    $origin = "{$currentPath}/tpl/__custom.txt";
 
-    $output->writeln('');
-    // Ask to the user what type of overwrite they want to use.
-    $helper = new QuestionHelper();
-    $question = new ChoiceQuestion(
-      'Select the type of overwrite you want to use:' . PHP_EOL,
-      $typeOptions,
-    );
+    $this->say('Creating a new command.');
+    $commandName = $this->generalQuestion('Enter the name of the new command:');
+    $commandAlias = $this->generalQuestion('Enter the alias of the new command:');
+    $commandDescription = $this->generalQuestion('Enter a description for the new command:');
+    $commandName = $this->convertToCamelCase($commandName);
+    $commandFunction = lcfirst($commandName);
+    $commandName = "Custom{$commandName}Command";
+    $commandFile = "{$commandPath}{$commandName}.php";
 
-    $question->setErrorMessage('Invalid %s type.');
-    $selectedType = $helper->ask($input, $output, $question);
+    $writeFile = TRUE;
+    if ($filesystem->exists($commandFile))  {
+      $this->say("The '$commandName' command has already exist.");
+      $question = 'Would you like to replace it?';
+      $options = ['No', 'Yes'];
+      $response = $this->choiceQuestion($question, $options);
 
-    return $selectedType;
+      if ($response === 'Yes') {
+        $this->taskExec("rm $commandFile")->run();
+      }
+      else {
+        $writeFile = FALSE;
+      }
+    }
+
+    if ($writeFile) {
+      $this->taskExec("cp -a $origin $commandFile")->run();
+
+      // Read the file.
+      $fileContent = file_get_contents($commandFile);
+      // Update Data.
+      $fileContent = str_replace(
+        [
+          '<namespace>',
+          '<commandName>',
+          '<commandDescription>',
+          '<commandAlias>',
+          '<commandFunction>',
+          '<commandFire>',
+        ],
+        [
+          $namespace . 'Commands',
+          $commandName,
+          $commandDescription,
+          $commandAlias,
+          $commandFunction,
+          strtolower($commandFunction),
+        ],
+        $fileContent
+      );
+
+      try {
+        $filesystem->dumpFile($commandFile, $fileContent);
+      } catch (IOException $e) {
+        $this->say("{$e->getMessage()}");
+      }
+    }
+
+    $this->say('');
+    $this->say('You can edit it with the following command:');
+    $this->say('');
+    $this->say("  $ code $commandFile");
+    $this->say('');
   }
 
   /**
-   * This function update namespace and the class name
+   * This function update namespace and the class name.
    *
    * @param string $namespace
    * @param string $filePath
+   * @param string $type
    * @return void
    */
   private function updateCustomCommand(string $namespace, string $filePath, $type = 'partial') {
@@ -234,7 +300,7 @@ class OverwriteCommand extends FireCommandBase {
     preg_match('/(\/\*\*.*?\*\/\s+)?class\s+\w+(?:\s+extends\s+\w+)?\s*\{/s', $fileContent, $classMatches);
     preg_match('/(\/\*\*[\s\S]*?\*\/\s+)?public\s+function\s+' . $firstFunctionName . '\s*\([^)]*\)\s*\{[\s\S]*?\}/', $fileContent, $functionContentMatches);
 
-    // Get the values from ReExp.
+    // Get the values from RegExp.
     $oldNamespace = isset($namespaceMatches[1]) ? $namespaceMatches[1] : '';
     $oldClassName = isset($classNameMatches[1]) ? $classNameMatches[1] : '';
     $fullClass = isset($classMatches[0]) ? $classMatches[0] : '';
@@ -343,6 +409,60 @@ class OverwriteCommand extends FireCommandBase {
     $newFunctionContent .= "    return \$tasks;\n";
 
     return $newFunctionContent;
+  }
+
+  /**
+   * Create a function to ask the users for choice question.
+   */
+  private function choiceQuestion(string $userQuestion, array $options) {
+    // Get input and output.
+    $input = $this->input();
+    $output = $this->output();
+
+    $output->writeln('');
+    // Ask to the user.
+    $helper = new QuestionHelper();
+    $question = new ChoiceQuestion(
+      $userQuestion . PHP_EOL,
+      $options,
+    );
+
+    $question->setErrorMessage('Invalid %s option.');
+    $selected = $helper->ask($input, $output, $question);
+
+    return $selected;
+  }
+
+  /**
+   * General quetion.
+   *
+   * @param string $question
+   * @return void
+   */
+  public function generalQuestion(string $question) {
+    $helper = new QuestionHelper();
+    $input = $this->input();
+    $output = $this->output();
+
+    // Set the question.
+    $question = new Question(PHP_EOL . $question . PHP_EOL);
+
+    // Get user response.
+    $response = $helper->ask($input, $output, $question);
+
+    return $response;
+  }
+
+  /**
+   * Convert to camel case.
+   *
+   * @param string $input
+   * @return void
+   */
+  function convertToCamelCase(string $input) {
+    $input = ucwords(strtolower($input));
+    $input = str_replace(' ', '', $input);
+    return $input;
   }
 
 }
