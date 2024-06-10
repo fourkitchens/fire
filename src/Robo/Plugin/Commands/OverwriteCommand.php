@@ -19,12 +19,12 @@ use Symfony\Component\Filesystem\Exception\IOException;
 class OverwriteCommand extends FireCommandBase {
 
   /**
-   * overwrite a command.
+   * Overwrite a command.
    *
    * Usage Example: fire overwrite
    *
-   * @command local:overwrite
-   * @aliases ow, oc, overwrite, overwrite-command
+   * @command command:overwrite
+   * @aliases co, oc, ow, command-overwrite, overwrite-command, overwrite
    * @usage fire overwrite
    */
   public function overwrite(ConsoleIO $io) {

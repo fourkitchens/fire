@@ -140,7 +140,7 @@ Example:
 
     Alias: `xd-en`
 
-  - `local:overwrite`: This command allow you to overwrite the default fire command in your specific project.
+  - `command:overwrite`: This command allow you to overwrite the default fire command in your specific project.
 
     Alias: `ow`
 
