@@ -14,10 +14,10 @@ class VrtLocalEnvConfigureCommand extends FireCommandBase {
   /**
    * Runs your VRT testing over you local env.
    *
-   * Usage Example: fire vrt:local-config
+   * Usage Example: fire vrt:local-env-config
    *
-   * @command vrt:local-config
-   * @aliases vlocalconf
+   * @command vrt:local-env-config
+   * @aliases vlec
    *
    */
   public function vrtLocalEnvConfigure(ConsoleIO $io) {
