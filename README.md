@@ -147,6 +147,7 @@ Example:
     There are two types of overwrite:
 
       **1. Partial:** It first runs the original command and then allows you to add new functionality.
+
       **2. Full:** It replaces all existing code and allows you to write the command from scratch.
 
 ## Configuration
