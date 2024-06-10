@@ -140,6 +140,14 @@ Example:
 
     Alias: `xd-en`
 
+  - `local:overwrite`: This command allow you to overwrite the default fire command in your specific project.
+
+    Alias: `ow`
+
+    There are two types of overwrite:
+
+      **1. Partial:** It first runs the original command and then allows you to add new functionality.
+      **2. Full:** It replaces all existing code and allows you to write the command from scratch.
 
 ## Configuration
 Into your project root create a file called: `fire.yml` and iside of it speficify your global project settings.
