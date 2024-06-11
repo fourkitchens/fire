@@ -16,7 +16,7 @@ class VrtGenbackstopConfCommand extends FireCommandBase {
    * Usage Example: fire vrt:generate-backstop-config
    *
    * @command vrt:generate-backstop-config
-   * @aliases vgenbsconf
+   * @aliases vgc
    *
    */
   public function vrtGenBackstopConf(ConsoleIO $io) {

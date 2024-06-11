@@ -25,7 +25,6 @@ class VrtLocalEnvConfigureCommand extends FireCommandBase {
     $tasks = $this->collectionBuilder($io);
     if ($env == 'lando') {
       $landoConfig = Yaml::parse(file_get_contents($this->getLocalEnvRoot() . '/.lando.yml'));
-     // var_dump($landoConfig);
       if (!isset($landoConfig['services']['backstopserver'])) {
         $landoConfig['services']['backstopserver'] = [
           'type' => 'node',
