@@ -16,7 +16,7 @@ class VrtTestingSetupCommand extends FireCommandBase {
    * Usage Example: fire vrt:testing-setup
    *
    * @command vrt:testing-setup
-   * @aliases vtestingsetup
+   * @aliases vts
    *
    */
   public function vrtTestingSetup(ConsoleIO $io) {

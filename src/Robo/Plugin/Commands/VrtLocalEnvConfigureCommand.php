@@ -7,12 +7,12 @@ use Robo\Robo;
 use Symfony\Component\Yaml\Yaml;
 
 /**
- * Provides a command to build all php dependencies.
+ * Provides a command to Alters your Local env so you can use VRT.
  */
 class VrtLocalEnvConfigureCommand extends FireCommandBase {
 
   /**
-   * Runs your VRT testing over you local env.
+   * Alters your local enviroment so you can use backstop (Lando only).
    *
    * Usage Example: fire vrt:local-env-config
    *

@@ -7,12 +7,12 @@ use Robo\Robo;
 use Symfony\Component\Yaml\Yaml;
 
 /**
- * Provides a command to build all php dependencies.
+ * Provides a command to run the VRT testing.
  */
 class VrtRunCommand extends FireCommandBase {
 
   /**
-   * Runs your VRT testing over you local env.
+   * Runs your VRT testing (lando Only)
    *
    * Usage Example: fire vrt-run
    *

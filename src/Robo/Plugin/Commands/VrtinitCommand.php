@@ -11,7 +11,7 @@ use Robo\Robo;
 class VrtinitCommand extends FireCommandBase {
 
   /**
-   * Intialices VRT for your env.
+   * Configure your local enviroment from scratch to use VRT testing (Lando only).
    *
    * Usage Example: fire vrt:init
    *

@@ -11,7 +11,7 @@ use Robo\Robo;
 class VrtReferenceCommand extends FireCommandBase {
 
   /**
-   * Runs your VRT testing over you local env.
+   * Takes new reference screeshots from the reference URL (lando only).
    *
    * Usage Example: fire vref
    *
