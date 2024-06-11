@@ -45,7 +45,7 @@ class VrtTestingSetupCommand extends FireCommandBase {
         $tasks->addTask($this->taskFilesystemStack()->copy($assets . 'backstop.json', $this->getLocalEnvRoot() . '/tests/backstop/backstop-local.json', TRUE));
       }
       else {
-        $tasks-s>addTask($this->taskFilesystemStack()->copy($this->getLocalEnvRoot() . '/tests/backstop/backstop.json', $this->getLocalEnvRoot() . '/tests/backstop/backstop-local.json', TRUE));
+        $tasks->addTask($this->taskFilesystemStack()->copy($this->getLocalEnvRoot() . '/tests/backstop/backstop.json', $this->getLocalEnvRoot() . '/tests/backstop/backstop-local.json', TRUE));
       }
       // Replacing Source URL
       $tasks->addTask(

@@ -33,6 +33,13 @@ class VrtGenbackstopConfCommand extends FireCommandBase {
         $tasks->addTask($this->taskFilesystemStack()->copy($assets . 'backstop.json', $this->getLocalEnvRoot() . '/tests/backstop/backstop-local.json'));
       }
     }
+    // Adding new lines to .gitignore,
+    $tasks->addTask($this->taskWriteToFile($this->getLocalEnvRoot() . '/.gitignore')
+      ->textFromFile($this->getLocalEnvRoot() . '/.gitignore')
+      ->appendUnlessMatches('/# FIRE VRT testing/', "# FIRE VRT testing\n")
+      ->appendUnlessMatches('/tests\/backstop\/backstop-local\.json/', "tests/backstop/backstop-local.json\n")
+      ->appendUnlessMatches('/web\/backstop\/\*/', "web/backstop/*")
+    );
 
     return $tasks;
   }
