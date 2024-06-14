@@ -27,8 +27,8 @@ class VrtGenbackstopConfCommand extends FireCommandBase {
       $tasks->addTask($this->taskFilesystemStack()->mkdir($this->getLocalEnvRoot() . '/tests/backstop'));
     }
     if ($env == 'lando') {
-      $override = $io->ask("This action Will create/override the following files:\n /tests/backstop/backstop.json Do you want to continue? (Y|N)");
-      if (preg_match('/^[Yy]{1}$/', $override, $matches)) {
+      $override = $io->confirm("This action Will create/override the following files:\n /tests/backstop/backstop.json Do you want to continue?", TRUE);
+      if ($override) {
         $tasks->addTask($this->taskFilesystemStack()->copy($assets . 'backstop.json', $this->getLocalEnvRoot() . '/tests/backstop/backstop.json'));
         $tasks->addTask($this->taskFilesystemStack()->copy($assets . 'backstop.json', $this->getLocalEnvRoot() . '/tests/backstop/backstop-local.json'));
       }

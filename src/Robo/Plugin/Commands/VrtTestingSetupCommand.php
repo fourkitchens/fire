@@ -38,7 +38,7 @@ class VrtTestingSetupCommand extends FireCommandBase {
       $test_domain = "https://$testEnviroment-$remoteSiteName.pantheonsite.io";
       $reference_domain = "https://$canonicalEnvOverride-$remoteSiteName.pantheonsite.io";
 
-      $cloneReferenceEnv = $io->choice('Do you want to Clone the database and files from ' . $canonicalEnvOverride . ' to your test env ' . $testEnviroment, ['Yes', 'No']);
+      $cloneReferenceEnv = $io->confirm('Do you want to Clone the database and files from ' . $canonicalEnvOverride . ' to your test env ' . $testEnviroment . '?', TRUE);
 
       $assets = dirname(__DIR__, 4) . '/assets/templates/';
       if (!file_exists($this->getLocalEnvRoot() . '/tests/backstop/backstop.json')) {
@@ -61,7 +61,7 @@ class VrtTestingSetupCommand extends FireCommandBase {
       );
 
       // If user wants to clone the reference into the test env.
-      if (strtolower($cloneReferenceEnv) === 'yes') {
+      if ($cloneReferenceEnv) {
         if ($this->getCliToolStatus('terminus')) {
           $tasks->addTask($this->taskExec("terminus env:clone-content $remoteSiteName.$canonicalEnvOverride $testEnviroment --cc --updatedb -y"));
           $tasks->addTask($this->taskExec("terminus drush $remoteSiteName.$testEnviroment -- cim -y"));

@@ -22,22 +22,19 @@ class VrtRunCommand extends FireCommandBase {
    */
   public function vrtRun(ConsoleIO $io) {
     $env = Robo::config()->get('local_environment');
-    $tasks = $this->collectionBuilder($io);
     if ($env == 'lando') {
-      $reconfigureTestingUrls = $io->confirm('Do you want to reconfigure your reference and test urls?', true);
-      $newReferenceFiles = $io->confirm('Do you want to re-take the reference screenshots?', true);
+      $reconfigureTestingUrls = $io->confirm('Do you want to reconfigure your reference and test urls?', TRUE);
+      $newReferenceFiles = $io->confirm('Do you want to re-take the reference screenshots?', TRUE);
       if ($reconfigureTestingUrls) {
-        $tasks->addTask($this->taskExec('fire vrt:testing-setup'));
+        $this->taskExec('fire vrt:testing-setup')->run();
       }
       if ($newReferenceFiles) {
-        $tasks->addTask($this->taskExec('fire vrt:reference'));
+        $this->taskExec('fire vrt:reference')->run();
       }
       $landoConfig = Yaml::parse(file_get_contents($this->getLocalEnvRoot() . '/.lando.yml'));
 
-      $tasks->addTask($this->taskExec($env . ' ssh -s backstopserver -c "cd /app/tests/backstop && backstop test --config=/app/tests/backstop/backstop-local.json"'));
-      $tasks->addTask($this->taskOpenBrowser('https://' . $landoConfig['name'] . '.lndo.site/backstop/html_report/index.html'));
+      $this->taskExec($env . ' ssh -s backstopserver -c "cd /app/tests/backstop && backstop test --config=/app/tests/backstop/backstop-local.json"')->run();
+      $this->taskOpenBrowser('https://' . $landoConfig['name'] . '.lndo.site/backstop/html_report/index.html')->run();
     }
-
-    return $tasks;
   }
 }
