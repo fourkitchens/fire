@@ -35,7 +35,7 @@ class VrtLocalEnvConfigureCommand extends FireCommandBase {
           'run' => 'rm -rf /app/web/backstop/bitmaps_test/*',
         ];
         $landoYamlDump = Yaml::dump($landoConfig, 5, 2);
-        file_put_contents($this->getLocalEnvRoot() . '/.lando.yml', $landoYmalDump);
+        file_put_contents($this->getLocalEnvRoot() . '/.lando.yml', $landoYamlDump);
         $tasks->addTask($this->taskExec('lando rebuild -y'));
       }
     }
