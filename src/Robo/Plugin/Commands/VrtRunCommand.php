@@ -24,12 +24,12 @@ class VrtRunCommand extends FireCommandBase {
     $env = Robo::config()->get('local_environment');
     $tasks = $this->collectionBuilder($io);
     if ($env == 'lando') {
-      $reconfigureTestingUrls = $io->choice('Do you want yo reconfigure your reference and test urls?', ['Yes', 'No']);
-      $newReferenceFiles = $io->choice('Do you want to re-take the reference screenshots?', ['Yes', 'No']);
-      if (strtolower($reconfigureTestingUrls) === 'yes') {
+      $reconfigureTestingUrls = $io->confirm('Do you want to reconfigure your reference and test urls?', true);
+      $newReferenceFiles = $io->confirm('Do you want to re-take the reference screenshots?', true);
+      if ($reconfigureTestingUrls) {
         $tasks->addTask($this->taskExec('fire vrt:testing-setup'));
       }
-      if (strtolower($newReferenceFiles) === 'yes') {
+      if ($newReferenceFiles) {
         $tasks->addTask($this->taskExec('fire vrt:reference'));
       }
       $landoConfig = Yaml::parse(file_get_contents($this->getLocalEnvRoot() . '/.lando.yml'));
