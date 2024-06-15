@@ -25,7 +25,7 @@ class LintPhpCommand extends FireCommandBase {
     $installComposerPackages = FALSE;
     $createPhpCsFile = FALSE;
     if (!isset($composerJson['require-dev']['drupal/coder'])) {
-      $installComposerPackages = $io->confirm("You don't have the Coder composer package installed, Do you want us to install them for you (Required for linting)?", TRUE);
+      $installComposerPackages = $io->confirm("You don't have the Coder composer package installed, Do you want us to install it for you (Required for linting)?", TRUE);
     }
     if (!file_exists($this->getLocalEnvRoot() . '/phpcs.xml.dist')) {
       $createPhpCsFile = $io->confirm("You don't have a Base PHPCS configuration file (phpcs.xml.dist), Do you want us to create one for your Project?", TRUE);
