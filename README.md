@@ -124,6 +124,10 @@ Example:
 
       Alias: `import-db|db-import|importdb|dbimport|import_db|db_import`
 
+  - `local:lint:php`: Runs and configure Phpcs for you local env.
+
+    Alias: `phpcs`
+
   - `local:setup`: Setups your project from scratch (lando, ddev), all your data will be destroy and rebuild.
 
     Alias: `setup`
