@@ -52,6 +52,9 @@ class GetDBCommand extends FireCommandBase {
         }
         break;
     }
+    if (file_exists($dbFolder . '/site-db.sql.gz')) {
+      $tasks->addTask($this->taskFilesystemStack()->remove($dbFolder . '/site-db.sql.gz'));
+    }
     $tasks->addTask($this->taskExec("$cmd")->args($args));
 
     return $tasks;
