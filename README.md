@@ -140,6 +140,29 @@ Example:
 
     Alias: `xd-en`
 
+  - `vrt:generate-backstop-config`: Creates a basic Backstop.json for you.
+
+    Alias: `vgc`
+
+  - `vrt:init`: Configure your local enviroment from scratch to use VRT testing (Lando only).
+
+    Alias: `vinit`
+
+  - `vrt:local-env-config`: Alters your local enviroment so you can use backstop (Lando only).
+
+    Alias: `vlec`
+
+  - `vrt:reference`: Takes new reference screeshots from the reference URL (Lando only).
+
+    Alias: `vref`
+
+  - `vrt:run`: Runs your VRT testing (Lando only).
+
+    Alias: `vrun`
+
+  - `vrt:testing-setup`: Setups the Testing and reference sites for VRT testing.
+    Alias: `vts`
+
   - `command:overwrite`: This command allow you to overwrite the default fire command in your specific project.
 
     Alias: `ow`
