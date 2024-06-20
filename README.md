@@ -163,9 +163,13 @@ Example:
   - `vrt:testing-setup`: Setups the Testing and reference sites for VRT testing.
     Alias: `vts`
 
-  - `command:overwrite`: This command allow you to overwrite the default fire command in your specific project.
+  - `command:add`: This command allow you to create a custom command in your project.
 
-    Alias: `ow`
+    Alias: `ca, ac, add, command-add, add-command`
+
+  - `command:overwrite`: This command allow you to overwrite the default fire command in your project.
+
+    Alias: `co, oc, ow, overwrite, command-overwrite, overwrite-command`
 
     There are two types of overwrite:
 

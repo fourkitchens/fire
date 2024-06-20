@@ -2,9 +2,8 @@
 
 namespace Fire\Robo\Plugin\Commands;
 
-use Fire\Robo\Plugin\Commands\FireCommandBase;
 use Consolidation\AnnotatedCommand\CommandFileDiscovery;
-use Robo\Robo;
+use Fire\Robo\Plugin\Commands\FireCommandBase;
 use Robo\Collection\CollectionBuilder;
 use Robo\Symfony\ConsoleIO;
 use Symfony\Component\Console\Helper\QuestionHelper;
@@ -16,47 +15,7 @@ use Symfony\Component\Filesystem\Exception\IOException;
 /**
  * Provides a command to overwrite others command.
  */
-class OverwriteCommand extends FireCommandBase {
-
-  /**
-   * Overwrite a command.
-   *
-   * Usage Example: fire overwrite
-   *
-   * @command command:overwrite
-   * @aliases co, oc, ow, command-overwrite, overwrite-command, overwrite
-   * @usage fire overwrite
-   */
-  public function overwrite(ConsoleIO $io) {
-    $env = Robo::config()->get('local_environment');
-    $tasks = $this->collectionBuilder($io);
-    $namespace = 'FourKitchens\\FireCustom\\';
-    $src = 'fire/src/';
-    $commandPath = $src . 'Commands/';
-
-    // Step 1: Autoload my new commands.
-    if (!$this->composerAutoload($tasks, $env, $namespace, $src)) {
-      return;
-    }
-
-    // Step 2: Create the directory for the new commands.
-    $this->createCustomDirectory($commandPath);
-
-    // Step 3: ask the user for the command they want to override.
-    $selectedCommand = $this->askOverwriteCommand();
-
-    // Step 4: Create or overwrithe a command.
-    if ($selectedCommand === 'Custom') {
-      // Create command from scratch.
-      $this->createCustomCommand($namespace, $commandPath);
-    }
-    else {
-      // Copy the current command to the new path.
-      $this->overwriteExistingCommand($namespace, $commandPath, $selectedCommand);
-    }
-
-    return $tasks;
-  }
+class CmdCustomCommand extends FireCommandBase {
 
   /**
    * Add Autoload to the composer file.
@@ -66,7 +25,7 @@ class OverwriteCommand extends FireCommandBase {
    * @param string $commandPath
    * @return void
    */
-  private function composerAutoload(CollectionBuilder &$tasks, string $env, string $namespace, string $src) {
+  protected function composerAutoload(CollectionBuilder &$tasks, string $env, string $namespace, string $src) {
     $composerPath = 'composer.json';
 
     if (!file_exists($composerPath)) {
@@ -106,7 +65,7 @@ class OverwriteCommand extends FireCommandBase {
    * @param string $commandPath
    * @return void
    */
-  private function createCustomDirectory(string $commandPath) {
+  protected function createCustomDirectory(string $commandPath) {
     $filesystem = new Filesystem();
 
     if (!$filesystem->exists($commandPath)) {
@@ -120,7 +79,7 @@ class OverwriteCommand extends FireCommandBase {
   /**
    * Create the custom command.
    */
-  private function askOverwriteCommand() {
+  protected function askOverwriteCommand() {
     $currentPath = __DIR__;
     $discovery = new CommandFileDiscovery();
     $discovery->setSearchPattern('*Command.php');
@@ -130,14 +89,13 @@ class OverwriteCommand extends FireCommandBase {
     foreach ($commandClasses as $cmdName) {
       $key = str_replace('Command', '', $cmdName);
 
-      if ($cmdName === 'OverwriteCommand') {
+      if (in_array($cmdName, ['CmdAddCommand', 'CmdCustomCommand', 'CmdOverwriteCommand'])) {
         continue;
       }
 
       $commands[$key] = $cmdName;
     }
     asort($commands);
-    $commands['Custom'] = 'Custom';
 
     $question = 'Select a command to overwrite:';
     $selectedCommand = $this->choiceQuestion($question, array_keys($commands));
@@ -153,7 +111,7 @@ class OverwriteCommand extends FireCommandBase {
    * @param string $selectedCommand
    * @return void
    */
-  private function overwriteExistingCommand(string $namespace, string $commandPath, string $selectedCommand) {
+  protected function overwriteExistingCommand(ConsoleIO $io, string $namespace, string $commandPath, string $selectedCommand) {
     $filesystem = new Filesystem();
     $currentPath = __DIR__;
     $cmdFile = "{$selectedCommand}.php";
@@ -166,12 +124,9 @@ class OverwriteCommand extends FireCommandBase {
       return NULL;
     }
     elseif ($filesystem->exists($dest))  {
-      $this->say("The '$selectedCommand' command has already been overwritten previously.");
-      $question = 'Would you like to replace it?';
-      $options = ['No', 'Yes'];
-      $response = $this->choiceQuestion($question, $options);
+      $response = $io->confirm("The '$selectedCommand' command has already been overwritten previously. Would you like to replace it?", TRUE);
 
-      if ($response === 'Yes') {
+      if ($response) {
         $this->taskExec("rm $dest")->run();
       }
       else {
@@ -198,11 +153,11 @@ class OverwriteCommand extends FireCommandBase {
   }
 
   /**
-   * Undocumented function
+   * This function creates new command.
    *
    * @return void
    */
-  private function createCustomCommand($namespace, $commandPath) {
+  protected function createCustomCommand(ConsoleIO $io, $namespace, $commandPath) {
     $filesystem = new Filesystem();
     $currentPath = __DIR__;
     $origin = "{$currentPath}/tpl/__custom.txt";
@@ -218,12 +173,9 @@ class OverwriteCommand extends FireCommandBase {
 
     $writeFile = TRUE;
     if ($filesystem->exists($commandFile))  {
-      $this->say("The '$commandName' command has already exist.");
-      $question = 'Would you like to replace it?';
-      $options = ['No', 'Yes'];
-      $response = $this->choiceQuestion($question, $options);
+      $response = $io->confirm("The '$commandName' command has already exist. Would you like to replace it?", TRUE);
 
-      if ($response === 'Yes') {
+      if ($response) {
         $this->taskExec("rm $commandFile")->run();
       }
       else {
@@ -264,7 +216,6 @@ class OverwriteCommand extends FireCommandBase {
       }
     }
 
-    $this->say('');
     $this->say('You can edit it with the following command:');
     $this->say('');
     $this->say("  $ code $commandFile");
