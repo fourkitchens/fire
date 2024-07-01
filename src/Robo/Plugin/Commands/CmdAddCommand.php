@@ -24,7 +24,7 @@ class CmdAddCommand extends CmdCustomCommand {
     $tasks = $this->collectionBuilder($io);
     $namespace = 'FourKitchens\\FireCustom\\';
     $src = 'fire/src/';
-    $commandPath = $src . 'Commands/';
+    $commandPath = $src . 'Commands';
 
     // Step 1: Autoload my new commands.
     if (!$this->composerAutoload($tasks, $env, $namespace, $src)) {

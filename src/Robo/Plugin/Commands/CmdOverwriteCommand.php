@@ -24,7 +24,7 @@ class CmdOverwriteCommand extends CmdCustomCommand {
     $tasks = $this->collectionBuilder($io);
     $namespace = 'FourKitchens\\FireCustom\\';
     $src = 'fire/src/';
-    $commandPath = $src . 'Commands/';
+    $commandPath = $src . 'Commands';
 
     // Step 1: Autoload my new commands.
     if (!$this->composerAutoload($tasks, $env, $namespace, $src)) {
@@ -35,7 +35,7 @@ class CmdOverwriteCommand extends CmdCustomCommand {
     $this->createCustomDirectory($commandPath);
 
     // Step 3: ask the user for the command they want to override.
-    $selectedCommand = $this->askOverwriteCommand();
+    $selectedCommand = $this->askOverwriteCommand($io);
 
     // Step 4: Copy the current command to the new path.
     $this->overwriteExistingCommand($io, $namespace, $commandPath, $selectedCommand);

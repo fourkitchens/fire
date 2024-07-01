@@ -6,10 +6,6 @@ use Consolidation\AnnotatedCommand\CommandFileDiscovery;
 use Fire\Robo\Plugin\Commands\FireCommandBase;
 use Robo\Collection\CollectionBuilder;
 use Robo\Symfony\ConsoleIO;
-use Symfony\Component\Console\Helper\QuestionHelper;
-use Symfony\Component\Console\Question\ChoiceQuestion;
-use Symfony\Component\Console\Question\Question;
-use Symfony\Component\Filesystem\Filesystem;
 use Symfony\Component\Filesystem\Exception\IOException;
 
 /**
@@ -52,9 +48,12 @@ class CmdCustomCommand extends FireCommandBase {
     }
 
     if ($needsUpdate) {
+      // Update composer.json file.
       file_put_contents($composerPath, json_encode($composerJson, JSON_PRETTY_PRINT | JSON_UNESCAPED_SLASHES));
-      $tasks->addTask($this->taskExec("$env composer dump-autoload"));
     }
+
+    // Re-import the autoload.
+    $tasks->addTask($this->taskExec("$env composer dump-autoload"));
   
     return TRUE;
   }
@@ -66,10 +65,11 @@ class CmdCustomCommand extends FireCommandBase {
    * @return void
    */
   protected function createCustomDirectory(string $commandPath) {
-    $filesystem = new Filesystem();
+    $filesystem = $this->taskFilesystemStack();
+    $commandPath = $this->getLocalEnvRoot() . '/'  . $commandPath;
 
-    if (!$filesystem->exists($commandPath)) {
-      $filesystem->mkdir($commandPath, 0755);
+    if (!file_exists($commandPath)) {
+      $filesystem->mkdir($commandPath, 0755)->run();
       $this->say('The path has been created.');
     } else {
       $this->say('The path already exists.');
@@ -79,7 +79,7 @@ class CmdCustomCommand extends FireCommandBase {
   /**
    * Create the custom command.
    */
-  protected function askOverwriteCommand() {
+  protected function askOverwriteCommand(ConsoleIO $io) {
     $currentPath = __DIR__;
     $discovery = new CommandFileDiscovery();
     $discovery->setSearchPattern('*Command.php');
@@ -97,8 +97,8 @@ class CmdCustomCommand extends FireCommandBase {
     }
     asort($commands);
 
-    $question = 'Select a command to overwrite:';
-    $selectedCommand = $this->choiceQuestion($question, array_keys($commands));
+    // Ask to the user for the command to overwrite.
+    $selectedCommand = $io->choice('Select a command to overwrite:', array_keys($commands));
 
     return $commands[$selectedCommand];
   }
@@ -112,22 +112,24 @@ class CmdCustomCommand extends FireCommandBase {
    * @return void
    */
   protected function overwriteExistingCommand(ConsoleIO $io, string $namespace, string $commandPath, string $selectedCommand) {
-    $filesystem = new Filesystem();
     $currentPath = __DIR__;
+    $filesystem = $this->taskFilesystemStack();
+    $envRoot = $this->getLocalEnvRoot();
     $cmdFile = "{$selectedCommand}.php";
+    $cmdCustomFile = "{$commandPath}/Custom{$cmdFile}";
     $origin = "{$currentPath}/{$cmdFile}";
-    $dest = "{$commandPath}Custom{$cmdFile}";
+    $destination = "{$envRoot}/{$cmdCustomFile}";
     $writeFile = TRUE;
 
-    if (!$filesystem->exists($origin)) {
+    if (!file_exists($origin)) {
       $this->say("Could not locate file '$origin'.");
       return NULL;
     }
-    elseif ($filesystem->exists($dest))  {
+    elseif (file_exists($destination))  {
       $response = $io->confirm("The '$selectedCommand' command has already been overwritten previously. Would you like to replace it?", TRUE);
 
       if ($response) {
-        $this->taskExec("rm $dest")->run();
+        $filesystem->remove($destination)->run();
       }
       else {
         $writeFile = FALSE;
@@ -135,20 +137,18 @@ class CmdCustomCommand extends FireCommandBase {
     }
 
     if ($writeFile) {
-      $question = 'Select the type of overwrite you want to use:';
-      $options = ['Full', 'Partial'];
-      $selectedType = $this->choiceQuestion($question, $options);
+      $selectedType = $io->choice('Select the type of overwrite you want to use:', ['Full', 'Partial']);
 
       $this->say('');
-      $this->taskExec("cp -a $origin $dest")->run();
+      $filesystem->copy($origin, $destination, TRUE)->run();
       $this->say("The '$selectedCommand' command was successfully overwritten.");
-      $this->updateCustomCommand($namespace, $dest, $selectedType);
+      $this->updateCustomCommand($namespace, $destination, $selectedType);
     }
 
     $this->say('');
     $this->say('You can edit it with the following command:');
     $this->say('');
-    $this->say("  $ code $dest");
+    $this->say("  $ code $cmdCustomFile");
     $this->say('');
   }
 
@@ -158,25 +158,34 @@ class CmdCustomCommand extends FireCommandBase {
    * @return void
    */
   protected function createCustomCommand(ConsoleIO $io, $namespace, $commandPath) {
-    $filesystem = new Filesystem();
-    $currentPath = __DIR__;
-    $origin = "{$currentPath}/tpl/__custom.txt";
+    $filesystem = $this->taskFilesystemStack();
+    $envRoot = $this->getLocalEnvRoot();
+    $origin = dirname(__DIR__, 4) . '/assets/templates/CustomCommand.php';
 
+    // Show message to the user.
     $this->say('Creating a new command.');
-    $commandName = $this->generalQuestion('Enter the name of the new command:');
-    $commandAlias = $this->generalQuestion('Enter the alias of the new command:');
-    $commandDescription = $this->generalQuestion('Enter a description for the new command:');
+
+    // Prompt the user for information about the new command.
+    $commandName = $io->ask('Enter the name of the new command:');
+    $commandAlias = $io->ask('Enter the alias of the new command:');
+    $commandDescription = $io->ask('Enter a description for the new command:');
+
+    // Set variables.
+    $commandNamespace = "{$namespace}Commands";
     $commandName = $this->convertToCamelCase($commandName);
     $commandFunction = lcfirst($commandName);
+    $commandFire = strtolower($commandFunction);
+    $commandFireFull = "custom:{$commandFire}";
     $commandName = "Custom{$commandName}Command";
-    $commandFile = "{$commandPath}{$commandName}.php";
+    $commandFile = "{$commandPath}/{$commandName}.php";
+    $destination = "{$envRoot}/{$commandFile}";
 
     $writeFile = TRUE;
-    if ($filesystem->exists($commandFile))  {
+    if (file_exists($destination))  {
       $response = $io->confirm("The '$commandName' command has already exist. Would you like to replace it?", TRUE);
 
       if ($response) {
-        $this->taskExec("rm $commandFile")->run();
+        $filesystem->remove($destination)->run();
       }
       else {
         $writeFile = FALSE;
@@ -184,36 +193,30 @@ class CmdCustomCommand extends FireCommandBase {
     }
 
     if ($writeFile) {
-      $this->taskExec("cp -a $origin $commandFile")->run();
+      // Copy the new command template.
+      $filesystem->copy($origin, $destination, TRUE)->run();
 
-      // Read the file.
-      $fileContent = file_get_contents($commandFile);
-      // Update Data.
-      $fileContent = str_replace(
-        [
+      // Replace the tokens.
+      $this->taskReplaceInFile($destination)
+        ->from([
           '<namespace>',
           '<commandName>',
           '<commandDescription>',
           '<commandAlias>',
           '<commandFunction>',
           '<commandFire>',
-        ],
-        [
-          $namespace . 'Commands',
+          '<commandFireFull>',
+        ])
+        ->to([
+          $commandNamespace,
           $commandName,
           $commandDescription,
           $commandAlias,
           $commandFunction,
-          strtolower($commandFunction),
-        ],
-        $fileContent
-      );
-
-      try {
-        $filesystem->dumpFile($commandFile, $fileContent);
-      } catch (IOException $e) {
-        $this->say("{$e->getMessage()}");
-      }
+          $commandFire,
+          $commandFireFull,
+        ])
+        ->run();
     }
 
     $this->say('You can edit it with the following command:');
@@ -230,7 +233,7 @@ class CmdCustomCommand extends FireCommandBase {
    * @param string $type
    * @return void
    */
-  private function updateCustomCommand(string $namespace, string $filePath, $type = 'partial') {
+  private function updateCustomCommand(string $namespace, string $filePath, $type) {
     if (!file_exists($filePath)) {
       $this->say("The '$filePath' doesn't exist.");
       return;
@@ -289,9 +292,9 @@ class CmdCustomCommand extends FireCommandBase {
     // End generate the new file.
 
     // Save the file.
-    $filesystem = new Filesystem();
+    $filesystem = $this->taskFilesystemStack();
     try {
-      $filesystem->dumpFile($filePath, $newFileContent);
+      $filesystem->dumpFile($filePath, $newFileContent)->run();
     } catch (IOException $e) {
       $this->say("{$e->getMessage()}");
     }
@@ -360,48 +363,6 @@ class CmdCustomCommand extends FireCommandBase {
     $newFunctionContent .= "    return \$tasks;\n";
 
     return $newFunctionContent;
-  }
-
-  /**
-   * Create a function to ask the users for choice question.
-   */
-  private function choiceQuestion(string $userQuestion, array $options) {
-    // Get input and output.
-    $input = $this->input();
-    $output = $this->output();
-
-    $output->writeln('');
-    // Ask to the user.
-    $helper = new QuestionHelper();
-    $question = new ChoiceQuestion(
-      $userQuestion . PHP_EOL,
-      $options,
-    );
-
-    $question->setErrorMessage('Invalid %s option.');
-    $selected = $helper->ask($input, $output, $question);
-
-    return $selected;
-  }
-
-  /**
-   * General question.
-   *
-   * @param string $question
-   * @return void
-   */
-  private function generalQuestion(string $question) {
-    $helper = new QuestionHelper();
-    $input = $this->input();
-    $output = $this->output();
-
-    // Set the question.
-    $question = new Question(PHP_EOL . $question . PHP_EOL);
-
-    // Get user response.
-    $response = $helper->ask($input, $output, $question);
-
-    return $response;
   }
 
   /**

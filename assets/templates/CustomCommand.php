@@ -16,7 +16,7 @@ class <commandName> extends FireCommandBase {
    *
    * Usage Example: fire <commandFire>
    *
-   * @command custom:<commandFire>
+   * @command <commandFireFull>
    * @aliases <commandAlias>
    */
   public function <commandFunction>(ConsoleIO $io) {
