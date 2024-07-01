@@ -48,6 +48,9 @@ class GetFilesCommand extends FireCommandBase {
       case 'acquia':
         $tasks = $this->getFilesAcquia($io, $tasks, $remoteSiteName, $remoteEnv);
         break;
+      case 'platform':
+        $tasks = $this->getFilesPlatform($io, $tasks, $remoteSiteName, $remoteEnv);
+        break;
       case 'pantheon':
       default:
         $tasks = $this->getFilesPantheon($io, $opts, $tasks, $remoteSiteName, $remoteEnv, $origFilesFolder, $destFilesFolder);
@@ -78,6 +81,7 @@ class GetFilesCommand extends FireCommandBase {
     else {
       return 'Your Local env doesnt have a valid acquia project structure, your drupal root should be the "docroot" folder.';
     }
+
     return $tasks;
   }
 
@@ -103,4 +107,26 @@ class GetFilesCommand extends FireCommandBase {
 
     return $tasks;
   }
+
+  /**
+   * Helper function to get files from PlatformSH.
+   */
+  private function getFilesPlatform(ConsoleIO $io, $tasks, $remoteSiteName, $remoteEnv) {
+    if (file_exists($this->getLocalEnvRoot() . '/web/sites/default/files')) {
+      if ($this->getCliToolStatus('acli')) {
+        $io->say('Syncing files from the ' . $remoteEnv . ' environment...');
+        $cmd = "platform mount:download /mnt/files {$this->getLocalEnvRoot()}/web/sites/default/files -p $remoteSiteName -e $remoteEnv";
+        $tasks->addTask($this->taskExec($cmd));
+      }
+      else {
+        return 'Platform CLI is not installed, please install and configure it: https://docs.platform.sh/administration/cli.html';
+      }
+    }
+    else {
+      return 'Your Local env doesnt have a valid platform project structure, your drupal root should be the "web" folder.';
+    }
+
+    return $tasks;
+  }
+
 }
