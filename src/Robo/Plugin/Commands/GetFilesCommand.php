@@ -113,7 +113,7 @@ class GetFilesCommand extends FireCommandBase {
    */
   private function getFilesPlatform(ConsoleIO $io, $tasks, $remoteSiteName, $remoteEnv) {
     if (file_exists($this->getLocalEnvRoot() . '/web/sites/default/files')) {
-      if ($this->getCliToolStatus('acli')) {
+      if ($this->getCliToolStatus('platform')) {
         $io->say('Syncing files from the ' . $remoteEnv . ' environment...');
         $cmd = "platform mount:download /mnt/files {$this->getLocalEnvRoot()}/web/sites/default/files -p $remoteSiteName -e $remoteEnv";
         $tasks->addTask($this->taskExec($cmd));
