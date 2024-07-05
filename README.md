@@ -165,11 +165,11 @@ Example:
 
   - `command:add`: This command allow you to create a custom command in your project.
 
-    Alias: `ca, ac, add, command-add, add-command`
+    Alias: `ca, cadd`
 
   - `command:overwrite`: This command allow you to overwrite the default fire command in your project.
 
-    Alias: `co, oc, ow, overwrite, command-overwrite, overwrite-command`
+    Alias: `co, coverride`
 
     There are two types of overwrite:
 
