@@ -8,7 +8,7 @@ use Robo\Symfony\ConsoleIO;
 /**
  * Provides a command to overwrite others command.
  */
-class CmdOverwriteCommand extends CmdCustomCommand {
+class CmdOverwriteCommand extends CmdCustomCommandBase {
 
   /**
    * Overwrite a command.
@@ -16,7 +16,7 @@ class CmdOverwriteCommand extends CmdCustomCommand {
    * Usage Example: fire command:overwrite
    *
    * @command command:overwrite
-   * @aliases co, oc, ow, overwrite, command-overwrite, overwrite-command
+   * @aliases co, coverride
    * @usage fire command-overwrite
    */
   public function overwrite(ConsoleIO $io) {

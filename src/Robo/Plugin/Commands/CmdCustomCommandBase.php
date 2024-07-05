@@ -11,7 +11,7 @@ use Symfony\Component\Filesystem\Exception\IOException;
 /**
  * Provides a command to overwrite others command.
  */
-class CmdCustomCommand extends FireCommandBase {
+class CmdCustomCommandBase extends FireCommandBase {
 
   /**
    * Add Autoload to the composer file.
@@ -54,7 +54,7 @@ class CmdCustomCommand extends FireCommandBase {
 
     // Re-import the autoload.
     $tasks->addTask($this->taskExec("$env composer dump-autoload"));
-  
+
     return TRUE;
   }
 
@@ -166,9 +166,9 @@ class CmdCustomCommand extends FireCommandBase {
     $this->say('Creating a new command.');
 
     // Prompt the user for information about the new command.
-    $commandName = $io->ask('Enter the name of the new command:');
-    $commandAlias = $io->ask('Enter the alias of the new command:');
-    $commandDescription = $io->ask('Enter a description for the new command:');
+    $commandName = $io->ask('Enter the name of the new command');
+    $commandAlias = $io->ask('Enter the alias of the new command');
+    $commandDescription = $io->ask('Enter a description for the new command');
 
     // Set variables.
     $commandNamespace = "{$namespace}Commands";

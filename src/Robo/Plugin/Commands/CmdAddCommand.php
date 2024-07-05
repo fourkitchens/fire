@@ -8,7 +8,7 @@ use Robo\Symfony\ConsoleIO;
 /**
  * Provides a command to overwrite others command.
  */
-class CmdAddCommand extends CmdCustomCommand {
+class CmdAddCommand extends CmdCustomCommandBase {
 
   /**
    * Add a new command.
@@ -16,7 +16,7 @@ class CmdAddCommand extends CmdCustomCommand {
    * Usage Example: fire command:add
    *
    * @command command:add
-   * @aliases ca, ac, add, command-add, add-command
+   * @aliases ca,cadd
    * @usage fire command-add
    */
   public function addCommand(ConsoleIO $io) {
