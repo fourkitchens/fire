@@ -16,7 +16,7 @@ class GetDBCommand extends FireCommandBase {
    * Usage Example: fire local:db:get
    *
    * @command local:get-db
-   * @aliases get-db, db-get, getdb, dbget, get_db, db_get, local:db:get, local:get:db
+   * @aliases gdb, getdb, dbget
    * @usage fire local:db:get
    *
    * @param $args drush you would like to execute.
