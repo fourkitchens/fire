@@ -167,6 +167,21 @@ Example:
   - `vrt:testing-setup`: Setups the Testing and reference sites for VRT testing.
     Alias: `vts`
 
+  - `command:add`: This command allow you to create a custom command in your project.
+
+    Alias: `ca, cadd`
+
+  - `command:overwrite`: This command allow you to overwrite the default fire command in your project.
+
+    Alias: `co, coverride`
+
+    There are two types of overwrite:
+
+      **1. Partial:** It first runs the original command and then allows you to add new functionality.
+
+      **2. Full:** It replaces all existing code and allows you to write the command from scratch.
+
+    You can also create a new command, just choice the "Custom" option at the prompt when it ask you for for the command you want to overwrite, then respond to the questions, now a new command should have been created in the custom path, by default only a task is added to cleans the Drupal cache, but from this file, you can add your custom tasks.
 
 ## Configuration
 Into your project root create a file called: `fire.yml` and iside of it speficify your global project settings.

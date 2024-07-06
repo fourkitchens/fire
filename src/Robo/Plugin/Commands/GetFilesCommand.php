@@ -16,7 +16,7 @@ class GetFilesCommand extends FireCommandBase {
    * Usage Example: fire local:files:get
    *
    * @command local:get-files
-   * @aliases get-files, files-get, getfiles, filesget, get_files, files_get, pull-files, pull_files, local:file:get, local:get:files
+   * @aliases gf, get-files, getfiles
    * @usage fire local:files:get
    * @option $no-download Reuse your existing files copy in the reference folder and placing them in the files folder (Pantheon only).
    */

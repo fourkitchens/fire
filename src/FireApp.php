@@ -9,6 +9,7 @@ use Robo\Runner;
 use Symfony\Component\Console\Application;
 use Symfony\Component\Console\Input\InputInterface;
 use Symfony\Component\Console\Output\OutputInterface;
+use Symfony\Component\Filesystem\Filesystem;
 use Consolidation\AnnotatedCommand\CommandFileDiscovery;
 
 class FireApp {
@@ -52,7 +53,6 @@ class FireApp {
    *   The Command out.
    */
   public function __construct(Config $config, $classLoader, InputInterface $input = NULL, OutputInterface $output = NULL) {
-
     // Automatically setting the local env config (lando or ddev) or getting it from the config file.
     if (!$config->get('local_environment') && $localEnv = $this->getLocalEnv()) {
       $config->set('local_environment', $localEnv);
@@ -70,13 +70,22 @@ class FireApp {
     // Looking for existing commands.
     $discovery = new CommandFileDiscovery();
     $discovery->setSearchPattern('*Command.php');
-    $this->commandClasses = $discovery->discover(__DIR__ . '/Robo/Plugin/Commands/', '\Fire\Robo\Plugin\Commands');
+
+    // Discover the class commands.
+    $filesystem = new Filesystem();
+    $projectCommandClasses = [];
+    $customDir = str_replace('vendor/fourkitchens/', '', __DIR__) . '/Commands/';
+    if ($filesystem->exists($customDir)) {
+      $projectCommandClasses = $discovery->discover($customDir, '\FourKitchens\FireCustom\Commands');
+    }
+    $mainCommandClasses = $discovery->discover(__DIR__ . '/Robo/Plugin/Commands/', '\Fire\Robo\Plugin\Commands');
+    $this->commandClasses = array_merge($mainCommandClasses, $projectCommandClasses);
 
     // Instantiate Robo Runner.
     $this->runner = new Runner();
-     $this->runner->setContainer($container);
-     $this->runner->setSelfUpdateRepository(self::REPOSITORY);
-     $this->runner->setClassLoader($classLoader);
+    $this->runner->setContainer($container);
+    $this->runner->setSelfUpdateRepository(self::REPOSITORY);
+    $this->runner->setClassLoader($classLoader);
   }
 
   /**

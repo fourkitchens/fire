@@ -16,7 +16,7 @@ class GetDBCommand extends FireCommandBase {
    * Usage Example: fire local:db:get
    *
    * @command local:get-db
-   * @aliases get-db, db-get, getdb, dbget, get_db, db_get, local:db:get, local:get:db
+   * @aliases gdb, getdb, dbget
    * @usage fire local:db:get
    *
    * @param $args drush you would like to execute.
@@ -51,6 +51,9 @@ class GetDBCommand extends FireCommandBase {
           return 'Terminus is not installed, please install and configure it: https://docs.pantheon.io/terminus/install';
         }
         break;
+    }
+    if (file_exists($dbFolder . '/site-db.sql.gz')) {
+      $tasks->addTask($this->taskFilesystemStack()->remove($dbFolder . '/site-db.sql.gz'));
     }
     $tasks->addTask($this->taskExec("$cmd")->args($args));
 
