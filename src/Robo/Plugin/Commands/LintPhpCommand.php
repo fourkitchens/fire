@@ -27,8 +27,8 @@ class LintPhpCommand extends FireCommandBase {
     if (!isset($composerJson['require-dev']['drupal/coder'])) {
       $installComposerPackages = $io->confirm("You don't have the Coder composer package installed, Do you want us to install it for you (Required for linting)?", TRUE);
     }
-    if (!file_exists($this->getLocalEnvRoot() . '/phpcs.xml.dist')) {
-      $createPhpCsFile = $io->confirm("You don't have a Base PHPCS configuration file (phpcs.xml.dist), Do you want us to create one for your Project?", TRUE);
+    if (!file_exists($this->getLocalEnvRoot() . '/phpcs.xml')) {
+      $createPhpCsFile = $io->confirm("You don't have a Base PHPCS configuration file (phpcs.xml), Do you want us to create one for your Project?", TRUE);
     }
     $tasks = $this->collectionBuilder($io);
     if ($installComposerPackages) {
@@ -47,7 +47,7 @@ class LintPhpCommand extends FireCommandBase {
     }
     if ($createPhpCsFile) {
       $assets = dirname(__DIR__, 4) . '/assets/templates/';
-      $tasks->addTask($this->taskFilesystemStack()->copy($assets . 'phpcs.xml.dist', $this->getLocalEnvRoot() . '/phpcs.xml.dist'));
+      $tasks->addTask($this->taskFilesystemStack()->copy($assets . 'phpcs.xml', $this->getLocalEnvRoot() . '/phpcs.xml'));
     }
     $tasks->addTask($this->taskExec('./vendor/bin/phpcs -d memory_limit=-1'));
     return $tasks;
