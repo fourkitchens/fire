@@ -33,12 +33,6 @@ class LintPhpCommand extends FireCommandBase {
     $tasks = $this->collectionBuilder($io);
     if ($installComposerPackages) {
     $tasks->addTask($this->taskComposerRequire()
-      ->dependency('dealerdirect/phpcodesniffer-composer-installer')
-      ->dir($this->getLocalEnvRoot())
-      ->dev()
-      ->ignorePlatformRequirements()
-    );
-    $tasks->addTask($this->taskComposerRequire()
       ->dependency('drupal/coder')
       ->dir($this->getLocalEnvRoot())
       ->dev()
