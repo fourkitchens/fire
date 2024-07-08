@@ -64,6 +64,10 @@ Example:
 
     alias: `stop`
 
+  - `env:poweroff`: Stops the local Docker and the proxy based env (lando, ddev).
+
+    alias: `poweroff`
+
   - `local:build`: Builds your Drupal Site from the scratch.
 
     Alias: `local-build, build`
