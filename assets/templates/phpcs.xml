@@ -1,0 +1,33 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<ruleset name="Standard Drupal Project">
+  <description>PHP CodeSniffer configuration for myproject development.</description>
+  <file>web/modules/custom</file>
+  <file>web/themes/custom</file>
+  <exclude-pattern>vendor</exclude-pattern>
+  <exclude-pattern>contrib</exclude-pattern>
+  <exclude-pattern>tests</exclude-pattern>
+  <exclude-pattern>pattern-lab</exclude-pattern>
+  <exclude-pattern>patternlab</exclude-pattern>
+  <exclude-pattern>node_modules</exclude-pattern>
+  <exclude-pattern>*components/_twig-components*</exclude-pattern>
+  <exclude-pattern>*/themes/custom/**/dist/*</exclude-pattern>
+
+  <config name="drupal_core_version" value="8"/>
+  <arg name="extensions" value="php,module,inc,install,test,profile,theme,info"/>
+
+  <!-- If you have Coder installed locally then you can reference the Drupal
+  standards with relative paths. Otherwise simply use "Drupal" and
+  "DrupalPractice. -->
+  <rule ref="Drupal">
+    <!-- Example how you would disable a rule you are not compliant with yet:
+    <exclude name="Drupal.Commenting.Deprecated"/>
+    -->
+  </rule>
+  <rule ref="DrupalPractice"/>
+
+  <!-- Example how you would disable an external rule you do not like:
+  <rule ref="PEAR.Functions.ValidDefaultValue.NotAtEnd">
+    <severity>0</severity>
+  </rule>
+  -->
+</ruleset>
