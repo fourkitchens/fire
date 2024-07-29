@@ -88,9 +88,13 @@ Example:
 
       Alias: `build-php`
 
-  - `local:build:theme`: Builds Projects theme.
+  - `local:theme:build`: Builds the Projects theme.
 
-     Alias `build-theme`
+     Alias `theme-build`
+
+  - `local:theme:watch`: Watches the Projects theme.
+
+     Alias `theme-watch`
 
   - `local:configure:export`: Exports sites configuration - none interaction required.
 

@@ -9,7 +9,7 @@ use Robo\Robo;
 /**
  * Provides a command to build the custom theme.
  */
-class BuildThemeCommand extends FireCommandBase {
+class ThemeBuildCommand extends FireCommandBase {
 
   /**
    * Builds Projects theme.
