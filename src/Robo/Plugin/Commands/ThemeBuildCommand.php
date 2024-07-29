@@ -14,10 +14,10 @@ class ThemeBuildCommand extends FireCommandBase {
   /**
    * Builds Projects theme.
    *
-   * Usage Example: fire build-theme
+   * Usage Example: fire theme-build
    *
-   * @command local:build:theme
-   * @aliases build-theme
+   * @command local:theme:build
+   * @aliases theme-build, build-theme, tb
    *
    */
   public function buildTheme(ConsoleIO $io) {
@@ -26,9 +26,10 @@ class ThemeBuildCommand extends FireCommandBase {
     $npmCommand = Robo::config()->get('local_theme_build_script');
     $command = 'cd ' . $root . ' && npm ci && npm run ' . $npmCommand;
     if (file_exists($root . '/.nvmrc') && getenv('NVM_DIR')) {
-        $command = 'export NVM_DIR=$HOME/.nvm && . $NVM_DIR/nvm.sh && cd ' . $root . ' && nvm install && npm ci && npm run ' . $npmCommand;
+      $command = 'export NVM_DIR=$HOME/.nvm && . $NVM_DIR/nvm.sh && cd ' . $root . ' && nvm install && npm ci && npm run ' . $npmCommand;
     }
     $tasks->taskExec($command);
     return $tasks;
   }
+
 }

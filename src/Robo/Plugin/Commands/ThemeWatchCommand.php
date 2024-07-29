@@ -17,7 +17,7 @@ class ThemeWatchCommand extends FireCommandBase {
    * Usage Example: fire theme-watch
    *
    * @command local:theme:watch
-   * @aliases theme-watch watch-theme tw
+   * @aliases theme-watch, watch-theme, tw
    *
    */
   public function buildTheme(ConsoleIO $io) {
