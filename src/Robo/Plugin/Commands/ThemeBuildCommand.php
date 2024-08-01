@@ -20,7 +20,7 @@ class ThemeBuildCommand extends FireCommandBase {
    * @aliases theme-build, build-theme, tb
    *
    */
-  public function buildTheme(ConsoleIO $io) {
+  public function themeBuild(ConsoleIO $io) {
     $root = $this->getThemePath();
     $tasks = $this->collectionBuilder($io);
     $npmCommand = Robo::config()->get('local_theme_build_script');

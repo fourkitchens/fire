@@ -20,11 +20,11 @@ class ThemeWatchCommand extends FireCommandBase {
    * @aliases theme-watch, watch-theme, tw
    *
    */
-  public function buildTheme(ConsoleIO $io) {
+  public function themeWatch(ConsoleIO $io) {
     $root = $this->getThemePath();
     $tasks = $this->collectionBuilder($io);
     $npmCommand = Robo::config()->get('local_theme_watch_script') ?: 'watch';
-    $command = 'cd ' . $root . ' && nvm install && npm run ' . $npmCommand;
+    $command = 'cd ' . $root . ' && npm run ' . $npmCommand;
     if (file_exists($root . '/.nvmrc') && getenv('NVM_DIR')) {
       $command = 'export NVM_DIR=$HOME/.nvm && . $NVM_DIR/nvm.sh && cd ' . $root . ' && nvm install && npm run ' . $npmCommand;
     }
