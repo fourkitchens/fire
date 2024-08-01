@@ -49,7 +49,7 @@ class LocalSetupCommand extends FireCommandBase {
           $tasks->addTask($this->taskExec($env . ' rebuild -y'));
           break;
         case 'ddev':
-          $tasks->addTask($this->taskExec($env . ' poweroff -y'));
+          $tasks->addTask($this->taskExec($env . ' poweroff'));
           $tasks->addTask($this->taskExec($env . ' delete -y'));
           $tasks->addTask($this->taskExec($env . ' start'));
       }
