@@ -36,8 +36,9 @@ class VrtRunCommand extends FireCommandBase {
       $this->taskOpenBrowser('https://' . $landoConfig['name'] . '.lndo.site/backstop_data/html_report/index.html')->run();
     }
     elseif ($env === 'ddev') {
+      $ddevConfig = Yaml::parse(file_get_contents($this->getLocalEnvRoot() . '/.ddev/config.yaml'));
       $this->taskExec($env . ' backstop test')->run();
-      $this->taskOpenBrowser('https://bscr.ddev.site/backstop_data/html_report/index.html')->run();
+      $this->taskOpenBrowser('https://' . $ddevConfig['name']. '.ddev.site/backstop_data/html_report/index.html')->run();
     }
   }
 }
