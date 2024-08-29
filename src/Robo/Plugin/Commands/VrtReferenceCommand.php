@@ -11,7 +11,7 @@ use Robo\Robo;
 class VrtReferenceCommand extends FireCommandBase {
 
   /**
-   * Takes new reference screeshots from the reference URL (lando only).
+   * Takes new reference screeshots from the reference URL.
    *
    * Usage Example: fire vref
    *

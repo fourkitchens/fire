@@ -11,7 +11,7 @@ use Robo\Robo;
 class VrtinitCommand extends FireCommandBase {
 
   /**
-   * Configure your local enviroment from scratch to use VRT testing (Lando only).
+   * Configure your local enviroment from scratch to use VRT testing.
    *
    * Usage Example: fire vrt:init
    *
@@ -22,10 +22,8 @@ class VrtinitCommand extends FireCommandBase {
   public function vrtInit(ConsoleIO $io) {
     $env = Robo::config()->get('local_environment');
     $tasks = $this->collectionBuilder($io);
-    if ($env == 'lando') {
-      $tasks->addTask($this->taskExec($this->getFireExecutable() . ' vrt:generate-backstop-config'));
-      $tasks->addTask($this->taskExec($this->getFireExecutable() . ' vrt:local-env-config'));
-    }
+    $tasks->addTask($this->taskExec($this->getFireExecutable() . ' vrt:generate-backstop-config'));
+    $tasks->addTask($this->taskExec($this->getFireExecutable() . ' vrt:local-env-config'));
 
     return $tasks;
   }
