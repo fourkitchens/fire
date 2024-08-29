@@ -23,8 +23,8 @@ class VrtinitCommand extends FireCommandBase {
     $env = Robo::config()->get('local_environment');
     $tasks = $this->collectionBuilder($io);
     if ($env == 'lando') {
-      $tasks->addTask($this->taskExec('fire vrt:generate-backstop-config'));
-      $tasks->addTask($this->taskExec('fire vrt:local-env-config'));
+      $tasks->addTask($this->taskExec($this->getFireExecutable() . ' vrt:generate-backstop-config'));
+      $tasks->addTask($this->taskExec($this->getFireExecutable() . ' vrt:local-env-config'));
     }
 
     return $tasks;
