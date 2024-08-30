@@ -12,7 +12,7 @@ use Symfony\Component\Yaml\Yaml;
 class VrtRunCommand extends FireCommandBase {
 
   /**
-   * Runs your VRT testing (lando Only)
+   * Runs your VRT testing.
    *
    * Usage Example: fire vrt-run
    *
@@ -22,19 +22,23 @@ class VrtRunCommand extends FireCommandBase {
    */
   public function vrtRun(ConsoleIO $io) {
     $env = Robo::config()->get('local_environment');
-    if ($env == 'lando') {
-      $reconfigureTestingUrls = $io->confirm('Do you want to reconfigure your reference and test urls?', TRUE);
-      $newReferenceFiles = $io->confirm('Do you want to re-take the reference screenshots?', TRUE);
-      if ($reconfigureTestingUrls) {
-        $this->taskExec('fire vrt:testing-setup')->run();
-      }
-      if ($newReferenceFiles) {
-        $this->taskExec('fire vrt:reference')->run();
-      }
+    $reconfigureTestingUrls = $io->confirm('Do you want to reconfigure your reference and test urls?', TRUE);
+    $newReferenceFiles = $io->confirm('Do you want to re-take the reference screenshots?', TRUE);
+    if ($reconfigureTestingUrls) {
+      $this->taskExec($this->getFireExecutable() . ' vrt:testing-setup')->run();
+    }
+    if ($newReferenceFiles) {
+      $this->taskExec($this->getFireExecutable() . ' vrt:reference')->run();
+    }
+    if ($env === 'lando') {
       $landoConfig = Yaml::parse(file_get_contents($this->getLocalEnvRoot() . '/.lando.yml'));
-
-      $this->taskExec($env . ' ssh -s backstopserver -c "cd /app/tests/backstop && backstop test --config=/app/tests/backstop/backstop-local.json"')->run();
-      $this->taskOpenBrowser('https://' . $landoConfig['name'] . '.lndo.site/backstop/html_report/index.html')->run();
+      $this->taskExec('lando ssh -s backstopserver -c "cd /app/tests/backstop && backstop test --config=/app/tests/backstop/backstop-local.json"')->run();
+      $this->taskOpenBrowser('https://' . $landoConfig['name'] . '.lndo.site/backstop_data/html_report/index.html')->run();
+    }
+    elseif ($env === 'ddev') {
+      $ddevConfig = Yaml::parse(file_get_contents($this->getLocalEnvRoot() . '/.ddev/config.yaml'));
+      $this->taskExec($env . ' backstop test')->run();
+      $this->taskOpenBrowser('https://' . $ddevConfig['name']. '.ddev.site/backstop_data/html_report/index.html')->run();
     }
   }
 }

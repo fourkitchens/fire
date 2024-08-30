@@ -152,19 +152,19 @@ Example:
 
     Alias: `vgc`
 
-  - `vrt:init`: Configure your local enviroment from scratch to use VRT testing (Lando only).
+  - `vrt:init`: Configure your local enviroment from scratch to use VRT testing.
 
     Alias: `vinit`
 
-  - `vrt:local-env-config`: Alters your local enviroment so you can use backstop (Lando only).
+  - `vrt:local-env-config`: Alters your local enviroment so you can use backstop.
 
     Alias: `vlec`
 
-  - `vrt:reference`: Takes new reference screeshots from the reference URL (Lando only).
+  - `vrt:reference`: Takes new reference screeshots from the reference URL.
 
     Alias: `vref`
 
-  - `vrt:run`: Runs your VRT testing (Lando only).
+  - `vrt:run`: Runs your VRT testing.
 
     Alias: `vrun`
 
