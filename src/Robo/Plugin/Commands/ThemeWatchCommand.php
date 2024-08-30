@@ -36,7 +36,7 @@ class ThemeWatchCommand extends FireCommandBase {
         break;
       case 'ddev':
         if (file_exists($root . '/.nvmrc') && getenv('NVM_DIR')) {
-          $command = 'cd ' . $root . ' && ddev nvm install && npm ci && npm run ' . $npmCommand;
+          $command = 'cd ' . $root . ' && ddev nvm install && ddev npm ci && ddev npm run ' . $npmCommand;
         }
         break;
     }
