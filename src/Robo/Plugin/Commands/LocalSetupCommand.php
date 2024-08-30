@@ -66,8 +66,8 @@ class LocalSetupCommand extends FireCommandBase {
         $buildOptions[] = '--get-files';
       }
 
-      $tasks->addTask($this->taskExec('fire local:build')->args($buildOptions));
-      $tasks->addTask($this->taskExec('fire drush uli'));
+      $tasks->addTask($this->taskExec($this->getFireExecutable() . ' local:build')->args($buildOptions));
+      $tasks->addTask($this->taskExec($this->getFireExecutable() . ' drush uli'));
       return $tasks;
     }
     $this->io()->title('Your site not will be rebuild...');
