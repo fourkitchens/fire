@@ -12,7 +12,7 @@ use Symfony\Component\Yaml\Yaml;
 class VrtRunCommand extends FireCommandBase {
 
   /**
-   * Runs your VRT testing (lando Only)
+   * Runs your VRT testing.
    *
    * Usage Example: fire vrt-run
    *
