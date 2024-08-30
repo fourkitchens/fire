@@ -12,7 +12,7 @@ use Symfony\Component\Yaml\Yaml;
 class VrtLocalEnvConfigureCommand extends FireCommandBase {
 
   /**
-   * Alters your local enviroment so you can use backstop (Lando only).
+   * Alters your local enviroment so you can use backstop.
    *
    * Usage Example: fire vrt:local-env-config
    *
@@ -22,24 +22,28 @@ class VrtLocalEnvConfigureCommand extends FireCommandBase {
    */
   public function vrtLocalEnvConfigure(ConsoleIO $io) {
     $env = Robo::config()->get('local_environment');
-    $tasks = $this->collectionBuilder($io);
-    if ($env == 'lando') {
+    if ($env === 'lando') {
       $landoConfig = Yaml::parse(file_get_contents($this->getLocalEnvRoot() . '/.lando.yml'));
       if (!isset($landoConfig['services']['backstopserver'])) {
         $landoConfig['services']['backstopserver'] = [
           'type' => 'node',
           'overrides' => [
-            'image' => 'backstopjs/backstopjs:6.3.1',
+            'image' => 'backstopjs/backstopjs:6.3.23',
             'shm_size' => '2gb',
           ],
-          'run' => 'rm -rf /app/web/backstop/bitmaps_test/*',
+          'run' => 'rm -rf /app/web/backstop_data/bitmaps_test/*',
         ];
         $landoYamlDump = Yaml::dump($landoConfig, 5, 2);
         file_put_contents($this->getLocalEnvRoot() . '/.lando.yml', $landoYamlDump);
-        $tasks->addTask($this->taskExec('lando rebuild -y'));
+        $this->taskExec('lando rebuild -y')->run();
+        $this->taskExec('lando ssh -s backstopserver -c "cd /app/web/ && backstop init"')->run();
       }
     }
+    elseif ($env === 'ddev') {
+      $this->taskExec('ddev get fourkitchens/ddev-drupal-backstop')->run();
+      $this->taskExec('ddev restart')->run();
+      $this->taskExec('ddev backstop init')->run();
 
-    return $tasks;
+    }
   }
 }

@@ -26,6 +26,9 @@ class BuildPhpCommand extends FireCommandBase {
     if ($env == 'lando') {
       $composerPath = '/app';
     }
+    elseif ($env == 'ddev') {
+      $composerPath = '/var/www/html';
+    }
     $tasks->addTask($this->taskExec($env . ' composer install -d ' . $composerPath));
     return $tasks;
   }

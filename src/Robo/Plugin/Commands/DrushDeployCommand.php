@@ -3,12 +3,11 @@
 namespace Fire\Robo\Plugin\Commands;
 
 use Robo\Symfony\ConsoleIO;
-use Robo\Tasks;
 
 /**
  * Provides a command to run all require drush task post a DB import.
  */
-class DrushDeployCommand extends Tasks {
+class DrushDeployCommand extends FireCommandBase {
 
   /**
    * Drush Build commands - updb , cr, cim , cr, deploy:hook
@@ -20,12 +19,12 @@ class DrushDeployCommand extends Tasks {
    */
   public function drush(ConsoleIO $io) {
     $tasks = $this->collectionBuilder($io);
-    $tasks->addTask($this->taskExec('fire drush updb -- -y'));
-    $tasks->addTask($this->taskExec('fire drush cr'));
-    $tasks->addTask($this->taskExec('fire drush cim -- -y'));
-    $tasks->addTask($this->taskExec('fire drush cr'));
-    $tasks->addTask($this->taskExec('fire drush cim -- -y'));
-    $tasks->addTask($this->taskExec('fire drush deploy:hook -- -y'));
+    $tasks->addTask($this->taskExec($this->getFireExecutable() . ' drush updb -- -y'));
+    $tasks->addTask($this->taskExec($this->getFireExecutable() . ' drush cr'));
+    $tasks->addTask($this->taskExec($this->getFireExecutable() . ' drush cim -- -y'));
+    $tasks->addTask($this->taskExec($this->getFireExecutable() . ' drush cr'));
+    $tasks->addTask($this->taskExec($this->getFireExecutable() . ' drush cim -- -y'));
+    $tasks->addTask($this->taskExec($this->getFireExecutable() . ' drush deploy:hook -- -y'));
     return $tasks;
   }
 }

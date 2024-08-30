@@ -20,25 +20,24 @@ class VrtGenbackstopConfCommand extends FireCommandBase {
    *
    */
   public function vrtGenBackstopConf(ConsoleIO $io) {
-    $env = Robo::config()->get('local_environment');
     $tasks = $this->collectionBuilder($io);
+
     $assets = dirname(__DIR__, 4) . '/assets/templates/';
     if (!file_exists($this->getLocalEnvRoot() . '/tests/backstop')) {
       $tasks->addTask($this->taskFilesystemStack()->mkdir($this->getLocalEnvRoot() . '/tests/backstop'));
     }
-    if ($env == 'lando') {
-      $override = $io->confirm("This action Will create/override the following files:\n /tests/backstop/backstop.json Do you want to continue?", TRUE);
-      if ($override) {
-        $tasks->addTask($this->taskFilesystemStack()->copy($assets . 'backstop.json', $this->getLocalEnvRoot() . '/tests/backstop/backstop.json'));
-        $tasks->addTask($this->taskFilesystemStack()->copy($assets . 'backstop.json', $this->getLocalEnvRoot() . '/tests/backstop/backstop-local.json'));
-      }
+    $override = $io->confirm("This action Will create/override the following files:\n /tests/backstop/backstop.json Do you want to continue?", FALSE);
+    if ($override) {
+      $tasks->addTask($this->taskFilesystemStack()->copy($assets . 'backstop.json', $this->getLocalEnvRoot() . '/tests/backstop/backstop.json'));
+      $tasks->addTask($this->taskFilesystemStack()->copy($assets . 'backstop.json', $this->getLocalEnvRoot() . '/tests/backstop/backstop-local.json'));
     }
+
     // Adding new lines to .gitignore,
     $tasks->addTask($this->taskWriteToFile($this->getLocalEnvRoot() . '/.gitignore')
       ->textFromFile($this->getLocalEnvRoot() . '/.gitignore')
       ->appendUnlessMatches('/# FIRE VRT testing/', "# FIRE VRT testing\n")
       ->appendUnlessMatches('/tests\/backstop\/backstop-local\.json/', "tests/backstop/backstop-local.json\n")
-      ->appendUnlessMatches('/web\/backstop\/\*/', "web/backstop/*")
+      ->appendUnlessMatches('/web\/backstop_data\/\*/', "web/backstop_data/*")
     );
 
     return $tasks;

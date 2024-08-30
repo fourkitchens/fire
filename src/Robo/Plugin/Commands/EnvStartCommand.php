@@ -14,7 +14,7 @@ class EnvStartCommand extends FireCommandBase {
   /**
    * Starts the local Docker based env (lando, ddev);
    *
-   * Usage Example: fire build-php
+   * Usage Example: fire start
    *
    * @command env:start
    * @aliases start
@@ -24,4 +24,5 @@ class EnvStartCommand extends FireCommandBase {
     $env = Robo::config()->get('local_environment');
     return $this->taskExec($env . ' start')->printOutput(TRUE)->run();
   }
+
 }

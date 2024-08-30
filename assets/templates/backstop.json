@@ -60,11 +60,11 @@
   ],
 
   "paths": {
-    "bitmaps_reference": "../../web/backstop/bitmaps_reference",
-    "bitmaps_test": "../../web/backstop/bitmaps_test",
-    "engine_scripts": "../../web/backstop/engine_scripts",
-    "html_report": "../../web/backstop/html_report",
-    "ci_report": "../../web/backstop/ci_report"
+    "bitmaps_reference": "../../web/backstop_data/bitmaps_reference",
+    "bitmaps_test": "../../web/backstop_data/bitmaps_test",
+    "engine_scripts": "../../web/backstop_data/engine_scripts",
+    "html_report": "../../web/backstop_data/html_report",
+    "ci_report": "../../web/backstop_data/ci_report"
   },
   "report": ["CI", "browser"],
   "engine": "puppeteer",

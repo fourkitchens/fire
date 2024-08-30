@@ -14,7 +14,7 @@ class EnvStopCommand extends FireCommandBase {
   /**
    * Stops the local Docker based env (lando, ddev);
    *
-   * Usage Example: fire build-php
+   * Usage Example: fire stop
    *
    * @command env:stop
    * @aliases stop
@@ -24,4 +24,5 @@ class EnvStopCommand extends FireCommandBase {
     $env = Robo::config()->get('local_environment');
     return $this->taskExec($env . ' stop')->printOutput(TRUE)->run();
   }
+
 }

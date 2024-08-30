@@ -49,7 +49,7 @@ class LocalSetupCommand extends FireCommandBase {
           $tasks->addTask($this->taskExec($env . ' rebuild -y'));
           break;
         case 'ddev':
-          $tasks->addTask($this->taskExec($env . ' poweroff -y'));
+          $tasks->addTask($this->taskExec($env . ' poweroff'));
           $tasks->addTask($this->taskExec($env . ' delete -y'));
           $tasks->addTask($this->taskExec($env . ' start'));
       }
@@ -66,8 +66,8 @@ class LocalSetupCommand extends FireCommandBase {
         $buildOptions[] = '--get-files';
       }
 
-      $tasks->addTask($this->taskExec('fire local:build')->args($buildOptions));
-      $tasks->addTask($this->taskExec('fire drush uli'));
+      $tasks->addTask($this->taskExec($this->getFireExecutable() . ' local:build')->args($buildOptions));
+      $tasks->addTask($this->taskExec($this->getFireExecutable() . ' drush uli'));
       return $tasks;
     }
     $this->io()->title('Your site not will be rebuild...');

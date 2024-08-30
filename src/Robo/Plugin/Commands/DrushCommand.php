@@ -17,8 +17,8 @@ class DrushCommand extends Tasks {
    * Usage Example: fire drush -- uli
    *
    * @command local:drush
-   * @aliases drush
-   * @usage -- uli
+   * @aliases d, drush
+   * @usage -- d uli
    *
    * @param $args drush you would like to execute.
    */
@@ -28,4 +28,5 @@ class DrushCommand extends Tasks {
     $tasks->addTask($this->taskExec($env . ' drush')->args($args));
     return $tasks;
   }
+
 }
