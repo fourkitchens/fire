@@ -58,6 +58,8 @@ class FireApp {
       $config->set('local_environment', $localEnv);
     }
 
+    $projectRoot = dirname(__DIR__, 4);
+
     // Create applicaton.
     $this->setConfig($config);
     $appVersion = trim(file_get_contents(dirname(__DIR__, 1) . '/VERSION'));
@@ -71,6 +73,9 @@ class FireApp {
     $discovery = new CommandFileDiscovery();
     $discovery->setSearchPattern('*Command.php');
 
+    if (!file_exists($projectRoot . '/fire.yml')) {
+      $discovery->setSearchPattern('InitCommand.php');
+    }
     // Discover the class commands.
     $filesystem = new Filesystem();
     $projectCommandClasses = [];
@@ -80,7 +85,6 @@ class FireApp {
     }
     $mainCommandClasses = $discovery->discover(__DIR__ . '/Robo/Plugin/Commands/', '\Fire\Robo\Plugin\Commands');
     $this->commandClasses = array_merge($mainCommandClasses, $projectCommandClasses);
-
     // Instantiate Robo Runner.
     $this->runner = new Runner();
     $this->runner->setContainer($container);
