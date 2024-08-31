@@ -93,9 +93,20 @@ class FireCommandBase extends Tasks {
 
   /**
    * Returns fire's vendors executable.
+   *
+   * @return string
    */
   public function getFireExecutable() {
     return $this->vendorPath . '/bin/fire';
+  }
+
+  /**
+   * Return's projects vendor folder path.
+   *
+   * @return string
+   */
+  public function getVendorPath() {
+    return $this->vendorPath;
   }
 
 }
