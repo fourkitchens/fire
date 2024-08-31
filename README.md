@@ -56,6 +56,10 @@ Example:
 ```
 
 ## Available commands:
+  - `init`: Triggers a wizard that help you initialize the fire.yml file.
+
+    alias: `i`
+
   - `env:start`: Starts the local Docker based env (lando, ddev).
 
     alias: `start`
