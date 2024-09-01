@@ -89,6 +89,12 @@ class InitCommand extends FireCommandBase {
         $this->taskFilesystemStack()->copy($firePath . '/assets/templates/fire.yml', $this->getLocalEnvRoot() . '/fire.yml', TRUE)->run();
 
       }
+      // Adding new lines to .gitignore,
+        $this->taskWriteToFile($this->getLocalEnvRoot() . '/.gitignore')
+        ->textFromFile($this->getLocalEnvRoot() . '/.gitignore')
+        ->appendUnlessMatches('/fire\.local\.yml/', "fire.local.yml\n")
+        ->run();
+
       $io->say("We have created a FIRE configuration file over this path:\n " . $this->getLocalEnvRoot() . '/fire.yml' . "\n feel free to do any ajustments over that file as you need.");
     }
   }

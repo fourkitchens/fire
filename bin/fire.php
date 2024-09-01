@@ -30,7 +30,7 @@ if (file_exists($configFile)) {
   }
 }
 else {
-  echo("Please run: fire init, to create your fire config file");
+  echo("Please run: fire init, to create your fire config file\n");
 }
   $input = new ArgvInput($argv);
   $output = new ConsoleOutput();
