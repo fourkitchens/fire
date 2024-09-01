@@ -32,7 +32,6 @@ class VrtLocalEnvConfigureCommand extends FireCommandBase {
           'command' => 'top -b',
           'shm_size' => '2gb',
         ],
-        'run' => 'rm -rf /app/web/backstop_data/bitmaps_test/*',
       ];
       $landoYamlDump = Yaml::dump($landoConfig, 5, 2);
       file_put_contents($this->getLocalEnvRoot() . '/.lando.yml', $landoYamlDump);
