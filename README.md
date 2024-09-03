@@ -72,6 +72,18 @@ Example:
 
     alias: `poweroff`
 
+  - `composer:install`: Provides to use "composer install" command from fire. Usage Example: fire composer-install -- --<options>
+
+    alias: `c-install`
+
+  - `composer:require`: Provides to use "composer require" command from fire. Usage Example: fire composer-require -- <namespace>/<package>:<version>
+
+    alias: `c-require`
+
+  - `composer:update`: Provides to use "composer update" command from fire. Usage Example: fire composer-update -- <namespace>/<package> --<options>
+
+    alias: `c-update`
+
   - `local:build`: Builds your Drupal Site from the scratch.
 
     Alias: `local-build, build`
