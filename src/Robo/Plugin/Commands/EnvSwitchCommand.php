@@ -7,7 +7,7 @@ use Robo\Symfony\ConsoleIO;
 use Robo\Robo;
 
 /**
- * Provides a command to overwrite others command.
+ * Provides a command to Switch between the local_environment.
  */
 class EnvSwitchCommand extends FireCommandBase {
 
