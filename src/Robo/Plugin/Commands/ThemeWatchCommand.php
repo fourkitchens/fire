@@ -24,8 +24,13 @@ class ThemeWatchCommand extends FireCommandBase {
     $env = Robo::config()->get('local_environment');
     $root = $this->getThemePath();
     $tasks = $this->collectionBuilder($io);
-    $npmCommand = Robo::config()->get('local_theme_watch_script') ?: 'watch';
+    $npmCommand = Robo::config()->get('local_theme_watch_script') ?: '';
     $command = 'cd ' . $root . ' && npm run ' . $npmCommand;
+
+    if (empty($npmCommand)) {
+      $io->say('You have not configured any command for "theme watch" please add the variable "local_theme_watch_script" to your fire.yml (or fire.local.yml) configuration file.');
+      return $tasks;
+    }
 
     switch ($env) {
       case 'lando':
