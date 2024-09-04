@@ -1,5 +1,9 @@
 # Indicate the NPM command to run the Theme build.
 local_theme_build_script: build
+
+# Indicate the NPM command to run the Theme watch.
+local_theme_watch_script: watch
+
 # Set the name of platform where your site is currently running, available options: pantheon, acquia
 remote_platform: pantheon
 
