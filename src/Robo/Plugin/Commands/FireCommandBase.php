@@ -26,12 +26,20 @@ class FireCommandBase extends Tasks {
   protected $drupalThemePath;
 
   /**
+   * The prjects vendor folder path.
+   *
+   * @var string
+   */
+  protected $vendorPath;
+
+  /**
    * Builds the FireCommandBase class.
    */
   public function __construct() {
     $drupalFinder = new DrupalFinder();
     $drupalFinder->locateRoot(getcwd());
     $this->drupalRootPath = $drupalFinder->getDrupalRoot();
+    $this->vendorPath = $drupalFinder->getVendorDir();
   }
 
   /**
@@ -81,6 +89,24 @@ class FireCommandBase extends Tasks {
   public function getCliToolStatus(string $toolRootCommand) {
     $result = $this->taskExec('which')->arg($toolRootCommand)->printOutput(FALSE)->run();
     return $result->wasSuccessful();
+  }
+
+  /**
+   * Returns fire's vendors executable.
+   *
+   * @return string
+   */
+  public function getFireExecutable() {
+    return $this->vendorPath . '/bin/fire';
+  }
+
+  /**
+   * Return's projects vendor folder path.
+   *
+   * @return string
+   */
+  public function getVendorPath() {
+    return $this->vendorPath;
   }
 
 }

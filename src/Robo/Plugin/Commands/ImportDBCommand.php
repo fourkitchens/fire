@@ -51,14 +51,14 @@ class ImportDBCommand extends FireCommandBase {
         $cmd = 'lando db-import';
         break;
       case 'ddev':
-        $cmd = 'ddev import-db --src=' . $args[0];
+        $cmd = 'ddev import-db --file=' . $args[0];
         unset($args[0]);
         break;
     }
 
     $tasks = $this->collectionBuilder($io);
     $tasks->addTask($this->taskExec($cmd)->args($args));
-
+    $tasks->addTask($this->taskExec($env . ' drush cr'));
     return $tasks;
   }
 

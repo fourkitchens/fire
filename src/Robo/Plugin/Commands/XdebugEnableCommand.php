@@ -22,35 +22,34 @@ class XdebugEnableCommand extends FireCommandBase {
    */
   public function xdebugEnable(ConsoleIO $io) {
     $env = Robo::config()->get('local_environment');
-    $confirmation = $io->ask("Select your Editor:\n- [0] vscode");
-    if (preg_match('/^\d{1}$/', $confirmation, $matches)) {
-      $tasks = $this->collectionBuilder($io);
-      $assets = dirname(__DIR__, 4) . '/assets/xdebug/';
+    $editor = $io->choice("Select your Editor:", ['vscode']);
+    $tasks = $this->collectionBuilder($io);
+    $assets = dirname(__DIR__, 4) . '/assets/xdebug/';
+    echo($editor);
+    // VScode.
+    if ($editor === 'vscode') {
+      if (!file_exists($this->getLocalEnvRoot() . '/.vscode')) {
+        $tasks->addTask($this->taskFilesystemStack()->mkdir($this->getLocalEnvRoot() . '/.vscode'));
+      }
 
-      // VScode.
-      if ($matches[0] == '0') {
-        if (!file_exists($this->getLocalEnvRoot() . '/.vscode')) {
-          $tasks->addTask($this->taskFilesystemStack()->mkdir($this->getLocalEnvRoot() . '/.vscode'));
-        }
-
-        if ($env == 'lando') {
-           $override = $io->ask("This action Will create/override the following files:\n.vscode/launch.json\n.vscode/php.ini\n.lando.local.yml\n Do you want to continue? (Y|N)");
-           if (preg_match('/^[Yy]{1}$/', $override, $matches)) {
-            $tasks->addTask($this->taskFilesystemStack()->copy($assets . 'vscode/' . $env . '/launch.json', $this->getLocalEnvRoot() . '/.vscode/launch.json'));
-            $tasks->addTask($this->taskFilesystemStack()->copy($assets . 'vscode/' . $env . '/php.ini', $this->getLocalEnvRoot() . '/.vscode/php.ini'));
-            $tasks->addTask($this->taskFilesystemStack()->copy($assets . 'vscode/' . $env . '/.lando.local.yml', $this->getLocalEnvRoot() . '/.lando.local.yml'));
-            $tasks->addTask($this->taskExec('lando rebuild -y'));
-          }
-        }
-        elseif ($env == 'ddev') {
-          $override = $io->ask("This action Will create/override the following files:\n.vscode/launch.json\n Do you want to continue? (Y|N)");
-          if (preg_match('/^[Yy]{1}$/', $override, $matches)) {
-            $tasks->addTask($this->taskFilesystemStack()->copy($assets . 'vscode/' . $env . '/launch.json', $this->getLocalEnvRoot() . '/.vscode/launch.json'));
-            $tasks->addTask($this->taskExec('ddev xdebug enable'));
-          }
+      if ($env === 'lando') {
+          $override = $io->confirm("This action Will create/override the following files:\n.vscode/launch.json\n.vscode/php.ini\n.lando.local.yml\n Do you want to continue?", TRUE);
+          if ($override) {
+          $tasks->addTask($this->taskFilesystemStack()->copy($assets . 'vscode/' . $env . '/launch.json', $this->getLocalEnvRoot() . '/.vscode/launch.json'));
+          $tasks->addTask($this->taskFilesystemStack()->copy($assets . 'vscode/' . $env . '/php.ini', $this->getLocalEnvRoot() . '/.vscode/php.ini'));
+          $tasks->addTask($this->taskFilesystemStack()->copy($assets . 'vscode/' . $env . '/.lando.local.yml', $this->getLocalEnvRoot() . '/.lando.local.yml'));
+          $tasks->addTask($this->taskExec('lando rebuild -y'));
         }
       }
-      return $tasks;
+      elseif ($env === 'ddev') {
+        $override = $io->confirm("This action Will create/override the following files:\n.vscode/launch.json\n Do you want to continue?", TRUE);
+        if ($override) {
+          $tasks->addTask($this->taskFilesystemStack()->copy($assets . 'vscode/' . $env . '/launch.json', $this->getLocalEnvRoot() . '/.vscode/launch.json'));
+          $tasks->addTask($this->taskExec('ddev xdebug enable'));
+        }
+      }
     }
+    return $tasks;
+
   }
 }

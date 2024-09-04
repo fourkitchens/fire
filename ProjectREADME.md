@@ -6,6 +6,7 @@ This project uses the [FIRE](https://github.com/fourkitchens/fire) toolkit for l
    https://github.com/fourkitchens/fire-launcher \
 If you don't do this, then where any commands below say `fire`, instead call the executable within your project.\
 e.g. `./vendor/bin/fire`
+3. `composer install` to get the vendor code (including Fire) added to your machine.
 
 # Install (or reinstall) your project locally
 ```
