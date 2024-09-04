@@ -20,6 +20,7 @@ $classLoader = require $autoloaderPath;
 $projectRoot = dirname(__DIR__, 4);
 $configFile = $projectRoot . '/fire.yml';
 $additionalConfigFile = $projectRoot . '/fire.local.yml';
+$config = [];
 // If there is not config file, the user should create one.
 if (file_exists($configFile)) {
   $config = [$configFile];
@@ -27,13 +28,13 @@ if (file_exists($configFile)) {
     // Loading local config overrides.
     $config[] = $additionalConfigFile;
   }
+}
+else {
+  echo("Please run: fire init, to create your fire config file\n");
+}
   $input = new ArgvInput($argv);
   $output = new ConsoleOutput();
   $config = Robo::createConfiguration($config);
   $app = new FireApp($config, $classLoader, $input, $output);
   $status_code = $app->run($input, $output);
   exit($status_code);
-}
-else {
-  die("Could not find the fire.yml file in your project root, please create it and try again.");
-}

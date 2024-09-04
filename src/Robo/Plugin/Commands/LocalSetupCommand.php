@@ -28,11 +28,9 @@ class LocalSetupCommand extends FireCommandBase {
 
     $shouldRebuild = FALSE;
     if (!$opts['y']) {
-      $confirmation = $io->ask("This command will destroy all your Enviroment data and rebuild it from scratch.\nDo you want to execute it? (Y|N)");
-      if (preg_match('/^[NnYy]{1}$/', $confirmation, $matches)) {
-        if (strtolower($matches[0]) == 'y') {
-          $shouldRebuild = TRUE;
-        }
+      $confirmation = $io->confirm("This command will destroy all your Enviroment data and rebuild it from scratch.\nDo you want to execute it?", TRUE);
+      if ($confirmation) {
+        $shouldRebuild = TRUE;
       }
     }
     else {
