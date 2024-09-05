@@ -72,9 +72,9 @@ Example:
 
     alias: `poweroff`
 
-  - `env:switch`: A project can have both environments configured: lando and ddev, so the "switch" command allows you to change the default environment.
+  - `env:switch`: A project can have both environments configured: Lando and DDev, so the "switch" command helps you to "hot swap" between local dev environments (Lando or DDev).
 
-    alias: `switch`
+    alias: `env-switch|switch|sw`
 
   - `local:build`: Builds your Drupal Site from the scratch.
 
