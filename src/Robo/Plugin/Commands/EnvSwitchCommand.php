@@ -5,6 +5,7 @@ namespace Fire\Robo\Plugin\Commands;
 use Fire\Robo\Plugin\Commands\FireCommandBase;
 use Robo\Symfony\ConsoleIO;
 use Robo\Robo;
+use Symfony\Component\Yaml\Yaml;
 
 /**
  * Provides a command to Switch between the local_environment.
@@ -23,27 +24,20 @@ class EnvSwitchCommand extends FireCommandBase {
   public function switch(ConsoleIO $io) {
     $tasks = $this->collectionBuilder($io);
     $env = Robo::config()->get('local_environment');
-    $new_env = ($env === 'lando') ? 'ddev' : 'lando';
-    $filename = 'fire.local.yml';
-    $new_content = "local_environment: $new_env";
+    $newEnv = ($env === 'lando') ? 'ddev' : 'lando';
+    $projectRoot = $this->getLocalEnvRoot();
+    $fireFile = "$projectRoot/fire.local.yml";
 
-    if (file_exists($filename)) {
-      $content = file_get_contents($filename);
+    // Load the file and update the env.
+    $fireLocalConfig = file_exists($fireFile) ? Yaml::parseFile($fireFile) : [];
+    $fireLocalConfig['local_environment'] = $newEnv;
+    $fireYamlDump = Yaml::dump($fireLocalConfig, 5, 2);
+    file_put_contents($fireFile, $fireYamlDump);
 
-      if (strpos($content, 'local_environment') !== FALSE) {
-        $content = preg_replace('/^local_environment\s*:\s*.*/m', $new_content, $content);
-      }
-      else {
-        $content .= PHP_EOL . $new_content;
-      }
-
-      $new_content = $content;
-    }
-
-    file_put_contents($filename, $new_content);
+    // Stop the old env and start the new one.
     $tasks->addTask($this->taskExec("$env poweroff"));
-    $tasks->addTask($this->taskExec("$new_env start"));
-    $tasks->addTask($this->taskExec("$new_env drush uli"));
+    $tasks->addTask($this->taskExec("$newEnv start"));
+    $tasks->addTask($this->taskExec("$newEnv drush uli"));
 
     return $tasks;
   }
