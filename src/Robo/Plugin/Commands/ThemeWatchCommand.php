@@ -21,7 +21,6 @@ class ThemeWatchCommand extends FireCommandBase {
    *
    */
   public function themeWatch(ConsoleIO $io) {
-    $env = Robo::config()->get('local_environment');
     $root = $this->getThemePath();
     $npmCommand = Robo::config()->get('local_theme_watch_script') ?: '';
     $command = 'cd ' . $root . ' && npm run ' . $npmCommand;
