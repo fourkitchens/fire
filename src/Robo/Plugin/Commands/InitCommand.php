@@ -51,7 +51,9 @@ class InitCommand extends FireCommandBase {
           $io->say('Please setup a theme for your site into this folder: ' . $this->getDrupalRoot() . '/themes/custom/');
         }
 
-        $localThemeBuildScript = $io->ask('Please enter the name of theme building/compilation script for your theme, tipically that script is called: build', 'build');
+        $localThemeBuildScript = $io->ask('Please enter the name of theme building/compilation script for your theme, typically that script is called: build', 'build');
+
+        $localThemeWatchScript = $io->ask('Please enter the name of theme watch script for your theme, typically that script is called: watch', 'watch');
 
         $defaultLocalEnv = FALSE;
         if (file_exists($this->getLocalEnvRoot() . '/.lando.yml') && file_exists($this->getLocalEnvRoot() . '/.ddev/config.yaml')) {
@@ -74,6 +76,9 @@ class InitCommand extends FireCommandBase {
         }
         if ($localThemeBuildScript) {
           $fireConfig['local_theme_build_script'] = $localThemeBuildScript;
+        }
+        if ($localThemeWatchScript) {
+          $fireConfig['local_theme_watch_script'] = $localThemeWatchScript;
         }
         if ($localThemeName) {
           $fireConfig['localThemeName'] = $localThemeName;
