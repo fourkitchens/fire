@@ -6,7 +6,7 @@ use Robo\Symfony\ConsoleIO;
 use Robo\Robo;
 
 /**
- * Provides to use "composer" commands from fire.
+ * Provides a way to use "composer" commands from fire.
  */
 class ComposerCommand extends FireCommandBase {
 
