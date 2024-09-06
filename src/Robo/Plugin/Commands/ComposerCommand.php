@@ -16,7 +16,7 @@ class ComposerCommand extends FireCommandBase {
    * Usage Example: fire composer install
    *
    * @command local:composer
-   * @aliases c, cp, composer
+   * @aliases c, composer
    * @usage composer <options>
    *
    * @param $args composer you would like to execute.

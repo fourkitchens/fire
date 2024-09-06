@@ -112,9 +112,9 @@ Example:
 
       Alias: `configure-import|configure_import|cim`
 
-  - `local:composer`: Provides to use "composer" commands from fire.
+  - `local:composer`: Composer proxy for local envs.
 
-      Alias: `c, cp`
+      Alias: `c, composer`
 
       Arguments:
 
@@ -125,7 +125,7 @@ Example:
         fire composer install
         fire composer install -- --ignore-platform-reqs
         fire composer update drupal/core -- -W
-        fire composer require 'drupal/devel:^5.1' --
+        fire composer require 'drupal/devel:^5.1'
         fire composer require fourkitchens/fire -- --dev
 
   - `local:drush`: Drush proxy for local envs.
