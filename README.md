@@ -72,18 +72,6 @@ Example:
 
     alias: `poweroff`
 
-  - `composer:install`: Provides to use "composer install" command from fire. Usage Example: fire composer-install -- --<options>
-
-    alias: `c-install`
-
-  - `composer:require`: Provides to use "composer require" command from fire. Usage Example: fire composer-require -- <namespace>/<package>:<version>
-
-    alias: `c-require`
-
-  - `composer:update`: Provides to use "composer update" command from fire. Usage Example: fire composer-update -- <namespace>/<package> --<options>
-
-    alias: `c-update`
-
   - `local:build`: Builds your Drupal Site from the scratch.
 
     Alias: `local-build, build`
@@ -119,6 +107,22 @@ Example:
   - `local:configure:import`: Imports sites configuration - none interaction required.
 
       Alias: `configure-import|configure_import|cim`
+
+  - `local:composer`: Provides to use "composer" commands from fire.
+
+      Alias: `c, cp`
+
+      Arguments:
+
+        `args`: composer you would like to execute.
+
+      Usage Example:
+
+        fire composer install
+        fire composer install -- --ignore-platform-reqs
+        fire composer update drupal/core -- -W
+        fire composer require 'drupal/devel:^5.1' --
+        fire composer require fourkitchens/fire -- --dev
 
   - `local:drush`: Drush proxy for local envs.
 
