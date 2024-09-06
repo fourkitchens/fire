@@ -23,7 +23,6 @@ class ThemeWatchCommand extends FireCommandBase {
   public function themeWatch(ConsoleIO $io) {
     $env = Robo::config()->get('local_environment');
     $root = $this->getThemePath();
-    $tasks = $this->collectionBuilder($io);
     $npmCommand = Robo::config()->get('local_theme_watch_script') ?: '';
     $command = 'cd ' . $root . ' && npm run ' . $npmCommand;
 
@@ -34,8 +33,7 @@ class ThemeWatchCommand extends FireCommandBase {
       $command = 'export NVM_DIR=$HOME/.nvm && . $NVM_DIR/nvm.sh && cd ' . $root . ' && nvm install && npm ci && npm run ' . $npmCommand;
     }
 
-    $tasks->taskExec($command);
-    return $tasks;
+    $this->taskExec($command)->run();
   }
 
 }
