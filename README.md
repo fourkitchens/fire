@@ -118,7 +118,7 @@ Example:
 
       Arguments:
 
-        `args`: composer you would like to execute.
+        `args`: The composer command you would like to execute.
 
       Usage Example:
 

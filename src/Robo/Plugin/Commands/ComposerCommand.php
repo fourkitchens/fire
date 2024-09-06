@@ -19,7 +19,7 @@ class ComposerCommand extends FireCommandBase {
    * @aliases c, composer
    * @usage composer <options>
    *
-   * @param $args composer you would like to execute.
+   * @param $args The composer command you would like to execute.
    */
   public function composer(ConsoleIO $io, array $args) {
     $env = Robo::config()->get('local_environment');
