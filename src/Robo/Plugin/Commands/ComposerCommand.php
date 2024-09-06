@@ -11,7 +11,7 @@ use Robo\Robo;
 class ComposerCommand extends FireCommandBase {
 
   /**
-   * Command tu run composer sentences.
+   * Composer proxy for local envs.
    *
    * Usage Example: fire composer install
    *
@@ -23,10 +23,7 @@ class ComposerCommand extends FireCommandBase {
    */
   public function composer(ConsoleIO $io, array $args) {
     $env = Robo::config()->get('local_environment');
-    $tasks = $this->collectionBuilder($io);
-    $tasks->addTask($this->taskExec("$env composer")->args($args));
-
-    return $tasks;
+    $this->taskExec("$env composer")->args($args)->run();
   }
 
 }
