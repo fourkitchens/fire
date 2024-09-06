@@ -13,7 +13,7 @@ class ComposerCommand extends FireCommandBase {
   /**
    * Composer proxy for local envs.
    *
-   * Usage Example: fire composer install
+   * Usage Example: fire composer update drupal/core -- -W
    *
    * @command local:composer
    * @aliases c, composer
