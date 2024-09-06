@@ -29,21 +29,9 @@ class ThemeWatchCommand extends FireCommandBase {
 
     if (empty($npmCommand)) {
       $io->say('You have not configured any command for "theme watch" please add the variable "local_theme_watch_script" to your fire.yml (or fire.local.yml) configuration file.');
-      return $tasks;
     }
-
-    switch ($env) {
-      case 'lando':
-      default:
-        if (file_exists($root . '/.nvmrc') && getenv('NVM_DIR')) {
-          $command = 'export NVM_DIR=$HOME/.nvm && . $NVM_DIR/nvm.sh && cd ' . $root . ' && nvm install && npm ci && npm run ' . $npmCommand;
-        }
-        break;
-      case 'ddev':
-        if (file_exists($root . '/.nvmrc') && getenv('NVM_DIR')) {
-          $command = 'cd ' . $root . ' && ddev nvm install && ddev npm ci && ddev npm run ' . $npmCommand;
-        }
-        break;
+    elseif (file_exists($root . '/.nvmrc') && getenv('NVM_DIR')) {
+      $command = 'export NVM_DIR=$HOME/.nvm && . $NVM_DIR/nvm.sh && cd ' . $root . ' && nvm install && npm ci && npm run ' . $npmCommand;
     }
 
     $tasks->taskExec($command);
