@@ -4,12 +4,11 @@ namespace Fire\Robo\Plugin\Commands;
 
 use Robo\Symfony\ConsoleIO;
 use Robo\Robo;
-use Robo\Tasks;
 
 /**
  * Provides a commmand to build your site from scratch.
  */
-class LocalBuildCommand extends Tasks {
+class LocalBuildCommand extends FireCommandBase {
 
   /**
    * Builds your Drupal Site from the scratch.
@@ -24,20 +23,20 @@ class LocalBuildCommand extends Tasks {
    */
   public function localBuild(ConsoleIO $io, $opts = ['no-db-import' => FALSE, 'no-db-download' => FALSE, 'get-files|f' => FALSE]) {
     $tasks = $this->collectionBuilder($io);
-    $tasks->addTask($this->taskExec('fire local:build:php'));
-    $tasks->addTask($this->taskExec('fire local:build:js'));
-    $tasks->addTask($this->taskExec('fire local:build:theme'));
+    $tasks->addTask($this->taskExec($this->getFireExecutable() . ' local:build:php'));
+    $tasks->addTask($this->taskExec($this->getFireExecutable() . ' local:build:js'));
+    $tasks->addTask($this->taskExec($this->getFireExecutable() . ' local:build:theme'));
     if (!$opts['no-db-import']) {
       if (!$opts['no-db-download']) {
-        $tasks->addTask($this->taskExec('fire local:get-db'));
+        $tasks->addTask($this->taskExec($this->getFireExecutable() . ' local:get-db'));
       }
-      $tasks->addTask($this->taskExec('fire local:import-db'));
+      $tasks->addTask($this->taskExec($this->getFireExecutable() . ' local:import-db'));
     }
     if ($opts['get-files']) {
-      $tasks->addTask($this->taskExec('fire local:get-files'));
+      $tasks->addTask($this->taskExec($this->getFireExecutable() . ' local:get-files'));
     }
     // Deploy Drush Commands.
-    $tasks->addTask($this->taskExec('fire local:build:drush-commands'));
+    $tasks->addTask($this->taskExec($this->getFireExecutable() . ' local:build:drush-commands'));
 
     return $tasks;
   }

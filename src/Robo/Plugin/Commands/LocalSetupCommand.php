@@ -28,11 +28,9 @@ class LocalSetupCommand extends FireCommandBase {
 
     $shouldRebuild = FALSE;
     if (!$opts['y']) {
-      $confirmation = $io->ask("This command will destroy all your Enviroment data and rebuild it from scratch.\nDo you want to execute it? (Y|N)");
-      if (preg_match('/^[NnYy]{1}$/', $confirmation, $matches)) {
-        if (strtolower($matches[0]) == 'y') {
-          $shouldRebuild = TRUE;
-        }
+      $confirmation = $io->confirm("This command will destroy all your Enviroment data and rebuild it from scratch.\nDo you want to execute it?", TRUE);
+      if ($confirmation) {
+        $shouldRebuild = TRUE;
       }
     }
     else {
@@ -49,7 +47,7 @@ class LocalSetupCommand extends FireCommandBase {
           $tasks->addTask($this->taskExec($env . ' rebuild -y'));
           break;
         case 'ddev':
-          $tasks->addTask($this->taskExec($env . ' poweroff -y'));
+          $tasks->addTask($this->taskExec($env . ' poweroff'));
           $tasks->addTask($this->taskExec($env . ' delete -y'));
           $tasks->addTask($this->taskExec($env . ' start'));
       }
@@ -66,8 +64,8 @@ class LocalSetupCommand extends FireCommandBase {
         $buildOptions[] = '--get-files';
       }
 
-      $tasks->addTask($this->taskExec('fire local:build')->args($buildOptions));
-      $tasks->addTask($this->taskExec('fire drush uli'));
+      $tasks->addTask($this->taskExec($this->getFireExecutable() . ' local:build')->args($buildOptions));
+      $tasks->addTask($this->taskExec($this->getFireExecutable() . ' drush uli'));
       return $tasks;
     }
     $this->io()->title('Your site not will be rebuild...');

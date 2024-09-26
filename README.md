@@ -56,6 +56,10 @@ Example:
 ```
 
 ## Available commands:
+  - `init`: Triggers a wizard that help you initialize the fire.yml file.
+
+    alias: `i`
+
   - `env:start`: Starts the local Docker based env (lando, ddev).
 
     alias: `start`
@@ -63,6 +67,14 @@ Example:
   - `env:stop`: Stops the local Docker based env (lando, ddev).
 
     alias: `stop`
+
+  - `env:poweroff`: Stops the local Docker and the proxy based env (lando, ddev).
+
+    alias: `poweroff`
+
+  - `env:switch`: A project can have both environments configured: Lando and DDev, so the "switch" command helps you to "hot swap" between local dev environments (Lando or DDev).
+
+    alias: `env-switch|switch|sw`
 
   - `local:build`: Builds your Drupal Site from the scratch.
 
@@ -99,6 +111,22 @@ Example:
   - `local:configure:import`: Imports sites configuration - none interaction required.
 
       Alias: `configure-import|configure_import|cim`
+
+  - `local:composer`: Composer proxy for local envs.
+
+      Alias: `c, composer`
+
+      Arguments:
+
+        `args`: The composer command you would like to execute.
+
+      Usage Example:
+
+        fire composer install
+        fire composer install -- --ignore-platform-reqs
+        fire composer update drupal/core -- -W
+        fire composer require 'drupal/devel:^5.1'
+        fire composer require fourkitchens/fire -- --dev
 
   - `local:drush`: Drush proxy for local envs.
 
@@ -148,19 +176,19 @@ Example:
 
     Alias: `vgc`
 
-  - `vrt:init`: Configure your local enviroment from scratch to use VRT testing (Lando only).
+  - `vrt:init`: Configure your local enviroment from scratch to use VRT testing.
 
     Alias: `vinit`
 
-  - `vrt:local-env-config`: Alters your local enviroment so you can use backstop (Lando only).
+  - `vrt:local-env-config`: Alters your local enviroment so you can use backstop.
 
     Alias: `vlec`
 
-  - `vrt:reference`: Takes new reference screeshots from the reference URL (Lando only).
+  - `vrt:reference`: Takes new reference screeshots from the reference URL.
 
     Alias: `vref`
 
-  - `vrt:run`: Runs your VRT testing (Lando only).
+  - `vrt:run`: Runs your VRT testing.
 
     Alias: `vrun`
 
