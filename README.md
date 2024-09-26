@@ -210,19 +210,10 @@ If you need to override some of the global settings latter for a specific env yo
 composer require fourkitchens/fire --dev --prefer-install=source
 ```
 
-## Passing Arguments to Lando/DDEV
-With FIRE, you can pass unknown arguments to Lando/DDEV commands using a double dash `--`. This is useful when you need to run Drush commands with additional options. Here's how to do it:
-
-### Using Drush with Additional Arguments
-
-**Example:**
-
-If you want to run the command `drush cex -y` with FIRE, you can do so like this:
+## Passing Arguments wrapped commands (i.e drush)
+When using Fire to run a wrapped command like Drush, you can indeed pass arguments by using a double hyphen (--). This signals that all subsequent parameters should be treated as arguments for the wrapped command. Here's how you can structure it:
 
 `fire drush cex -- -y`
-
-The double dash -- tells FIRE that the arguments that follow should be passed to the underlying command, in this case, drush.
-
 
 ## Dev backgroud
 
