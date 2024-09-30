@@ -19,6 +19,7 @@ class DrushDeployCommand extends FireCommandBase {
    */
   public function drush(ConsoleIO $io) {
     $tasks = $this->collectionBuilder($io);
+    $tasks->addTask($this->taskExec($this->getFireExecutable() . ' drush cr'));
     $tasks->addTask($this->taskExec($this->getFireExecutable() . ' drush updb -- -y'));
     $tasks->addTask($this->taskExec($this->getFireExecutable() . ' drush cr'));
     $tasks->addTask($this->taskExec($this->getFireExecutable() . ' drush cim -- -y'));
