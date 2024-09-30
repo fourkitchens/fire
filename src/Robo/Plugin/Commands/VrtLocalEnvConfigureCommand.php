@@ -36,8 +36,13 @@ class VrtLocalEnvConfigureCommand extends FireCommandBase {
       $landoYamlDump = Yaml::dump($landoConfig, 5, 2);
       file_put_contents($this->getLocalEnvRoot() . '/.lando.yml', $landoYamlDump);
       $this->taskExec('lando rebuild -y')->run();
+     $overrideConfig = TRUE;
+     if (file_exists($this->getDrupalRoot() . '/backstop_data')) {
+      $overrideConfig = $io->confirm('You already have a existing backstop_data folder in: ' . $this->getDrupalRoot() .' , Do you want to override the configuration using the default backstop files?', FALSE);
+     }
+     if ($overrideConfig) {
       $this->taskExec('lando ssh -s backstopserver -c "cd /app/web/ && backstop init"')->run();
-
+     }
     }
     elseif ($env === 'ddev') {
       $this->taskExec('ddev get fourkitchens/ddev-drupal-backstop')->run();

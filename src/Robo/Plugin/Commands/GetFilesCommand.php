@@ -85,10 +85,13 @@ class GetFilesCommand extends FireCommandBase {
    * Helper function to get files from Pantheon.
    */
   private function getFilesPantheon(ConsoleIO $io, array $opts, $tasks, $remoteSiteName, $remoteEnv, $origFilesFolder, $destFilesFolder) {
-
+    $filesName = 'site-files.tar.gz';
     if ($this->getCliToolStatus('terminus')) {
-      $filesName = 'site-files.tar.gz';
+
       if (!$opts['no-download']) {
+        if (file_exists($origFilesFolder . '/' . $filesName)) {
+          $tasks->addTask($this->taskFilesystemStack()->remove($origFilesFolder . '/' . $filesName));
+        }
         $cmd = "terminus backup:get $remoteSiteName.$remoteEnv --element=files --to=$origFilesFolder/$filesName";
         $tasks->addTask($this->taskExec($cmd));
       }
