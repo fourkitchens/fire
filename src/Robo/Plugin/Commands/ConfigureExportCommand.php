@@ -19,7 +19,7 @@ class ConfigureExportCommand extends Tasks {
    * @command local:configure:export
    * @aliases configure-export, configure_export, cex
    */
-  public function configure_import(ConsoleIO $io) {
+  public function configure_export(ConsoleIO $io) {
     $env = Robo::config()->get('local_environment');
     $tasks = $this->collectionBuilder($io);
     $tasks->addTask($this->taskExec($env . ' drush cex -y'));
