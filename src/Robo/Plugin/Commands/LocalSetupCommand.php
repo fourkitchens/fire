@@ -23,7 +23,7 @@ class LocalSetupCommand extends FireCommandBase {
    * @option $get-files Gets the Files from the remote server.
    * @option $y Run the command with no interection required.
    */
-  public function envStop(ConsoleIO $io, $opts = ['no-db-import' => FALSE, 'no-db-download' => FALSE, 'get-files|f' => FALSE, 'y|y' => FALSE]) {
+  public function localSetup(ConsoleIO $io, $opts = ['no-db-import' => FALSE, 'no-db-download' => FALSE, 'get-files|f' => FALSE, 'y|y' => FALSE]) {
     $env = Robo::config()->get('local_environment');
 
     $shouldRebuild = FALSE;
