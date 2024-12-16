@@ -16,7 +16,7 @@ class PlatformUliCommand extends FireCommandBase {
    * Usage Example: fire platform:uli pr-123
    *
    * @command platform:uli
-   * @aliases uli
+   * @aliases puli
    * @usage fire platform:uli <env>
    *
    * @param $args The environment.
