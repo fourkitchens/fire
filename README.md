@@ -210,6 +210,10 @@ Example:
       **2. Full:** It replaces all existing code and allows you to write the command from scratch.
 
     You can also create a new command, just choice the "Custom" option at the prompt when it ask you for for the command you want to overwrite, then respond to the questions, now a new command should have been created in the custom path, by default only a task is added to cleans the Drupal cache, but from this file, you can add your custom tasks.
+  
+  - `platform:uli`: This command allows you to generate a one-time login URL for any environment hosted on Pantheon, Acquia, or Platform.sh.
+
+    Alias: `puli`
 
 ## Configuration
 Into your project root create a file called: `fire.yml` and iside of it speficify your global project settings.
