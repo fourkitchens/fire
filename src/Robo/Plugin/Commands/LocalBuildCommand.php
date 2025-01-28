@@ -25,7 +25,6 @@ class LocalBuildCommand extends FireCommandBase {
     $tasks = $this->collectionBuilder($io);
     $tasks->addTask($this->taskExec($this->getFireExecutable() . ' local:build:php'));
     $tasks->addTask($this->taskExec($this->getFireExecutable() . ' local:build:js'));
-    $tasks->addTask($this->taskExec($this->getFireExecutable() . ' local:build:theme'));
     if (!$opts['no-db-import']) {
       if (!$opts['no-db-download']) {
         $tasks->addTask($this->taskExec($this->getFireExecutable() . ' local:get-db'));
@@ -38,6 +37,10 @@ class LocalBuildCommand extends FireCommandBase {
     // Deploy Drush Commands.
     $tasks->addTask($this->taskExec($this->getFireExecutable() . ' local:build:drush-commands'));
 
+    // Building the theme is least likely to succeed, so we run it last.  
+    // If it fails, at least you'll have a functional local install.
+    $tasks->addTask($this->taskExec($this->getFireExecutable() . ' local:build:theme'));
+    
     return $tasks;
   }
 }
