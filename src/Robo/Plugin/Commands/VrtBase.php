@@ -86,6 +86,9 @@ class VrtBase extends FireCommandBase {
     $configFile = $this->getLocalEnvRoot() . '/tests/backstop/backstop-local.json';
     $configContents = file_get_contents($configFile);
     $config = json_decode($configContents);
+    if (empty($config)) {
+      throw new AbortTasksException("The config file $configFile could not be parsed.  Maybe there's a JSON syntax error?");
+    }
     if ($backstopCommand === 'reference') {
       $key = 'referenceEnvironment';
     }
@@ -95,7 +98,7 @@ class VrtBase extends FireCommandBase {
     if (isset($config->{$key}) && is_string($config->{$key}) && $config->{$key}) {
       return $config->{$key};
     }
-    throw new AbortTasksException("$key was not found in $configFile.  These will be filled automatically by FIRE as long as they exist in backstop.json as just \"testEnvironment\": \"\",");
+    throw new AbortTasksException("$key was not found in $configFile.  These will be filled automatically by FIRE as long as they exist in backstop.json as just \"$key\": \"\",");
   }
 
 }
