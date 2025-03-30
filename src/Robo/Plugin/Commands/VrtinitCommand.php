@@ -8,7 +8,7 @@ use Robo\Robo;
 /**
  * Provides a command to initialize VRT.
  */
-class VrtinitCommand extends FireCommandBase {
+class VrtinitCommand extends VrtBase {
 
   /**
    * Configure your local enviroment from scratch to use VRT testing.

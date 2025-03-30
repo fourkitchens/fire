@@ -8,7 +8,7 @@ use Robo\Robo;
 /**
  * Provides a command to generate the Backstop initial files.
  */
-class VrtGenbackstopConfCommand extends FireCommandBase {
+class VrtGenbackstopConfCommand extends VrtBase {
 
   /**
    * Creates a basic Backstop.json for you.
