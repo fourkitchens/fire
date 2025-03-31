@@ -16,6 +16,13 @@ use Robo\Robo;
 class VrtBase extends FireCommandBase {
 
   /**
+   * The IO object.
+   *
+   * @var ConsoleIO
+   */
+  protected $io;
+
+  /**
    * Similar to taskExec(), but for Backstop commands.
    *
    * @param ConsoleIO $io
@@ -26,8 +33,9 @@ class VrtBase extends FireCommandBase {
    * @return \Robo\Collection\CollectionBuilder|\Robo\Task\Base\Exec
    */
   protected function backstopTaskExec(ConsoleIO $io, string $backstopCommand) {
+    $this->io = $io;
     try {
-      $io->info("Running Backstop command: $backstopCommand...");
+      $this->io->info("Running Backstop command: $backstopCommand...");
 
       $env = Robo::config()->get('local_environment');
 
@@ -53,7 +61,7 @@ class VrtBase extends FireCommandBase {
     catch (\Exception $exception) {
       // @todo For some reason if you only throw an exception nothing is printed
       // to the CLI.
-      $io->error($exception->getMessage());
+      $this->io->error($exception->getMessage());
       throw $exception;
     }
   }
@@ -68,7 +76,11 @@ class VrtBase extends FireCommandBase {
   protected function refreshCookies(string $environment) {
     $shellScript = $this->getLocalEnvRoot()  . '/tests/backstop/get-logged-in-cookie.sh';
     if (file_exists($shellScript)) {
+      $this->io->info("Running cookie generation file at $shellScript.");
       $this->taskExec($shellScript . ' ' . $environment)->run();
+    }
+    else {
+      $this->io->info("No cookie generation file found at $shellScript.  You will only be able to run scenarios as an anonymous visitor.");
     }
   }
 
