@@ -32,6 +32,8 @@ class VrtGenbackstopConfCommand extends VrtBase {
       $tasks->addTask($this->taskFilesystemStack()->copy($assets . 'backstop.json', $this->getLocalEnvRoot() . '/tests/backstop/backstop-local.json'));
     }
 
+    $tasks->addTask($this->taskFilesystemStack()->copy($assets . 'get-logged-in-cookie.example.sh', $this->getLocalEnvRoot() . '/tests/backstop/get-logged-in-cookie.example.sh'));
+
     // Adding new lines to .gitignore,
     $tasks->addTask($this->taskWriteToFile($this->getLocalEnvRoot() . '/.gitignore')
       ->textFromFile($this->getLocalEnvRoot() . '/.gitignore')
