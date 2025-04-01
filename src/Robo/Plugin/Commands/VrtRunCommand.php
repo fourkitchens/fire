@@ -36,6 +36,7 @@ class VrtRunCommand extends VrtBase {
       $this->backstopTaskExec($io, 'test')->run();
       // Sometimes there can be a slight delay before the files are available in container.
       sleep(1);
+      // @todo Only open the report if the test command was run successfully.
       $this->taskOpenBrowser('https://' . $landoConfig['name'] . '.lndo.site/backstop_data/html_report/index.html')->run();
     }
     elseif ($env === 'ddev') {
@@ -43,6 +44,7 @@ class VrtRunCommand extends VrtBase {
       $this->backstopTaskExec($io, 'test')->run();
       // Sometimes there can be a slight delay before the files are available in container.
       sleep(1);
+      // @todo Only open the report if the test command was run successfully.
       $this->taskOpenBrowser('https://' . $ddevConfig['name']. '.ddev.site/backstop_data/html_report/index.html')->run();
     }
   }
