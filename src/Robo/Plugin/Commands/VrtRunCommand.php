@@ -30,21 +30,17 @@ class VrtRunCommand extends VrtBase {
     if ($newReferenceFiles) {
       $this->taskExec($this->getFireExecutable() . ' vrt:reference')->run();
     }
+
+    $this->backstopTaskExec($io, 'test')->run();
+    // Sometimes there can be a slight delay before the files are available in the Docker container.
+    sleep(1);
     
     if ($env === 'lando') {
       $landoConfig = Yaml::parse(file_get_contents($this->getLocalEnvRoot() . '/.lando.yml'));
-      $this->backstopTaskExec($io, 'test')->run();
-      // Sometimes there can be a slight delay before the files are available in container.
-      sleep(1);
-      // @todo Only open the report if the test command was run successfully.
       $this->taskOpenBrowser('https://' . $landoConfig['name'] . '.lndo.site/backstop_data/html_report/index.html')->run();
     }
     elseif ($env === 'ddev') {
       $ddevConfig = Yaml::parse(file_get_contents($this->getLocalEnvRoot() . '/.ddev/config.yaml'));
-      $this->backstopTaskExec($io, 'test')->run();
-      // Sometimes there can be a slight delay before the files are available in container.
-      sleep(1);
-      // @todo Only open the report if the test command was run successfully.
       $this->taskOpenBrowser('https://' . $ddevConfig['name']. '.ddev.site/backstop_data/html_report/index.html')->run();
     }
   }
