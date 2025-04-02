@@ -36,14 +36,21 @@ cookie_value=$(echo "$session_cookie" | cut -d "=" -f 2)
 
 if [ "$1" == "local" ]; then
   # @todo consider getting a more robust URL via `ddev describe -j`
-  cookie_domain="$local_ddev_domain"
+  domain="$local_ddev_domain"
 elif [ "$1" == "live" ]; then
-  cookie_domain=".$live_domain"
+  domain="www.stern.nyu.edu"
 elif [[ " ${environments_with_custom_domains[*]} " =~ [[:space:]]${1}[[:space:]] ]]; then
-  cookie_domain=".www-$environment.stern.nyu.edu"
+  domain="www-$environment.stern.nyu.edu"
 else
-  cookie_domain=".$environment-$pantheon_site.pantheonsite.io"
+  domain="$environment-$pantheon_site.pantheonsite.io"
 fi
+
+# Hit a page with the session cookie to make the
+#   "You've just used your one-time login link..."
+# message to disappear.
+curl --silent --location  --output /dev/null --header "Cookie: $cookie_name=$cookie_value" --dump-header - "https://$domain/user"
+
+cookie_domain=".$domain"
 
 cookie_json='[{"domain":"'
 cookie_json+="$cookie_domain"
