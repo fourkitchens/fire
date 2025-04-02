@@ -1,4 +1,9 @@
 #!/bin/bash
+#
+# Gets session cookies for logged in users for use with BackstopJS.  
+#
+# To use in a VRT scenario use something like
+#  "cookiePath": "../../web/backstop_data/engine_scripts/cookies-uid1.json"
 
 if [ -z "$1" ]; then
   echo "You must designate which environment to get a cookie for" >&2
@@ -8,12 +13,14 @@ fi
 
 # Configuration.
 pantheon_site="nyu-stern-d9"
-environment="$1"
-environments_with_custom_domains=('test' 'develop' 'fast' 'freeze' 'feedback')
+cookie_output_file="../../web/backstop_data/engine_scripts/cookies-uid1.json"
 local_ddev_domain="nyu-stern.ddev.site"
 live_domain="www.stern.nyu.edu"
-cookie_output_file="../../web/backstop_data/engine_scripts/cookies-uid1.json"
+# To use these you'll also need to adjust the code below to follow some pattern for the custom domains.
+environments_with_custom_domains=('test' 'develop' 'fast' 'freeze' 'feedback')
 # End of configuration.
+
+environment="$1"
 
 # Get the URL to log in.
 # @todo Consider getting separate cookies for multiple user roles.
@@ -48,7 +55,7 @@ fi
 # Hit a page with the session cookie to make the
 #   "You've just used your one-time login link..."
 # message to disappear.
-curl --silent --location  --output /dev/null --header "Cookie: $cookie_name=$cookie_value" --dump-header - "https://$domain/user"
+curl --silent --location  --output /dev/null --header "Cookie: $cookie_name=$cookie_value" "https://$domain/user"
 
 cookie_domain=".$domain"
 
