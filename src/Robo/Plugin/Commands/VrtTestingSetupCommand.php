@@ -8,7 +8,7 @@ use Robo\Robo;
 /**
  * Setups the Testing and reference sites for VRT testing.
  */
-class VrtTestingSetupCommand extends FireCommandBase {
+class VrtTestingSetupCommand extends VrtBase {
 
   /**
    * Setups the Testing and reference sites for VRT testing.
@@ -47,6 +47,17 @@ class VrtTestingSetupCommand extends FireCommandBase {
       else {
         $tasks->addTask($this->taskFilesystemStack()->copy($this->getLocalEnvRoot() . '/tests/backstop/backstop.json', $this->getLocalEnvRoot() . '/tests/backstop/backstop-local.json', TRUE));
       }
+      // Add environment variables.
+      $tasks->addTask(
+        $this->taskReplaceInFile($this->getLocalEnvRoot() . '/tests/backstop/backstop-local.json')
+          ->from('"testEnvironment": "')
+          ->to('"testEnvironment": "' . $testEnviroment)
+      );
+      $tasks->addTask(
+        $this->taskReplaceInFile($this->getLocalEnvRoot() . '/tests/backstop/backstop-local.json')
+          ->from('"referenceEnvironment": "')
+          ->to('"referenceEnvironment": "' . $canonicalEnvOverride)
+      );
       // Replacing Source URL
       $tasks->addTask(
         $this->taskReplaceInFile($this->getLocalEnvRoot() . '/tests/backstop/backstop-local.json')
@@ -63,10 +74,8 @@ class VrtTestingSetupCommand extends FireCommandBase {
       // If user wants to clone the reference into the test env.
       if ($cloneReferenceEnv) {
         if ($this->getCliToolStatus('terminus')) {
-          $tasks->addTask($this->taskExec("terminus env:clone-content $remoteSiteName.$canonicalEnvOverride $testEnviroment --cc --updatedb -y"));
-          $tasks->addTask($this->taskExec("terminus drush $remoteSiteName.$testEnviroment -- cim -y"));
-          $tasks->addTask($this->taskExec("terminus drush $remoteSiteName.$testEnviroment -- cr"));
-          $tasks->addTask($this->taskExec("terminus drush $remoteSiteName.$testEnviroment -- cim -y"));
+          $tasks->addTask($this->taskExec("terminus env:clone-content $remoteSiteName.$canonicalEnvOverride $testEnviroment -y"));
+          $tasks->addTask($this->taskExec("terminus drush $remoteSiteName.$testEnviroment -- deploy -y"));
         }
       }
     }

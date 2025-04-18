@@ -8,7 +8,7 @@ use Robo\Robo;
 /**
  * Provides a command to generate the Backstop initial files.
  */
-class VrtGenbackstopConfCommand extends FireCommandBase {
+class VrtGenbackstopConfCommand extends VrtBase {
 
   /**
    * Creates a basic Backstop.json for you.
@@ -31,6 +31,8 @@ class VrtGenbackstopConfCommand extends FireCommandBase {
       $tasks->addTask($this->taskFilesystemStack()->copy($assets . 'backstop.json', $this->getLocalEnvRoot() . '/tests/backstop/backstop.json'));
       $tasks->addTask($this->taskFilesystemStack()->copy($assets . 'backstop.json', $this->getLocalEnvRoot() . '/tests/backstop/backstop-local.json'));
     }
+
+    $tasks->addTask($this->taskFilesystemStack()->copy($assets . 'get-logged-in-cookie.example.sh', $this->getLocalEnvRoot() . '/tests/backstop/get-logged-in-cookie.example.sh'));
 
     // Adding new lines to .gitignore,
     $tasks->addTask($this->taskWriteToFile($this->getLocalEnvRoot() . '/.gitignore')

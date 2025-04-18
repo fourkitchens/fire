@@ -9,7 +9,7 @@ use Symfony\Component\Yaml\Yaml;
 /**
  * Provides a command to run the VRT testing.
  */
-class VrtRunCommand extends FireCommandBase {
+class VrtRunCommand extends VrtBase {
 
   /**
    * Runs your VRT testing.
@@ -30,15 +30,19 @@ class VrtRunCommand extends FireCommandBase {
     if ($newReferenceFiles) {
       $this->taskExec($this->getFireExecutable() . ' vrt:reference')->run();
     }
+
+    $this->backstopTaskExec($io, 'test')->run();
+    // Sometimes there can be a slight delay before the files are available in the Docker container.
+    sleep(1);
+    
     if ($env === 'lando') {
       $landoConfig = Yaml::parse(file_get_contents($this->getLocalEnvRoot() . '/.lando.yml'));
-      $this->taskExec('lando ssh -s backstopserver -c "cd /app/tests/backstop && backstop test --config=/app/tests/backstop/backstop-local.json"')->run();
       $this->taskOpenBrowser('https://' . $landoConfig['name'] . '.lndo.site/backstop_data/html_report/index.html')->run();
     }
     elseif ($env === 'ddev') {
       $ddevConfig = Yaml::parse(file_get_contents($this->getLocalEnvRoot() . '/.ddev/config.yaml'));
-      $this->taskExec($env . ' backstop test')->run();
       $this->taskOpenBrowser('https://' . $ddevConfig['name']. '.ddev.site/backstop_data/html_report/index.html')->run();
     }
   }
+  
 }

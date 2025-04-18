@@ -9,7 +9,7 @@ use Symfony\Component\Yaml\Yaml;
 /**
  * Provides a command to Alters your Local env so you can use VRT.
  */
-class VrtLocalEnvConfigureCommand extends FireCommandBase {
+class VrtLocalEnvConfigureCommand extends VrtBase {
 
   /**
    * Alters your local enviroment so you can use backstop.
@@ -36,14 +36,11 @@ class VrtLocalEnvConfigureCommand extends FireCommandBase {
       $landoYamlDump = Yaml::dump($landoConfig, 5, 2);
       file_put_contents($this->getLocalEnvRoot() . '/.lando.yml', $landoYamlDump);
       $this->taskExec('lando rebuild -y')->run();
-      $this->taskExec('lando ssh -s backstopserver -c "cd /app/web/ && backstop init"')->run();
-
     }
     elseif ($env === 'ddev') {
       $this->taskExec('ddev get fourkitchens/ddev-drupal-backstop')->run();
       $this->taskExec('ddev restart')->run();
-      $this->taskExec('ddev backstop init')->run();
-
     }
+    return $this->backstopTaskExec($io, 'init');
   }
 }
