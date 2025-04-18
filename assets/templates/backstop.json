@@ -1,6 +1,8 @@
 {
-  "###NOTE###": "Don't edit backstop.json directly (unless making changes that everyone should use).  Instead copy as backstop-local.json.  See README.md for more info.",
+  "###NOTE###": "Edit backstop.json for changes that everyone should use.  Otherwise edit backstop-local.json.  See README.md for more info.",
   "id": "site",
+  "testEnvironment": "",
+  "referenceEnvironment": "",
   "viewports": [
     {
       "label": "phone",
