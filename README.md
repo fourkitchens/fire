@@ -242,6 +242,8 @@ If you need to override some of the global settings latter for a specific env yo
 composer require fourkitchens/fire --dev --prefer-install=source
 ```
 
+If you already have FIRE installed into your project please first uninstalled it and then try the command up top again.
+
 ## Passing Arguments wrapped commands (i.e drush)
 When using Fire to run a wrapped command like Drush, you can indeed pass arguments by using a double hyphen (--). This signals that all subsequent parameters should be treated as arguments for the wrapped command. Here's how you can structure it:
 
