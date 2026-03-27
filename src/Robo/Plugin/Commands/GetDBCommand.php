@@ -30,7 +30,7 @@ class GetDBCommand extends FireCommandBase {
     $tasks = $this->collectionBuilder($io);
 
     if (!file_exists($dbFolder)) {
-      $tasks->addTask($this->_mkdir($dbFolder));
+      $tasks->addTask($this->taskFilesystemStack()->mkdir($dbFolder));
     }
 
     switch ($remotePlatform) {
