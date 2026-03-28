@@ -1,6 +1,7 @@
 {
     "name": "fourkitchens/fire",
     "require": {
+        "php": "^8.3",
         "consolidation/robo": "~5.1.0",
         "webflo/drupal-finder": "~1.3"
     },
