@@ -52,7 +52,7 @@ class FireApp {
    * @param \Symfony\Component\Console\Output\OutputInterface $output
    *   The Command out.
    */
-  public function __construct(Config $config, $classLoader, InputInterface $input = NULL, OutputInterface $output = NULL) {
+  public function __construct(Config $config, $classLoader, ?InputInterface $input = NULL, ?OutputInterface $output = NULL) {
     // Automatically setting the local env config (lando or ddev) or getting it from the config file.
     if (!$config->get('local_environment') && $localEnv = $this->getLocalEnv()) {
       $config->set('local_environment', $localEnv);
