@@ -18,9 +18,15 @@ class VrtRunCommand extends VrtBase {
    *
    * @command vrt:run
    * @aliases vrun
+   * @option $tool Choose backstop or playwright (default: backstop).
    *
    */
-  public function vrtRun(ConsoleIO $io) {
+  public function vrtRun(ConsoleIO $io, $opts = ['tool' => 'backstop']) {
+    $tool = $this->resolveVrtTool($opts, $io);
+    if ($tool === 'playwright') {
+      return $this->playwrightTaskExec($io, 'test --grep @vrt')->run();
+    }
+
     $env = Robo::config()->get('local_environment');
     $reconfigureTestingUrls = $io->confirm('Do you want to reconfigure your reference and test urls?', TRUE);
     $newReferenceFiles = $io->confirm('Do you want to re-take the reference screenshots?', TRUE);
@@ -34,7 +40,7 @@ class VrtRunCommand extends VrtBase {
     $this->backstopTaskExec($io, 'test')->run();
     // Sometimes there can be a slight delay before the files are available in the Docker container.
     sleep(1);
-    
+
     if ($env === 'lando') {
       $landoConfig = Yaml::parse(file_get_contents($this->getLocalEnvRoot() . '/.lando.yml'));
       $this->taskOpenBrowser('https://' . $landoConfig['name'] . '.lndo.site/backstop_data/html_report/index.html')->run();

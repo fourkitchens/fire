@@ -67,6 +67,24 @@ class VrtBase extends FireCommandBase {
   }
 
   /**
+   * Similar to taskExec(), but for Playwright commands.
+   *
+   * @param ConsoleIO $io
+   * @param string $playwrightCommand
+   *   E.g. 'test --grep @vrt'
+   *
+   * @return \Robo\Collection\CollectionBuilder|\Robo\Task\Base\Exec
+   */
+  protected function playwrightTaskExec(ConsoleIO $io, string $playwrightCommand) {
+    $this->io = $io;
+    $playwrightRoot = $this->getLocalEnvRoot() . '/tests/playwright';
+    if (!is_dir($playwrightRoot)) {
+      throw new AbortTasksException("Playwright tests folder not found at $playwrightRoot. Run 'fire vrt:playwright:init' first.");
+    }
+    return $this->taskExec('npx playwright ' . $playwrightCommand)->dir($playwrightRoot);
+  }
+
+  /**
    * Regenerate cookies for this hosting environment, if there's a script for it.
    *
    * @param string $environment
