@@ -21,17 +21,6 @@ const forceLoadLazyImages = async (page) => {
   })
 }
 
-const normalizeJoinTheMovementSignup = async (page) => {
-  const zipCodeField = page.locator('#form-zip_code')
-
-  await zipCodeField.first().waitFor({ state: 'attached', timeout: 10000 }).catch(() => {})
-
-  await zipCodeField.evaluateAll((fields) => {
-    fields.forEach((field) => {
-      field.setAttribute('placeholder', 'Zip')
-    })
-  })
-}
 // Returns devices profiles for VRT.
 const vrtDeviceProfiles = (() => {
   const desktopChromeProfile = { ...devices['Desktop Chrome'] }

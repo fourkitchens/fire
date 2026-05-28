@@ -22,6 +22,7 @@ class VrtPlaywrightInitCommand extends FireCommandBase {
    * @option $y Run the command with no interection required.
    */
   public function vrtPlaywrightInit(ConsoleIO $io, $opts = ['y|y' => FALSE]) {
+    $env = Robo::config()->get('local_environment');
     $projectRoot = $this->getLocalEnvRoot();
     $drupalRoot = $this->getDrupalRoot();
     $atkHome = getenv('ATK_HOME');
@@ -34,24 +35,21 @@ class VrtPlaywrightInitCommand extends FireCommandBase {
     if (!$opts['y']) {
       $shouldProceed = $io->confirm("This action will generate/update Playwright VRT scaffolding in $testsRoot. Continue?", TRUE);
     }
-
+    var_dump($shouldProceed . ' proceed');
     if (!$shouldProceed) {
       $io->warning('Playwright VRT init skipped.');
       return 0;
     }
 
-    $tasks = $this->collectionBuilder($io);
-
-    $tasks->addTask($this->taskExec("composer require 'drupal/automated_testing_kit'")->dir($projectRoot));
-
+    //  $tasks = $this->collectionBuilder($io);
+   // $this->taskExec($env . " composer require 'drupal/automated_testing_kit'")->dir($projectRoot)->run();
     $atkSetup = $drupalRoot . '/modules/contrib/automated_testing_kit/module_support/atk_setup';
     if (!file_exists($atkSetup)) {
       throw new AbortTasksException("Automated Testing Kit not found at $atkSetup. Install drupal/automated_testing_kit and rerun.");
     }
-
-    $atkCommand = 'ATK_HOME=' . $atkHome . ' ' . $atkSetup . ' playwright';
-    $tasks->addTask($this->taskExec($atkCommand)->dir($projectRoot));
-    $tasks->addTask($this->taskExec($atkCommand)->dir($projectRoot));
+    $this->taskFilesystemStack()->mkdir($projectRoot . '/' . $atkHome)->run();
+    $atkCommand = $atkSetup . ' playwright';
+    $this->taskExec($atkCommand)->dir($projectRoot)->run();
 
     $testsDir = $testsRoot . '/tests';
     if (is_dir($testsDir)) {
@@ -62,28 +60,28 @@ class VrtPlaywrightInitCommand extends FireCommandBase {
           if (in_array($folderName, ['support', 'data', 'vrt'], TRUE)) {
             continue;
           }
+          $this->taskFilesystemStack()->remove($testItem)->run();
         }
-        $tasks->addTask($this->taskFilesystemStack()->remove($testItem));
       }
     }
 
     if (!is_dir($testsRoot . '/tests/vrt')) {
-      $tasks->addTask($this->taskFilesystemStack()->mkdir($testsRoot . '/tests/vrt'));
+      $this->taskFilesystemStack()->mkdir($testsRoot . '/tests/vrt');
     }
     if (!is_dir($testsRoot . '/tests/support')) {
-      $tasks->addTask($this->taskFilesystemStack()->mkdir($testsRoot . '/tests/support'));
+      $this->taskFilesystemStack()->mkdir($testsRoot . '/tests/support');
     }
     if (!is_dir($testsRoot . '/css')) {
-      $tasks->addTask($this->taskFilesystemStack()->mkdir($testsRoot . '/css'));
+      $this->taskFilesystemStack()->mkdir($testsRoot . '/css');
     }
 
     $assets = dirname(__DIR__, 4) . '/assets/templates/playwright/';
-    $tasks->addTask($this->taskFilesystemStack()->copy($assets . 'playwright.config.js', $testsRoot . '/playwright.config.js', TRUE));
-    $tasks->addTask($this->taskFilesystemStack()->copy($assets . 'playwright.atk.config.js', $testsRoot . '/playwright.atk.config.js', TRUE));
-    $tasks->addTask($this->taskFilesystemStack()->copy($assets . 'css/screenshotGlobalStyle.css', $testsRoot . '/css/screenshotGlobalStyle.css', TRUE));
-    $tasks->addTask($this->taskFilesystemStack()->copy($assets . 'tests/support/aft_utilities.js', $testsRoot . '/tests/support/aft_utilities.js', TRUE));
-    $tasks->addTask($this->taskFilesystemStack()->copy($assets . 'tests/vrt/homepage.spec.js', $testsRoot . '/tests/vrt/homepage.spec.js', TRUE));
-    $tasks->addTask($this->taskFilesystemStack()->copy($assets . 'tests/vrt/page_components.spec.js', $testsRoot . '/tests/vrt/page_components.spec.js', TRUE));
+    $this->taskFilesystemStack()->copy($assets . 'playwright.config.js', $testsRoot . '/playwright.config.js', TRUE)->run();
+    $this->taskFilesystemStack()->copy($assets . 'playwright.atk.config.js', $testsRoot . '/playwright.atk.config.js', TRUE)->run();
+    $this->taskFilesystemStack()->copy($assets . 'css/screenshotGlobalStyle.css', $testsRoot . '/css/screenshotGlobalStyle.css', TRUE)->run();
+    $this->taskFilesystemStack()->copy($assets . 'tests/support/aft_utilities.js', $testsRoot . '/tests/support/aft_utilities.js', TRUE)->run();
+    $this->taskFilesystemStack()->copy($assets . 'tests/vrt/homepage.spec.js', $testsRoot . '/tests/vrt/homepage.spec.js', TRUE)->run();
+    $this->taskFilesystemStack()->copy($assets . 'tests/vrt/page_components.spec.js', $testsRoot . '/tests/vrt/page_components.spec.js', TRUE)->run();
 
     $gitignorePath = $testsRoot . '/.gitignore';
     $gitignoreTask = $this->taskWriteToFile($gitignorePath);
@@ -100,29 +98,23 @@ class VrtPlaywrightInitCommand extends FireCommandBase {
       ->appendUnlessMatches('/\/tests\/support\/loginAuth\.json/', "/tests/support/loginAuth.json\n")
       ->appendUnlessMatches('/\.env/', ".env\n")
       ->appendUnlessMatches('/\*\.spec\.js-snapshots/', "*.spec.js-snapshots\n");
-    $tasks->addTask($gitignoreTask);
-
+    $gitignoreTask->run();
     $defaultBaseUrl = $this->getDefaultBaseUrl($projectRoot);
-    $tasks->addTask(
+
       $this->taskReplaceInFile($testsRoot . '/playwright.config.js')
         ->from('__DEFAULT_BASE_URL__')
-        ->to($defaultBaseUrl)
-    );
+        ->to($defaultBaseUrl);
 
     $drushCmd = $this->getDefaultDrushCommand();
     $pantheonSite = Robo::config()->get('remote_sitename') ?: 'remote-pantheon-site-machine-name';
-    $tasks->addTask(
+
       $this->taskReplaceInFile($testsRoot . '/playwright.atk.config.js')
         ->from('__DRUSH_CMD__')
-        ->to($drushCmd)
-    );
-    $tasks->addTask(
+        ->to($drushCmd);
+
       $this->taskReplaceInFile($testsRoot . '/playwright.atk.config.js')
         ->from('__PANTHEON_SITE__')
-        ->to($pantheonSite)
-    );
-
-    return $tasks;
+        ->to($pantheonSite);
   }
 
   /**
