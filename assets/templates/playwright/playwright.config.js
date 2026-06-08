@@ -55,7 +55,7 @@ module.exports = defineConfig({
       name: 'chromium',
       use: {
         ...devices['Desktop Chrome'],
-        userAgent: 'aft-main-playwright-ci/1.0'
+        userAgent: 'my-site-playwright-ci/1.0'
        },
     },
 

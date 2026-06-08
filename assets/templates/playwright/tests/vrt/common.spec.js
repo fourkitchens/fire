@@ -3,8 +3,6 @@ import * as aftUtilities from '../support/aft_utilities'
 
 const { test, expect } = require('@playwright/test');
 
-test.describe.configure({ mode: 'serial' });
-
 const runHomepageVrtTest = async ({ page, screenshotName }) => {
 
   await page.goto('/');

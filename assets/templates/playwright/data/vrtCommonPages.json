@@ -1,0 +1,12 @@
+[
+  {
+    "name": "Home",
+    "path": "/",
+    "screenshotName": "home-page"
+  },
+  {
+    "name": "about-us",
+    "path": "/about-us",
+    "screenshotName": "about-us"
+  }
+]
