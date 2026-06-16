@@ -43,5 +43,4 @@ const getVrtDeviceProfile = (key) => vrtDeviceProfiles[key]
 export {
   forceLoadLazyImages,
   getVrtDeviceProfile,
-  normalizeJoinTheMovementSignup,
 }

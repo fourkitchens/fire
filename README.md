@@ -184,6 +184,10 @@ Example:
 
     Alias: `vlec`
 
+  - `vrt:playwright:init`: Configure Playwright VRT scaffolding using Automated Testing Kit.
+
+    Alias: `vpinit`
+
   - `vrt:reference`: Takes new reference screeshots from the reference URL.
 
     Alias: `vref`
@@ -210,10 +214,83 @@ Example:
       **2. Full:** It replaces all existing code and allows you to write the command from scratch.
 
     You can also create a new command, just choice the "Custom" option at the prompt when it ask you for for the command you want to overwrite, then respond to the questions, now a new command should have been created in the custom path, by default only a task is added to cleans the Drupal cache, but from this file, you can add your custom tasks.
-  
+
   - `platform:uli`: This command allows you to generate a one-time login URL for any environment hosted on Pantheon, Acquia, or Platform.sh.
 
     Alias: `puli`
+
+## Playwright VRT
+
+FIRE supports Playwright-based visual regression testing as an alternative to the deprecated Backstop workflow.
+
+### Initialize Playwright VRT
+
+Set `ATK_HOME` to the Playwright test root before running the init command:
+
+```
+export ATK_HOME=./tests/playwright
+fire vrt:playwright:init
+```
+
+The init command installs the required Drupal packages, runs the Automated Testing Kit Playwright scaffold, copies FIRE's Playwright templates, installs Node dependencies, installs `@fkbender/playwright-vrt-scripts`, installs Playwright browsers, and adds these npm scripts to `tests/playwright/package.json`:
+
+```
+"scripts": {
+  "vrt": "playwright-vrt",
+  "vrt:local": "playwright-vrt-local",
+  "vrt:ci": "playwright-vrt-ci"
+}
+```
+
+If `NVM_DIR` is set and `tests/playwright/.nvmrc` exists, FIRE sources NVM and runs the npm commands using the Node version defined in `.nvmrc`.
+
+### Environment Settings
+
+During initialization, FIRE asks for:
+
+- Baseline URL
+- Baseline Terminus env
+- Baseline Terminus site
+- Candidate URL, usually the local URL
+
+Those values are written to `tests/playwright/.env`:
+
+```
+BASELINE_URL="https://www.aft.org"
+CANDIDATE_URL="http://aft-main.lndo.site"
+BASELINE_TERMINUS_ENV=live
+BASELINE_TERMINUS_SITE=aft-main
+```
+
+The `.env` file is added to `tests/playwright/.gitignore` by the init command.
+
+### Run Playwright VRT
+
+After initialization, run Playwright VRT with:
+
+```
+fire vrt:run --tool=playwright
+```
+
+or from the Playwright test root:
+
+```
+cd tests/playwright
+npm run vrt
+```
+
+`fire vrt:reference --tool=playwright` also runs the Playwright VRT npm script from `tests/playwright`.
+
+### Automatic Tool Detection
+
+`vrt:run` and `vrt:reference` default to `--tool=auto`.
+
+FIRE detects configured tools using these files:
+
+- Backstop: `tests/backstop/backstop.json` or `tests/backstop/backstop-local.json`
+- Playwright: `tests/playwright/package.json` or `tests/playwright/playwright.config.js`
+
+If only one tool is configured, FIRE uses it automatically. If both Backstop and Playwright are configured in an interactive shell, FIRE asks which one to run. In non-interactive runs with both configured, FIRE defaults to Playwright.
 
 ## Configuration
 Into your project root create a file called: `fire.yml` and iside of it speficify your global project settings.

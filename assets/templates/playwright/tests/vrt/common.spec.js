@@ -1,11 +1,13 @@
-import * as atkCommands from '../support/atk_commands'
-import * as aftUtilities from '../support/aft_utilities'
+import * as aftUtilities from '../support/4k_utilities'
+import commonPages from '../data/vrtCommonPages.json'
 
 const { test, expect } = require('@playwright/test');
 
-const runHomepageVrtTest = async ({ page, screenshotName }) => {
+//test.describe.configure({ mode: 'serial' });
 
-  await page.goto('/');
+const runCommonVrtTest = async ({ page, path, screenshotName }) => {
+
+  await page.goto(path);
   // Force-load lazy images.
   await aftUtilities.forceLoadLazyImages(page);
   await page.waitForLoadState('networkidle');
@@ -22,35 +24,36 @@ const runHomepageVrtTest = async ({ page, screenshotName }) => {
   await expect(page).toHaveScreenshot(screenshotName, { fullPage: true });
 }
 
-test.describe('Homepage VRT - Desktop', () => {
-  test.use({ ...aftUtilities.getVrtDeviceProfile('desktopChrome') });
+const deviceProfiles = [
+  {
+    title: 'Desktop',
+    profile: 'desktopChrome',
+    screenshotSuffix: 'desktop',
+  },
+  {
+    title: 'iPad',
+    profile: 'iPad',
+    screenshotSuffix: 'ipad',
+  },
+  {
+    title: 'iPhone 12',
+    profile: 'iPhone12',
+    screenshotSuffix: 'iphone-12',
+  },
+]
 
-  test('Homepage VRT - desktop @vrt', async ({ page }) => {
-    await runHomepageVrtTest({
-      page,
-      screenshotName: 'homepage-desktop.png',
-    });
+for (const device of deviceProfiles) {
+  test.describe(`Common VRT - ${device.title}`, () => {
+    test.use({ ...aftUtilities.getVrtDeviceProfile(device.profile) });
+
+    for (const commonPage of commonPages) {
+      test(`Common VRT - ${commonPage.name} - ${device.screenshotSuffix} @vrt`, async ({ page }) => {
+        await runCommonVrtTest({
+          page,
+          path: commonPage.path,
+          screenshotName: `${commonPage.screenshotName}-${device.screenshotSuffix}.png`,
+        });
+      });
+    }
   });
-});
-
-test.describe('Homepage VRT - iPad', () => {
-  test.use({ ...aftUtilities.getVrtDeviceProfile('iPad') });
-
-  test('Homepage VRT - ipad @vrt', async ({ page }) => {
-    await runHomepageVrtTest({
-      page,
-      screenshotName: 'homepage-ipad.png',
-    });
-  });
-});
-
-test.describe('Homepage VRT - iPhone 12', () => {
-  test.use({ ...aftUtilities.getVrtDeviceProfile('iPhone12') });
-
-  test('Homepage VRT - iphone @vrt', async ({ page }) => {
-    await runHomepageVrtTest({
-      page,
-      screenshotName: 'homepage-iphone-12.png',
-    });
-  });
-});
+}

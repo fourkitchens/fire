@@ -35,11 +35,11 @@ class VrtPlaywrightInitCommand extends FireCommandBase {
     if (!$opts['y']) {
       $shouldProceed = $io->confirm("This action will generate/update Playwright VRT scaffolding in $testsRoot. Continue?", TRUE);
     }
-    var_dump($shouldProceed . ' proceed');
     if (!$shouldProceed) {
       $io->warning('Playwright VRT init skipped.');
       return 0;
     }
+    $vrtEnv = $this->collectVrtEnvConfig($io, $projectRoot);
     //  $tasks = $this->collectionBuilder($io);
     $this->taskExec($env . " composer require 'drupal/automated_testing_kit' 'drupal/qa_accounts:^1.1'")->dir($projectRoot)->run();
     $atkSetup = $drupalRoot . '/modules/contrib/automated_testing_kit/module_support/atk_setup';
@@ -102,24 +102,32 @@ class VrtPlaywrightInitCommand extends FireCommandBase {
       ->appendUnlessMatches('/\.env/', ".env\n")
       ->appendUnlessMatches('/\*\.spec\.js-snapshots/', "*.spec.js-snapshots\n");
     $gitignoreTask->run();
+    $this->writeVrtEnvFile($testsRoot, $vrtEnv);
 
     // Updating npm packages and installing Playwright browsers && 4k vrt helper
     // package.
-    if (getenv('NVM_DIR') && file_exists($testsRoot . '/.nvmrc')) {
-      var_dump('IN NVM');
-      $command = 'export NVM_DIR=$HOME/.nvm && . $NVM_DIR/nvm.sh && cd ' . $testsRoot . ' && nvm install && npm install --no-audit --no-fund';
-      // $this->taskExec('nvm use')->dir($testsRoot)->run();
-      // $this->taskExec('npm install')->dir($testsRoot)->run();
-      // $this->taskExec('npm install @fkbender/playwright-vrt-scripts')->dir($testsRoot)->run();
-      $this->taskExec($command)->ignoreReturnValue()->run();
+    $nvmDir = getenv('NVM_DIR');
+    if ($nvmDir && file_exists($testsRoot . '/.nvmrc')) {
+      $nvmScript = rtrim($nvmDir, '/') . '/nvm.sh';
+      if (!file_exists($nvmScript)) {
+        throw new AbortTasksException("NVM script not found at $nvmScript.");
+      }
 
+      $command = 'export NVM_DIR=' . escapeshellarg($nvmDir)
+        . ' && . ' . escapeshellarg($nvmScript)
+        . ' && cd ' . escapeshellarg($testsRoot)
+        . ' && nvm install'
+        . ' && npm install --no-audit --no-fund'
+        . ' && npm install --no-audit --no-fund @fkbender/playwright-vrt-scripts'
+        . ' && npx playwright install --with-deps';
+      $this->taskExec($command)->run();
     }
     else {
-      var_dump('NOT NVM');
       $this->taskExec($env . ' npm install')->dir($testsRoot)->run();
       $this->taskExec($env . ' npm install @fkbender/playwright-vrt-scripts')->dir($testsRoot)->run();
+      $this->taskExec($env . ' npx playwright install --with-deps')->dir($testsRoot)->run();
     }
-    $this->taskExec('npx playwright install --with-deps')->dir($testsRoot . '/playwright')->run();
+    $this->addVrtScriptsToPackageJson($testsRoot);
 
     $defaultBaseUrl = $this->getDefaultBaseUrl($projectRoot);
 
@@ -152,6 +160,66 @@ class VrtPlaywrightInitCommand extends FireCommandBase {
     }
     $relative = ltrim($atkHome, './');
     return rtrim($projectRoot, '/') . '/' . $relative;
+  }
+
+  /**
+   * Collect values for the Playwright VRT .env file.
+   */
+  private function collectVrtEnvConfig(ConsoleIO $io, string $projectRoot) {
+    $baselineTerminusEnv = Robo::config()->get('remote_canonical_env') ?: 'live';
+    $baselineTerminusSite = Robo::config()->get('remote_sitename') ?: '';
+    $baselineUrl = $this->getDefaultBaselineUrl($baselineTerminusEnv, $baselineTerminusSite);
+    $candidateUrl = $this->getDefaultBaseUrl($projectRoot);
+
+    $baselineUrl = $io->ask('Please enter the baseline Url', $baselineUrl);
+    $baselineTerminusEnv = $io->ask('Please enter baseline Terminus env', $baselineTerminusEnv);
+    $baselineTerminusSite = $io->ask('Please enter baseline Terminus Site', $baselineTerminusSite);
+    $candidateUrl = $io->ask('Please enter The candidate url(local)', $candidateUrl);
+
+    return [
+      'baseline_url' => trim((string) $baselineUrl),
+      'candidate_url' => trim((string) $candidateUrl),
+      'baseline_terminus_env' => trim((string) $baselineTerminusEnv),
+      'baseline_terminus_site' => trim((string) $baselineTerminusSite),
+    ];
+  }
+
+  /**
+   * Write Playwright VRT environment variables to tests/playwright/.env.
+   */
+  private function writeVrtEnvFile(string $testsRoot, array $vrtEnv) {
+    $contents = implode("\n", [
+      'BASELINE_URL="' . $this->escapeDotEnvDoubleQuotedValue($vrtEnv['baseline_url']) . '"',
+      'CANDIDATE_URL="' . $this->escapeDotEnvDoubleQuotedValue($vrtEnv['candidate_url']) . '"',
+      'BASELINE_TERMINUS_ENV=' . $vrtEnv['baseline_terminus_env'],
+      'BASELINE_TERMINUS_SITE=' . $vrtEnv['baseline_terminus_site'],
+    ]) . "\n";
+
+    $this->taskWriteToFile($testsRoot . '/.env')
+      ->text($contents)
+      ->run();
+  }
+
+  /**
+   * Escape a value for use in a double-quoted dotenv assignment.
+   */
+  private function escapeDotEnvDoubleQuotedValue(string $value) {
+    return str_replace(
+      ["\\", '"', "\n", "\r"],
+      ["\\\\", '\\"', '\\n', ''],
+      $value
+    );
+  }
+
+  /**
+   * Infer a baseline URL from remote Terminus config when available.
+   */
+  private function getDefaultBaselineUrl(string $baselineTerminusEnv, string $baselineTerminusSite) {
+    if (Robo::config()->get('remote_platform') === 'pantheon' && $baselineTerminusEnv && $baselineTerminusSite) {
+      return 'https://' . $baselineTerminusEnv . '-' . $baselineTerminusSite . '.pantheonsite.io';
+    }
+
+    return '';
   }
 
   /**
@@ -190,6 +258,39 @@ class VrtPlaywrightInitCommand extends FireCommandBase {
       return 'ddev drush';
     }
     return 'drush';
+  }
+
+  /**
+   * Add VRT npm scripts to the generated Playwright package.json.
+   */
+  private function addVrtScriptsToPackageJson(string $testsRoot) {
+    $packageJsonPath = $testsRoot . '/package.json';
+    if (!file_exists($packageJsonPath)) {
+      throw new AbortTasksException("Package file not found at $packageJsonPath.");
+    }
+
+    $packageJson = json_decode(file_get_contents($packageJsonPath), TRUE);
+    if (!is_array($packageJson)) {
+      throw new AbortTasksException("Unable to parse $packageJsonPath.");
+    }
+    if (isset($packageJson['scripts']) && !is_array($packageJson['scripts'])) {
+      throw new AbortTasksException("Invalid scripts section in $packageJsonPath.");
+    }
+
+    $packageJson['scripts'] = array_merge($packageJson['scripts'] ?? [], [
+      'vrt' => 'playwright-vrt',
+      'vrt:local' => 'playwright-vrt-local',
+      'vrt:ci' => 'playwright-vrt-ci',
+    ]);
+
+    $packageJson = json_encode($packageJson, JSON_PRETTY_PRINT | JSON_UNESCAPED_SLASHES);
+    if ($packageJson === FALSE) {
+      throw new AbortTasksException("Unable to encode $packageJsonPath.");
+    }
+
+    $this->taskWriteToFile($packageJsonPath)
+      ->text($packageJson . "\n")
+      ->run();
   }
 
 }

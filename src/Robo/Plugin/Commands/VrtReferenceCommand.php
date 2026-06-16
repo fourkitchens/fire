@@ -16,13 +16,15 @@ class VrtReferenceCommand extends VrtBase {
    *
    * @command vrt:reference
    * @aliases vref
-   * @option $tool Choose backstop or playwright (default: backstop).
+   * @option $tool Choose auto, backstop, or playwright (default: auto).
    *
    */
-  public function vrtReference(ConsoleIO $io, array $args, $opts = ['tool' => 'backstop']) {
+  public function vrtReference(ConsoleIO $io, array $args, $opts = ['tool' => 'auto']) {
     $tool = $this->resolveVrtTool($opts, $io);
     if ($tool === 'playwright') {
-      return $this->playwrightTaskExec($io, 'test --grep @vrt --update-snapshots')->run();
+      return $this->taskExec('npm run vrt')
+        ->dir($this->getLocalEnvRoot() . '/tests/playwright')
+        ->run();
     }
     return $this->backstopTaskExec($io, 'reference')->run();
   }

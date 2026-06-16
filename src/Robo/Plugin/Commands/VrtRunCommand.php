@@ -18,13 +18,15 @@ class VrtRunCommand extends VrtBase {
    *
    * @command vrt:run
    * @aliases vrun
-   * @option $tool Choose backstop or playwright (default: backstop).
+   * @option $tool Choose auto, backstop, or playwright (default: auto).
    *
    */
-  public function vrtRun(ConsoleIO $io, $opts = ['tool' => 'backstop']) {
+  public function vrtRun(ConsoleIO $io, $opts = ['tool' => 'auto']) {
     $tool = $this->resolveVrtTool($opts, $io);
     if ($tool === 'playwright') {
-      return $this->playwrightTaskExec($io, 'test --grep @vrt')->run();
+      return $this->taskExec('npm run vrt')
+        ->dir($this->getLocalEnvRoot() . '/tests/playwright')
+        ->run();
     }
 
     $env = Robo::config()->get('local_environment');
@@ -50,5 +52,5 @@ class VrtRunCommand extends VrtBase {
       $this->taskOpenBrowser('https://' . $ddevConfig['name']. '.ddev.site/backstop_data/html_report/index.html')->run();
     }
   }
-  
+
 }
