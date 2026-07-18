@@ -24,9 +24,11 @@ class VrtRunCommand extends VrtBase {
   public function vrtRun(ConsoleIO $io, $opts = ['tool' => 'auto']) {
     $tool = $this->resolveVrtTool($opts, $io);
     if ($tool === 'playwright') {
-      return $this->taskExec('npm run vrt')
+      $this->taskExec('npm run vrt')
         ->dir($this->getLocalEnvRoot() . '/tests/playwright')
         ->run();
+      $io->note('To open the HTML report run: npx playwright show-report tests/playwright/playwright-report');
+      return;
     }
 
     $env = Robo::config()->get('local_environment');

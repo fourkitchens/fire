@@ -106,10 +106,16 @@ npx playwright test --grep "@vrt"
 
 ## Viewing the Report
 
-After a run, open the HTML report:
+After a run, open the HTML report from inside `tests/playwright/`:
 
 ```bash
-npx playwright show-report
+npm run report
+```
+
+Or from the project root:
+
+```bash
+npx playwright show-report tests/playwright/playwright-report
 ```
 
 On CI, reports are uploaded as artifacts. Each failing test shows the baseline screenshot, the candidate screenshot, and a pixel-diff image.
