@@ -5,8 +5,8 @@
     "screenshotName": "home-page"
   },
   {
-    "name": "about-us",
-    "path": "/about-us",
-    "screenshotName": "about-us"
+    "name": "Login",
+    "path": "/user/login",
+    "screenshotName": "user-login"
   }
 ]

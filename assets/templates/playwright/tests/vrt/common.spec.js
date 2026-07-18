@@ -1,14 +1,9 @@
-import * as aftUtilities from '../support/4k_utilities'
-import commonPages from '../data/vrtCommonPages.json'
-
 const { test, expect } = require('@playwright/test');
-
-//test.describe.configure({ mode: 'serial' });
+const aftUtilities = require('../support/4k_utilities');
+const commonPages = require('../data/vrtCommonPages.json');
 
 const runCommonVrtTest = async ({ page, path, screenshotName }) => {
-
   await page.goto(path);
-  // Force-load lazy images.
   await aftUtilities.forceLoadLazyImages(page);
   await page.waitForLoadState('networkidle');
 

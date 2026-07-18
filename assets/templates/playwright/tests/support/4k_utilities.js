@@ -40,7 +40,7 @@ const vrtDeviceProfiles = (() => {
 
 const getVrtDeviceProfile = (key) => vrtDeviceProfiles[key]
 
-export {
+module.exports = {
   forceLoadLazyImages,
   getVrtDeviceProfile,
 }

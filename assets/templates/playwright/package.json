@@ -1,0 +1,37 @@
+{
+  "name": "playwright-vrt",
+  "version": "1.0.0",
+  "description": "Playwright VRT and E2E testing",
+  "main": "playwright.atk.config.js",
+  "scripts": {
+    "vrt": "playwright-vrt",
+    "vrt:local": "playwright-vrt-local",
+    "vrt:ci": "playwright-vrt-ci"
+  },
+  "keywords": [],
+  "dependencies": {
+    "@eslint/eslintrc": "3.3.5",
+    "@eslint/js": "8.57.1",
+    "@fkbender/playwright-vrt-scripts": "1.0.0-alpha.2",
+    "@playwright/test": "1.59.1",
+    "axios": "1.16.0",
+    "cspell": "8.19.4",
+    "dotenv": "16.6.1",
+    "fast-xml-parser": "4.5.6",
+    "junit-report-merger": "9.0.3",
+    "winston": "3.19.0",
+    "yaml": "2.9.0"
+  },
+  "devDependencies": {
+    "@eslint/eslintrc": "3.3.5",
+    "@eslint/js": "8.57.1",
+    "eslint": "8.57.1",
+    "eslint-config-airbnb-base": "15.0.0",
+    "eslint-config-standard-with-typescript": "43.0.1",
+    "eslint-plugin-chai-friendly": "1.2.0",
+    "eslint-plugin-cypress": "3.6.0",
+    "eslint-plugin-import": "2.32.0",
+    "globals": "15.15.0",
+    "prettier": "3.8.3"
+  }
+}
