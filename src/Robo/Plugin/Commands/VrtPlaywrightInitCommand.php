@@ -18,7 +18,7 @@ class VrtPlaywrightInitCommand extends FireCommandBase {
    * Usage Example: fire vrt:playwright:init
    *
    * @command vrt:playwright:init
-   * @aliases vpinit
+   * @aliases vpinit,vrt:init,vinit
    * @option $y Run the command with no interection required.
    */
   public function vrtPlaywrightInit(ConsoleIO $io, $opts = ['y|y' => FALSE]) {
