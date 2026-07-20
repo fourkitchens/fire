@@ -35,9 +35,10 @@ class VrtPlaywrightInitCommand extends FireCommandBase {
       return 0;
     }
 
-    // Install and enable the required Drupal modules.
+    // Install the required Drupal modules without enabling them.
+    // Enable automated_testing_kit and qa_accounts manually once a config split
+    // is in place to prevent them from reaching production.
     $this->taskExec($env . " composer require 'drupal/automated_testing_kit' 'drupal/qa_accounts:^1.1'")->dir($projectRoot)->run();
-    $this->taskExec($env . ' drush en automated_testing_kit qa_accounts -y')->dir($projectRoot)->run();
 
     // Collect env config after installs succeed so prompts aren't lost on failure.
     $vrtEnv = $this->collectVrtEnvConfig($io, $projectRoot);

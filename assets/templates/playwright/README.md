@@ -6,6 +6,18 @@ VRT works by capturing screenshots of your site from two environments — a **ba
 
 ---
 
+## Drupal modules
+
+`drupal/automated_testing_kit` and `drupal/qa_accounts` are required in your `composer.json` but **not enabled**. Enable them only after a config split is in place to ensure they cannot reach production:
+
+```bash
+ddev drush en automated_testing_kit qa_accounts -y
+```
+
+These modules are not required for VRT. They are needed for ATK-based E2E tests (Phase 2).
+
+---
+
 ## Prerequisites
 
 - Node (version pinned in `.nvmrc`)
