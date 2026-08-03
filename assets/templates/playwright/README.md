@@ -6,18 +6,6 @@ VRT works by capturing screenshots of your site from two environments — a **ba
 
 ---
 
-## Drupal modules
-
-`drupal/automated_testing_kit` and `drupal/qa_accounts` are required in your `composer.json` but **not enabled**. Enable them only after a config split is in place to ensure they cannot reach production:
-
-```bash
-ddev drush en automated_testing_kit qa_accounts -y
-```
-
-These modules are not required for VRT. They are needed for ATK-based E2E tests (Phase 2).
-
----
-
 ## Prerequisites
 
 - Node (version pinned in `.nvmrc`)
@@ -48,6 +36,21 @@ npm run vrt:ci
 ```
 
 Results open automatically in your browser as an HTML report. Failing tests show a diff of baseline vs. candidate.
+
+---
+
+## Running VRT in CI
+
+VRT doesn't run automatically on every push — it's triggered on demand by labeling a pull request. Apply one of these labels on GitHub:
+
+| Label | What it does |
+|---|---|
+| `run vrt tests` | Runs VRT against the PR's already-deployed multidev. No redeploy. |
+| `run vrt tests with fresh db` | Refreshes the multidev's database + files from live first, then runs VRT. |
+
+Labeling the PR triggers a GitHub Actions workflow (`.github/workflows/vrt-label-trigger.yml`), which calls the CircleCI API to start a pipeline with the matching `vrt-mode` parameter (`plain` or `fresh-db`). That runs as its own separate CircleCI workflow (`vrt-on-label` or `vrt-on-label-fresh-db`), independent of the normal build/deploy workflow — so running VRT never affects the PR's regular deploy status.
+
+Results appear as CircleCI artifacts on the `playwright-vrt-merge-results` job: `playwright-vrt-report` (HTML) and `playwright-vrt-junit` (JUnit), same format as a local `npm run vrt:ci`.
 
 ---
 
@@ -153,3 +156,9 @@ Once a visual change is intentional and approved, update the baseline by re-runn
 **`.env` file not found**
 
 Run `fire vrt:playwright:init` to regenerate it, or copy the values from a teammate or the project's password manager entry.
+
+**Labeling a PR with `run vrt tests` didn't trigger anything**
+
+- Check the PR isn't from a fork (see note above — this only works for branches in this repo).
+- Confirm the `CIRCLECI_TOKEN` repository secret is set (Settings → Secrets and variables → Actions).
+- Check the "Trigger CircleCI VRT" run under the PR's **Actions** tab for the actual error.
