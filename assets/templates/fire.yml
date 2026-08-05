@@ -18,3 +18,6 @@ remote_canonical_env: live
 
 # (Optional setting), the system will automatically detected your local env, currently available: ddev, lando.
 #local_environment : lando
+
+# (Optional setting), default VRT tool to use. Options: backstop, playwright.
+#vrt_tool: backstop

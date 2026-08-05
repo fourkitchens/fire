@@ -23,6 +23,49 @@ class VrtBase extends FireCommandBase {
   protected $io;
 
   /**
+   * Resolve which VRT tool should handle the command.
+   */
+  protected function resolveVrtTool(array $opts, ConsoleIO $io) {
+    $tool = strtolower((string) ($opts['tool'] ?? 'auto'));
+    if (in_array($tool, ['backstopjs', 'backstopjs(deprecated)'], TRUE)) {
+      $tool = 'backstop';
+    }
+
+    $root = $this->getLocalEnvRoot();
+    $hasBackstop = file_exists($root . '/tests/backstop/backstop.json') || file_exists($root . '/tests/backstop/backstop-local.json');
+    $hasPlaywright = file_exists($root . '/tests/playwright/package.json') || file_exists($root . '/tests/playwright/playwright.config.js');
+
+    if (in_array($tool, ['backstop', 'playwright'], TRUE)) {
+      if ($tool === 'backstop' && !$hasBackstop) {
+        throw new AbortTasksException('Backstop VRT config was not found. Run fire vrt:init and choose Backstop first.');
+      }
+      if ($tool === 'playwright' && !$hasPlaywright) {
+        throw new AbortTasksException('Playwright VRT config was not found. Run fire vrt:playwright:init first.');
+      }
+      return $tool;
+    }
+
+    if ($tool !== 'auto') {
+      throw new AbortTasksException("Invalid VRT tool '$tool'. Use backstop, playwright, or auto.");
+    }
+
+    if ($hasBackstop && $hasPlaywright) {
+      if (Robo::config()->isInteractive()) {
+        return $io->choice('Both Backstop and Playwright VRT are configured. Which tool do you want to run?', ['playwright', 'backstop'], 0);
+      }
+      return 'playwright';
+    }
+    if ($hasPlaywright) {
+      return 'playwright';
+    }
+    if ($hasBackstop) {
+      return 'backstop';
+    }
+
+    throw new AbortTasksException('No VRT configuration was found. Run fire vrt:init first.');
+  }
+
+  /**
    * Similar to taskExec(), but for Backstop commands.
    *
    * @param ConsoleIO $io
