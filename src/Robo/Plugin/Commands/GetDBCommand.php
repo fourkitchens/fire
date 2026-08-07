@@ -42,6 +42,14 @@ class GetDBCommand extends FireCommandBase {
           return 'Acquia CLI is not installed, please install and configure it: https://docs.acquia.com/acquia-cli/install/';
         }
         break;
+      case 'platform':
+        if ($this->getCliToolStatus('platform')) {
+          $cmd = "platform db:dump --gzip --file=$dbFolder/site-db.sql.gz -p $remoteSiteName -e $remoteEnv";
+        }
+        else {
+          return 'Platform CLI is not installed, please install and configure it: https://docs.platform.sh/administration/cli.html';
+        }
+        break;
       case 'pantheon':
       default:
         if ($this->getCliToolStatus('terminus')) {
