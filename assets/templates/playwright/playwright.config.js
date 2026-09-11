@@ -7,7 +7,7 @@ require('dotenv').config();
 // REMOTE_ENV_BASE_URL is set at runtime by the @fkbender/playwright-vrt-scripts
 // when running comparisons against a remote environment.
 // __DEFAULT_BASE_URL__ is replaced by fire during init as a last-resort fallback.
-const configuredBaseURL = (process.env.CANDIDATE_URL || process.env.REMOTE_ENV_BASE_URL || '__DEFAULT_BASE_URL__')
+const configuredBaseURL = (process.env.REMOTE_ENV_BASE_URL || process.env.CANDIDATE_URL || '__DEFAULT_BASE_URL__')
   .trim()
   .replace(/\/+$/, '')
 
