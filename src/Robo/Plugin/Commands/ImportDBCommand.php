@@ -58,7 +58,7 @@ class ImportDBCommand extends FireCommandBase {
 
     $tasks = $this->collectionBuilder($io);
     $tasks->addTask($this->taskExec($cmd)->args($args));
-    $tasks->addTask($this->taskExec($env . " drush sql:sanitize --sanitize-email='%name@localhost.localdomain' --ignore-roles='admin,administrator,dev,developer'"));
+    $tasks->addTask($this->taskExec($env . " drush sql:sanitize -y --sanitize-email='%name@localhost.localdomain' --ignored-roles='admin,administrator,dev,developer'"));
     $tasks->addTask($this->taskExec($env . ' drush cr'));
     return $tasks;
   }
