@@ -59,6 +59,8 @@ class ImportDBCommand extends FireCommandBase {
     $tasks = $this->collectionBuilder($io);
     $tasks->addTask($this->taskExec($cmd)->args($args));
     $tasks->addTask($this->taskExec($this->getFireExecutable() . ' db:san'));
+    $tasks->addTask($this->taskExec($env . ' drush cr'));
+
     return $tasks;
   }
 
