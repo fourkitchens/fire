@@ -58,9 +58,7 @@ class ImportDBCommand extends FireCommandBase {
 
     $tasks = $this->collectionBuilder($io);
     $tasks->addTask($this->taskExec($cmd)->args($args));
-    $tasks->addTask($this->taskExec($env . " drush sql:query \"UPDATE users_field_data u SET u.name = CONCAT(SUBSTRING_INDEX(u.name, '@', 1), '_', u.uid) WHERE u.uid > 1 AND u.name LIKE '%@%' AND NOT EXISTS (SELECT 1 FROM user__roles ur WHERE ur.entity_id = u.uid AND ur.roles_target_id IN ('admin', 'administrator', 'dev', 'developer'));\""));
-    $tasks->addTask($this->taskExec($env . " drush sql:sanitize -y --sanitize-email='%name@localhost.localdomain' --ignored-roles='admin,administrator,dev,developer'"));
-    $tasks->addTask($this->taskExec($env . ' drush cr'));
+    $tasks->addTask($this->taskExec($this->getFireExecutable() . ' db:san'));
     return $tasks;
   }
 
