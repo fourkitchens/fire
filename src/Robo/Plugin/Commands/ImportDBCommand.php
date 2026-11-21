@@ -58,7 +58,13 @@ class ImportDBCommand extends FireCommandBase {
 
     $tasks = $this->collectionBuilder($io);
     $tasks->addTask($this->taskExec($cmd)->args($args));
-    $tasks->addTask($this->taskExec($this->getFireExecutable() . ' db:san'));
+    $tasks->addCode(function () use ($io) {
+      $result = $this->taskExec($this->getFireExecutable() . ' db:san')->run();
+      if (!$result->wasSuccessful()) {
+        $io->error('The database was imported but sanitization FAILED. It still contains unsanitized data: do not share it or let AI tools review it. Fix the problem and run "fire db:san".');
+      }
+      return $result;
+    });
     $tasks->addTask($this->taskExec($env . ' drush cr'));
 
     return $tasks;
