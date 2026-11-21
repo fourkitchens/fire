@@ -152,6 +152,10 @@ Example:
 
       Alias: `import-db|db-import|importdb|dbimport|import_db|db_import`
 
+  - `db:san`: Sanitizes user data in the local database.
+
+      Alias: `db-san`
+
   - `local:lint:php`: Runs and configure Phpcs for you local env.
 
     Alias: `phpcs`
