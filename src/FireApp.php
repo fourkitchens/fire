@@ -99,8 +99,63 @@ class FireApp {
    * @param \Symfony\Component\Console\Output\OutputInterface $output
    */
   public function run(InputInterface $input, OutputInterface $output) {
-    $status_code = $this->runner->run($input, $output, $this->application, $this->commandClasses);
+    $command = $input->getFirstArgument();
+
+    // If the command is a known FIRE command, run it, otherwise pass to Lando/DDEV.
+    $status_code = $this->isFireCommand($command) 
+    ? $this->runner->run($input, $output, $this->application, $this->commandClasses) 
+    : $this->passToLocalEnv($command, $input, $output);
+
     return $status_code;
+  }
+
+  /**
+   * Checks if the command is known to FIRE.
+   *
+   * @param string $command
+   *   The command to check.
+   *
+   * @return bool
+   *   TRUE if the command is known to FIRE, FALSE otherwise.
+   */
+  private function isFireCommand($command) {
+    foreach ($this->commandClasses as $commandClass) {
+      if (strpos($commandClass, $command) !== false) {
+        return true;
+      }
+    }
+    return false;
+  }
+
+  /**
+   * Passes the command to the local environment (Lando/DDEV).
+   *
+   * @param string $command
+   *   The command to pass.
+   * @param \Symfony\Component\Console\Input\InputInterface $input
+   * @param \Symfony\Component\Console\Output\OutputInterface $output
+   *
+   * @return int
+   *   The exit code of the executed command.
+   */
+  private function passToLocalEnv($command, InputInterface $input, OutputInterface $output) {
+    $env = $this->getLocalEnv();
+    $args = array_slice($_SERVER['argv'], 2); // Skip 'fire' and the command itself.
+    $taskExec = null;
+
+    switch ($env) {
+      case 'lando':
+        $taskExec = $this->taskExec('lando ' . $command)->args($args);
+        break;
+      case 'ddev':
+        $taskExec = $this->taskExec('ddev ' . $command)->args($args);
+        break;
+      default:
+        $output->writeln("Unknown local environment: $env");
+        return 1;
+    }
+
+    return $taskExec->run()->getExitCode();
   }
 
   /**
